@@ -16,14 +16,14 @@ const Hero = () => {
     },
     {
       icon: <SparklesIcon className="h-6 w-6" />,
-      title: "Personal Readings",
+      title: "Instant Reports",
       description: "Expert astrological insights"
     }
   ];
 
   return (
     <div className="relative text-primary overflow-hidden min-h-[85vh]">
-      <div className="absolute inset-0 bg-gradient-to-b from-base-100/30 via-primary/30 to-primary/50" />
+      <div className="absolute inset-0 bg-gradient-to-b from-base-100/30 via-base-100/50 to-primary/80" />
       
       {/* Main Content */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,7 +37,6 @@ const Hero = () => {
               <span className="block mt-2 bg-primary bg-clip-text text-transparent drop-shadow-2xl">
                 Cosmic Path
               </span>
-              <IconDisplay />
             </h1>
             
             <p className="mt-6 lg:text-xl text-primary/80 max-w-72 lg:max-w-2xl mx-auto font-semibold">

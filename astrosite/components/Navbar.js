@@ -26,11 +26,6 @@ const Navbar = () => {
     { 
       name: 'Horoscopes', 
       path: '/horoscopes', 
-      icon: <BookOpenIcon className="h-4 w-4" /> 
-    },
-    { 
-      name: 'Zodiac Signs', 
-      path: '/zodiac-signs', 
       icon: <BoltIcon className="h-4 w-4" /> 
     },
     { 
