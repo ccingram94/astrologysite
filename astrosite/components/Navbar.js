@@ -37,7 +37,7 @@ const Navbar = () => {
       icon: <CakeIcon className="h-4 w-4" /> 
     },
     { 
-      name: 'Readings', 
+      name: 'Reports', 
       path: '/reports', 
       icon: <SparklesIcon className="h-4 w-4" /> 
     },
@@ -46,13 +46,21 @@ const Navbar = () => {
   return (
     <div className="drawer">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col">
+      <div className="drawer-content flex flex-col bg-base-100 text-primary">
         {/* Mobile Navbar */}
-        <div className="navbar bg-black text-white lg:hidden sticky top-0 z-50 shadow-lg backdrop-blur-lg bg-opacity-95">
-          <div className="navbar-start">
+        <div className="navbar lg:hidden sticky top-0 z-50 shadow-lg backdrop-blur-lg bg-opacity-95">
+
+          <div className="navbar-center">
+            <Link href="/" className="btn btn-ghost text-xl">
+              <Image src='/logo.webp' height='28' width='28' className='mr-2' alt="Astro Gnosis Logo" />
+              Astro Gnosis
+            </Link>
+          </div>
+
+          <div className="navbar-end">
             <label 
               htmlFor="my-drawer" 
-              className="btn btn-ghost btn-circle hover:bg-primary hover:text-neutral transition-all duration-300"
+              className="btn btn-ghost btn-circle transition-all duration-300"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -70,24 +78,10 @@ const Navbar = () => {
               </svg>
             </label>
           </div>
-          <div className="navbar-center">
-            <Link href="/" className="btn btn-ghost text-xl text-base-100">
-              <Image src='/logo.webp' height='28' width='28' className='mr-2' alt="Astro Gnosis Logo" />
-              Astro Gnosis
-            </Link>
-          </div>
-          <div className="navbar-end">
-            <Link 
-              href="/reports" 
-              className="btn btn-primary btn-sm text-neutral hover:btn-secondary rounded-full m-2 font-bold text-xs transition-all duration-200 shadow-lg whitespace-nowrap"
-            >
-              Readings
-            </Link>
-          </div>
         </div>
 
         {/* Desktop Navbar */}
-        <div className="hidden lg:flex navbar bg-black text-base-100 font-bold h-20 sticky top-0 z-50 shadow-lg backdrop-blur-lg bg-opacity-95">
+        <div className="hidden lg:flex navbar text-base-100 font-bold h-20 sticky top-0 z-50 shadow-lg backdrop-blur-lg bg-opacity-95">
           {/* Logo Section */}
           <div className="navbar-start w-1/3">
             <Link 
@@ -131,7 +125,7 @@ const Navbar = () => {
               className="btn btn-primary text-white hover:btn-secondary hover:text-base-100 rounded-full m-2 font-bold transition-all duration-200 shadow-lg whitespace-nowrap"
             >
               <SparklesIcon className="h-4 w-4" />
-              Readings
+              Reports
             </Link>
           </div>
         </div>
@@ -140,7 +134,7 @@ const Navbar = () => {
       {/* Drawer Side - autoclosed with onClick handlers */}
       <div className="drawer-side z-[999]">
         <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
-        <ul className="menu p-4 w-80 min-h-full bg-black text-base-100 relative z-[1000]">
+        <ul className="menu p-4 w-80 min-h-full bg-base-100 text-primary relative z-[1000]">
           {navItems.map((item) => (
             <li key={item.path}>
               <Link 
@@ -155,15 +149,15 @@ const Navbar = () => {
               </Link>
             </li>
           ))}
-          <div className="divider divider-primary"></div>
+          <div className="divider divider-primary/50"></div>
           <li>
             <Link 
               href="/reports" 
               onClick={closeDrawer} // Add onClick here
-              className="btn btn-primary text-neutral hover:btn-secondary hover:text-base-100"
+              className="btn btn-primary text-white hover:btn-secondary hover:text-base-100"
             >
               <SparklesIcon className="h-4 w-4" />
-              Get Reading
+              Reports
             </Link>
           </li>
         </ul>
