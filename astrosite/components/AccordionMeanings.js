@@ -7,52 +7,63 @@ const AccordionMeanings = ({ sign }) => {
   ];
 
   const planetSymbols = {
-    sun: '☉',
-    moon: '☽',
-    mercury: '☿',
-    venus: '♀',
-    mars: '♂',
-    jupiter: '♃',
-    saturn: '♄',
-    uranus: '⛢',
-    neptune: '♆',
-    pluto: '♇',
+    sun: '☉', moon: '☽', mercury: '☿', venus: '♀',
+    mars: '♂', jupiter: '♃', saturn: '♄', uranus: '⛢',
+    neptune: '♆', pluto: '♇',
   };
 
-
   return (
-    <div className="card text-primary">
-      <div className="card-body">
-        <h2 className="card-title text-3xl text-center justify-center mb-6 text-primary">
-          Planetary Meanings in {sign.name}
+    <div className="w-full md:w-fit h-fit mx-auto">
+      <div className="bg-base-100 rounded-2xl p-8 border border-primary/20 shadow-xl">
+        <h2 className="text-3xl lg:text-4xl font-bold text-center mb-8">
+          <span className="text-primary">
+            Planetary Meanings in {sign.name}
+          </span>
         </h2>
+
+        {/* Decorative sign symbol */}
+        <div className="flex justify-center mb-8">
+          <div className="relative">
+            {/* Glow effect */}
+            <div className="absolute inset-0 bg-primary/10 blur-md rounded-full"></div>
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center relative">
+              <span className="text-2xl text-primary">{sign.symbol || '★'}</span>
+            </div>
+          </div>
+        </div>
         
-        <div className="space-y-2">
+        <div className="space-y-4">
           {planetlist.map((planet) => (
             <div
               key={planet}
-              className="collapse collapse-plus bg-base-200 rounded-lg hover:bg-base-300 transition-all duration-300"
+              className="collapse collapse-arrow bg-base-200 border border-primary/10 
+                         hover:border-primary/30 hover:bg-base-300 rounded-xl 
+                         transition-all duration-300 shadow-sm hover:shadow-primary/5"
             >
               <input
                 type="radio"
                 name="planet-accordion"
-                className="min-h-0"
               />
-              <div className="collapse-title min-h-0 py-4 px-6 flex items-center gap-3 text-lg font-medium transition-all duration-200">
-                <span className="text-xl text-primary">
-                  {planetSymbols[planet]}
-                </span>
-                <span className="font-semibold text-primary">
-                  {planets[planet].name}
-                </span>
-                <span>in</span>
-                <span className="font-semibold text-primary">
-                  {sign.name}
-                </span>
+              <div className="collapse-title">
+                <div className="flex items-center gap-4">
+                  <span className="text-primary/80 text-2xl">
+                    {planetSymbols[planet]}
+                  </span>
+                  <div className="flex flex-col">
+                    <span className="text-lg font-extrabold text-primary">
+                      {planets[planet].name} in {sign.name}
+                    </span>
+                    <div className="flex gap-2 text-xs">
+                    <span className="text-primary/80">
+                      {planets[planet].keywords.join(' • ')}
+                    </span>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="collapse-content">
-                <div className="pt-4 px-2">
-                  <p className="text-base-content leading-relaxed">
+                <div className="pt-4 pb-2">
+                  <p className="text-neutral text-sm text-justify max-w-xl leading-relaxed">
                     {planets[planet][sign.name]}
                   </p>
                 </div>

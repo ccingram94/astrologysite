@@ -42,7 +42,7 @@ const Footer = () => {
   ];
 
   return (
-  <footer className="bg-base-100 border-t-2 border-primary/50">
+  <footer className="bg-base-100 border-t-1 border-primary/30">
     <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8">
       <div className="xl:grid xl:grid-cols-3 xl:gap-8">
         {/* Company Info */}
