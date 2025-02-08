@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -6,6 +7,7 @@ import { ChevronDownIcon, BookOpenIcon, SparklesIcon, AcademicCapIcon, BoltIcon,
 
 
 const Navbar = () => {
+  const [ theme, setTheme ] = useState()
   const pathname = usePathname();
 
   const closeDrawer = () => {

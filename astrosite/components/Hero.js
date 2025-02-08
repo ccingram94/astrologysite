@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { SparklesIcon, ChartBarIcon, StarIcon } from '@heroicons/react/24/outline';
+import IconDisplay from './IconDisplay'
 
 const Hero = () => {
   const features = [
@@ -36,6 +37,7 @@ const Hero = () => {
               <span className="block mt-2 bg-primary bg-clip-text text-transparent drop-shadow-2xl">
                 Cosmic Path
               </span>
+              <IconDisplay />
             </h1>
             
             <p className="mt-6 lg:text-xl text-primary/80 max-w-72 lg:max-w-2xl mx-auto font-semibold">
