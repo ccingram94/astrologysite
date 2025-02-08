@@ -49,38 +49,39 @@ const AspectSection = ({ horoscope, aspects }) => {
     return (
       <div className='collapse collapse-arrow join-item border border-primary/10 shadow-sm hover:shadow-md transition-all duration-300'>
         <input type="radio" name="aspect-accordion" />
-        <div className="collapse-title flex items-center gap-2 p-4">
-          <span className="text-primary text-2xl font-bold">
+        <div className="collapse-title flex items-center justify-start text-start gap-2 p-4">
+          <span className="text-primary text-2xl">
             {getAspectSymbol(aspectType)}
           </span>
           <div className="flex flex-col">
-            <span className="text-lg font-medium text-neutral">
+            <span className="p-2 text-lg font-extrabold text-neutral">
               {formatAspectName(aspectType)} Aspects
             </span>
-            <span className="text-xs text-primary">
-              {aspectData.length} {aspectData.length === 1 ? 'aspect' : 'aspects'} found
-            </span>
+            <div className="flex justify-start items-center p-2 gap-2 text-xs text-primary">
+              <span>{aspectData.length} {aspectData.length === 1 ? 'aspect' : 'aspects'} found</span>
+              <span>•</span>
+            </div>
+            <div className='flex flex-row flex-wrap gap-2 p-2'>
+            {getAspectsObject(aspectType).traits.map((trait, index) => <span key={index} className='bg-primary/10 text-xs text-primary p-1 px-2 rounded-full'>{trait}</span>)}
+            </div>
           </div>
         </div>
   
         <div className='collapse-content'>
-          <div className="pt-4 space-y-6">
+          <div className="space-y-2">
             {aspectData.map((aspect, index) => (
-              <div key={index} className="bg-base-300/50 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-primary text-xl">
-                    {getAspectSymbol(aspectType)}
-                  </span>
-                  <h4 className="text-secondary font-medium">
+              <div key={index} className="p-2">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-neutral/80 font-extrabold">
                     {aspect.point1Label} {formatAspectName(aspectType)} {aspect.point2Label}
                   </h4>
-                  <span className="text-xs text-primary">
+                  <span className="text-xs text-primary/80">
                     (orb: {aspect.orb}°)
                   </span>
                 </div>
                 
-                <div className="prose max-w-none">
-                  <p className="text-sm text-justify leading-relaxed">
+                <div className="prose max-w-none text-sm text-justify">
+                  <p className="text-neutral leading-relaxed">
                     {getAspectsObject(aspectType).planets[aspect.point1Key][aspect.point2Key]}
                   </p>
                 </div>

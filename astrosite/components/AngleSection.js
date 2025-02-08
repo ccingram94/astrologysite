@@ -44,21 +44,27 @@ const AngleSection = ({ horoscope, planets }) => {
         <input type="radio" name="celestial-points" />
         <div className="collapse-title flex items-center gap-2 p-4">
           <span className="text-primary text-2xl">{symbol}</span>
+
           <div className="flex flex-col">
-            <span className="text-lg font-medium text-neutral">
-              {pointData.Sign.label} {type.charAt(0).toUpperCase() + type.slice(1)}
+            <span className="p-2 text-lg font-extrabold text-neutral">
+              {pointData.label} in {pointData.Sign.label}
             </span>
-            <span className="text-xs text-primary">
-              {pointData.ChartPosition.Ecliptic.ArcDegreesFormatted30}
-            </span>
+            <div className="flex justify-start items-center p-2 gap-2 text-xs text-primary">
+              <span>{pointData.ChartPosition.Ecliptic.ArcDegreesFormatted30}</span>
+              { pointData.House ? <span>•</span> : null }
+              { pointData.House ? <span>{pointData.House.label} House</span> : null }
+            </div>
+            <div className='flex flex-row flex-wrap gap-2 p-2'>
+            {planets[pointData.key].traits.map((trait, key) => <span key={key} className='bg-primary/10 text-xs text-primary p-1 px-2 rounded-full'>{trait}</span>)}
+            </div>
           </div>
         </div>
         <div className="collapse-content prose max-w-none">
-          <div className="">
-            <p className="text-base-content/80 italic">
+          <div className="space-y-2 text-base-content text-sm lg:text-md">
+            <p className="text-neutral italic font-semibold leading-relaxed p-2">
               {description}
             </p>
-            <p className="text-base-content text-md text-justify">
+            <p className="text-neutral leading-relaxed p-2">
               {interpretation}
             </p>
           </div>

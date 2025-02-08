@@ -9,63 +9,65 @@ const PlanetSection = ({ horoscope, planets }) => {
             <div className="collapse-title flex items-center gap-2 p-4">
               <span className="text-primary text-2xl">{planets[planet.key].symbol}</span>
               <div className="flex flex-col">
-                <span className="text-lg font-medium text-neutral">
+                <span className="p-2 text-lg font-extrabold text-neutral">
                   {planet.label} in {planet.Sign.label}
                 </span>
-                <div className="flex gap-2 text-xs text-primary">
+                <div className="flex justify-start items-center p-2 gap-2 text-xs text-primary">
                   <span>{planet.ChartPosition.Ecliptic.ArcDegreesFormatted30}</span>
                   <span>•</span>
                   <span>{planet.House.label} House</span>
                   <span>•</span>
                   <span>{planet.isRetrograde ? 'Retrograde' : 'Direct'}</span>
                 </div>
+                <div className='flex flex-row flex-wrap gap-2 p-2'>
+                {planets[planet.key].traits.map((trait, key) => <span key={key} className='bg-primary/10 text-xs text-primary p-1 px-2 rounded-full'>{trait}</span>)}
+                </div>
               </div>
             </div>
       
             <div className='collapse-content'>
-              <div className="pt-4 space-y-4 text-base-content">
+              <div className="pt-4 space-y-4 text-base-content text-sm lg:text-md">
                 {planetDignity != null && (
-                  <div className="bg-base-300/50 p-3 rounded-lg">
-                    <p className="font-semibold text-sm text-primary">
-                      ⁂ {planetDignity} in {planet.Sign.label}
+                  <div className="bg-base-300/50 px-2 rounded-lg">
+                    <p className="font-bold text-neutral">
+                      {planetDignity} in {planet.Sign.label}
                     </p>
                   </div>
                 )}
       
                 <div className="prose max-w-none">
-                  <p className="leading-relaxed">
+                  <p className="text-neutral leading-relaxed p-2">
                     {planets[planet.key].descriptionShort}
                   </p>
       
-                  <p className="leading-relaxed">
+                  <p className="text-neutral leading-relaxed p-2">
                     {planets[planet.key][planet.Sign.label]}
                   </p>
       
                   {planetDignity != null && (
-                    <p className='py-2'>
-                      <i className="text-primary">
+                    <p className='text-neutral leading-relaxed p-2'>
+                      <i>
                         {planet.label} is in {planetDignity} in {planet.Sign.label}:
                       </i> 
-                      <span className="text-base-content">
+                      <span className="text-neutral leading-relaxed p-2">
                         {`  ${planets[planet.key].dignity[planetDignity]}` }
                       </span>
                     </p>
                   )}
       
-                  <p className="leading-relaxed">
+                  <p className="text-neutral leading-relaxed p-2">
                     {planets[planet.key][planet.House.label]}
                   </p>
                 </div>
       
-                <div className="bg-base-300/50 p-4 rounded-lg mt-6">
-                  <p className="font-medium text-secondary mb-2">
+                <div className="bg-base-300/50 p-2 rounded-lg">
+                  <p className="font-bold text-neutral mb-2">
                     Aspects to {planet.label}
                   </p>
                   <div className="flex flex-wrap gap-2 text-sm">
                     {horoscope.Aspects.points[planet.key].map((aspect, index) => (
-                      <span key={index} className="text-primary">
-                        {aspect.point1Label} {aspect.label} {aspect.point2Label} 
-                        <span className="text-primary mx-1">⁂</span>
+                      <span key={index} className="text-primary text-xs bg-primary/10 rounded-full p-2">
+                        {aspect.point1Label} {aspect.label} {aspect.point2Label}
                       </span>
                     ))}
                   </div>
