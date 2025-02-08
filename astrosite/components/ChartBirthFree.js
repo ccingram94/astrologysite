@@ -10,7 +10,6 @@ import aspects from '../aspects';
 import ChartInputFormBirth from './ChartInputFormBirth';
 import PlacementsTable from './PlacementsTable';
 import PlanetSection from './PlanetSection';
-import AstroChart from './AstroChart';
 import HouseSection from './HouseSection';
 import AngleSection from './AngleSection';
 import AspectSection from './AspectSection';
@@ -23,6 +22,10 @@ const ChartBirthFree = () => {
     birthTime: '',
     birthLocation: null,
     houseSystem: 'whole-sign',
+  });
+
+  const AstroChart = dynamic(() => import('../components/AstroChart'), {
+    ssr: false
   });
 
   const handleFormSubmit = (formData) => {
