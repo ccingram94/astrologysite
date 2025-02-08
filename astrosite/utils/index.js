@@ -1,5 +1,5 @@
-import houses from '../houses';
-import zodiacSigns from '../zodiacsigns';
+import houses from '../data/houses';
+import zodiacSigns from '../data/zodiacsigns';
 
 // Function for location searching via Nominatim API (free)
 export async function searchLocation(inputValue) {

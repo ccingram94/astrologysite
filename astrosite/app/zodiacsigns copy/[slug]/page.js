@@ -26,7 +26,7 @@ export default function ZodiacSignPage() {
     <div className="min-h-screen bg-base-100">
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
-        <div className="card bg-base-100 mb-4">
+        <div className="card lg:card-side bg-base-100 mb-4">
           <figure className="p-6">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-primary/5 blur-sm"></div>
@@ -39,14 +39,14 @@ export default function ZodiacSignPage() {
               />
             </div>
           </figure>
-          <div className="card-body items-center">
-            <div className="flex justify-center items-center gap-4 mb-2">
+          <div className="card-body">
+            <div className="flex items-center gap-4 mb-2">
               <span className="text-4xl text-primary">{zodiacSymbols[params.slug]}</span>
-              <h1 className="card-title font-extrabold text-4xl lg:text-6xl text-primary">{sign.name}</h1>
+              <h1 className="card-title font-bebas text-4xl lg:text-6xl text-primary">{sign.name}</h1>
             </div>
-            <p className="font-semibold text-xl text-center text-primary/80">{sign.dateRange}</p>
+            <p className="text-xl text-primary">{sign.dateRange}</p>
             
-            <div className="flex flex-wrap justify-center gap-2 my-4">
+            <div className="flex flex-wrap gap-2 my-4">
               <div className={`badge ${elementColors[sign.element]} badge-lg`}>
                 {sign.element} Element
               </div>
@@ -58,7 +58,7 @@ export default function ZodiacSignPage() {
               </div>
             </div>
             
-            <p className="text-neutral text-center max-w-2xl">{sign.descriptionShort}</p>
+            <p className="text-neutral max-w-2xl">{sign.descriptionShort}</p>
           </div>
         </div>
 

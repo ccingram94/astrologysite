@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { useParams } from 'next/navigation';
-import planets from '../../../planets';
+import planets from '../../../../data/planets';
 import AccordionMeaningsSigns from '../../../components/AccordionMeaningsSigns';
 import AccordionMeaningsHouses from '../../../components/AccordionMeaningsHouses';
 

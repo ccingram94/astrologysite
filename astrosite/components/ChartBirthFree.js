@@ -3,10 +3,10 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { Origin, Horoscope } from 'circular-natal-horoscope-js';
 import { format } from 'date-fns';
-import zodiacSigns from '../zodiacsigns'
-import planets from '../planets';
-import houses from '../houses';
-import aspects from '../aspects';
+import zodiacSigns from '../data/zodiacsigns';
+import planets from '../data/planets';
+import houses from '../data/houses';
+import aspects from '../data/aspects';
 import ChartInputFormBirth from './ChartInputFormBirth';
 import PlacementsTable from './PlacementsTable';
 import PlanetSection from './PlanetSection';

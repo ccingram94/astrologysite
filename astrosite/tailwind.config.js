@@ -40,28 +40,6 @@ module.exports = {
           "--animation-input": "0.2s",
           "--btn-focus-scale": "0.95",
         },
-        dark: {
-          "primary": "#D2AE3C",          // Brand gold
-          "primary-content": "#000000",   // Text color on primary background
-          "secondary": "#9B8465",        // Lighter earthy tone
-          "accent": "#B16CEF",           // Brighter mystical purple
-          "neutral": "#A6ADBA",          // Light gray
-          "base-100": "#000000",         // Black background
-          "base-200": "#000000",         // Black background
-          "base-300": "#000000",         // Black background
-          "base-content": "#D2AE3C",     // Primary (gold) text color
-          "info": "#0EA5E9",             // Bright blue
-          "success": "#22C55E",          // Bright green
-          "warning": "#EAB308",          // Bright yellow
-          "error": "#EF4444",            // Bright red
-
-          "--rounded-box": "0.5rem",
-          "--rounded-btn": "0.3rem",
-          "--rounded-badge": "1.9rem",
-          "--animation-btn": "0.25s",
-          "--animation-input": "0.2s",
-          "--btn-focus-scale": "0.95",
-        },
       },
     ],
     defaultTheme: "light",

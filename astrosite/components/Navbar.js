@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { ChevronDownIcon, BookOpenIcon, SparklesIcon, AcademicCapIcon, BoltIcon, CakeIcon, ChatBubbleLeftRightIcon, PencilSquareIcon, MagnifyingGlassIcon, MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
-
+import NavbarTop from './NavbarTop';
 
 const Navbar = () => {
   const [ theme, setTheme ] = useState()
@@ -44,6 +44,7 @@ const Navbar = () => {
     <div className="drawer">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col bg-base-100 text-primary">
+      <NavbarTop />
         {/* Mobile Navbar */}
         <div className="navbar lg:hidden sticky top-0 z-50 shadow-lg backdrop-blur-lg bg-opacity-95">
 
@@ -79,6 +80,7 @@ const Navbar = () => {
 
         {/* Desktop Navbar */}
         <div className="hidden lg:flex navbar text-base-100 font-bold h-20 sticky top-0 z-50 shadow-lg backdrop-blur-lg bg-opacity-95">
+          
           {/* Logo Section */}
           <div className="navbar-start w-1/3">
             <Link 
