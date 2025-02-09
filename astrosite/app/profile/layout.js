@@ -12,6 +12,7 @@ import {
   ArrowLeftCircleIcon
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import LoginCard from '../../components/LoginCard';
 import LoginButton from '../../components/LoginButton';
 
 export default async function ProfileLayout({ children }) {
@@ -23,7 +24,7 @@ export default async function ProfileLayout({ children }) {
       <div className="w-full min-h-screen bg-base-200 flex items-center justify-center p-4">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-error">Access Denied</h1>
-          <p className="text-lg text-gray-400 mt-4">
+          <p className="text-lg text-primary/80 mt-4">
             You must be logged in to view this page.
           </p>
           <LoginCard />

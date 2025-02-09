@@ -8,9 +8,12 @@ import {
   SparklesIcon,
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/solid';
+import prisma from '../../lib/prisma';
 
 export default async function AdminPage() {
   const session = await auth();
+  const userCount = await prisma.user.count();
+  const horoscopeCount = await prisma.horoscope.count();
 
   // Access Denied View
   if (!session || session.user.role !== 'admin') {
@@ -62,7 +65,7 @@ export default async function AdminPage() {
                 <span className="ml-3 font-semibold text-base-content">Total Users</span>
               </div>
               <div className="mt-4">
-                <h2 className="text-4xl font-extrabold text-primary">1,253</h2>
+                <h2 className="text-4xl font-extrabold text-neutral">{ userCount }</h2>
                 <div className="flex items-center mt-2">
                   <div className="badge badge-success">+5%</div>
                   <span className="text-sm text-base-content/60 ml-2">vs last week</span>
@@ -75,13 +78,13 @@ export default async function AdminPage() {
           <div className="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-200">
             <div className="card-body">
               <div className="flex items-center">
-                <div className="rounded-lg bg-secondary/10 p-3">
-                  <ChartBarIcon className="h-6 w-6 text-secondary" />
+                <div className="rounded-lg bg-primary/10 p-3">
+                  <SparklesIcon className="h-6 w-6 text-primary" />
                 </div>
-                <span className="ml-3 font-semibold text-base-content">Active Sessions</span>
+                <span className="ml-3 font-semibold text-base-content">Total Horoscopes</span>
               </div>
               <div className="mt-4">
-                <h2 className="text-4xl font-extrabold text-secondary">57</h2>
+                <h2 className="text-4xl font-extrabold text-neutral">{ horoscopeCount }</h2>
                 <div className="flex items-center mt-2">
                   <div className="badge badge-info">Live</div>
                   <span className="text-sm text-base-content/60 ml-2">Realtime tracking</span>

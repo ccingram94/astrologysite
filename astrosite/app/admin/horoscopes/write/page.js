@@ -1,4 +1,4 @@
-import { auth } from '../../../auth';
+import { auth } from '../../../../auth';
 import Link from 'next/link';
 import {
   UserIcon,
@@ -7,13 +7,14 @@ import {
   UserGroupIcon,
   SparklesIcon,
   ExclamationTriangleIcon,
+  PencilSquareIcon
 } from '@heroicons/react/24/solid';
-import prisma from '../../../lib/prisma';
+import prisma from '../../../../lib/prisma';
 
-export default async function AdminUsers() {
+export default async function AdminHoroscopesWrite() {
   const session = await auth();
 
-  const userCount = await prisma.user.count();
+  const horoscopeCount = await prisma.horoscope.count();
 
   // Access Denied View
   if (!session || session.user.role !== 'admin') {
@@ -45,10 +46,10 @@ export default async function AdminUsers() {
         <header className="card bg-base-100 shadow-lg">
           <div className="card-body">
             <h1 className="card-title text-3xl font-bold text-primary">
-              Users
+              Write Horoscopes
             </h1>
             <p className="text-base-content/70">
-              View and manage your website users below.
+              Write and manage your website horoscopes below.
             </p>
           </div>
         </header>
@@ -62,10 +63,10 @@ export default async function AdminUsers() {
                 <div className="rounded-lg bg-primary/10 p-3">
                   <UserIcon className="h-6 w-6 text-primary" />
                 </div>
-                <span className="ml-3 font-semibold text-base-content">Total Users</span>
+                <span className="ml-3 font-semibold text-base-content">Total Horoscopes</span>
               </div>
               <div className="mt-4">
-                <h2 className="text-4xl font-extrabold text-neutral">{userCount}</h2>
+                <h2 className="text-4xl font-extrabold text-neutral">{horoscopeCount}</h2>
               </div>
             </div>
           </div>
@@ -77,7 +78,7 @@ export default async function AdminUsers() {
                 <div className="rounded-lg bg-primary/10 p-3">
                   <InboxIcon className="h-6 w-6 text-primary" />
                 </div>
-                <span className="ml-3 font-semibold text-base-content">New Messages</span>
+                <span className="ml-3 font-semibold text-base-content">This Month</span>
               </div>
               <div className="mt-4">
                 <h2 className="text-4xl font-extrabold text-neutral">0</h2>
@@ -93,16 +94,16 @@ export default async function AdminUsers() {
           <div className="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-200">
             <div className="card-body">
               <div className="flex items-center">
-                <div className="rounded-lg bg-secondary/10 p-3">
-                  <ChartBarIcon className="h-6 w-6 text-secondary" />
+                <div className="rounded-lg bg-primary/10 p-3">
+                  <ChartBarIcon className="h-6 w-6 text-primary" />
                 </div>
-                <span className="ml-3 font-semibold text-base-content">Active Sessions</span>
+                <span className="ml-3 font-semibold text-base-content">This Year</span>
               </div>
               <div className="mt-4">
-                <h2 className="text-4xl font-extrabold text-secondary">57</h2>
+                <h2 className="text-4xl font-extrabold text-neutral">0</h2>
                 <div className="flex items-center mt-2">
-                  <div className="badge badge-info">Live</div>
-                  <span className="text-sm text-base-content/60 ml-2">Realtime tracking</span>
+                  <div className="badge bg-primary/30">Live</div>
+                  <span className="text-sm text-base-content/60 ml-2">realtime tracking</span>
                 </div>
               </div>
             </div>
@@ -114,16 +115,18 @@ export default async function AdminUsers() {
           <div className="card-body">
             <h2 className="card-title text-xl mb-4">Quick Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <button className="btn btn-primary btn-lg normal-case">
-                <UserGroupIcon className="h-5 w-5 mr-2" />
-                Manage Users
-              </button>
-              <button className="btn btn-secondary btn-lg normal-case">
+              <Link href="/admin/horoscopes/write">
+                <button className="btn btn-primary btn-lg normal-case w-full">
+                  <PencilSquareIcon className="h-5 w-5 mr-2" />
+                  Write Horoscopes
+                </button>
+              </Link>
+              <button className="btn btn-primary btn-outline btn-lg normal-case">
                 <ChartBarIcon className="h-5 w-5 mr-2" />
-                View Analytics
+                View Horoscopes
               </button>
               <Link href="/admin/horoscopes">
-                <button className="btn btn-accent btn-lg normal-case">
+                <button className="btn btn-primary btn-outline btn-lg normal-case">
                   <SparklesIcon className="h-5 w-5 mr-2" />
                   Manage Horoscopes
                 </button>
@@ -132,17 +135,17 @@ export default async function AdminUsers() {
           </div>
         </section>
 
-        {/* Recent Activity (Optional) */}
+        {/* Recent Activity */}
         <section className="card bg-base-100 shadow-lg">
           <div className="card-body">
-            <h2 className="card-title text-xl mb-4">Recent Users</h2>
+            <h2 className="card-title text-xl mb-4">Horoscopes This Month</h2>
             <div className="overflow-x-auto">
               <table className="table table-zebra w-full">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Member Since</th>
+                    <th>Date</th>
+                    <th>Text</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>

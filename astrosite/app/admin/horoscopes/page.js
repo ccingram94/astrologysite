@@ -7,13 +7,14 @@ import {
   UserGroupIcon,
   SparklesIcon,
   ExclamationTriangleIcon,
+  PencilSquareIcon
 } from '@heroicons/react/24/solid';
 import prisma from '../../../lib/prisma';
 
 export default async function AdminHoroscopes() {
   const session = await auth();
 
-  const userCount = await prisma.user.count();
+  const horoscopeCount = await prisma.horoscope.count();
 
   // Access Denied View
   if (!session || session.user.role !== 'admin') {
@@ -65,7 +66,7 @@ export default async function AdminHoroscopes() {
                 <span className="ml-3 font-semibold text-base-content">Total Horoscopes</span>
               </div>
               <div className="mt-4">
-                <h2 className="text-4xl font-extrabold text-neutral">{userCount}</h2>
+                <h2 className="text-4xl font-extrabold text-neutral">{horoscopeCount}</h2>
               </div>
             </div>
           </div>
@@ -109,7 +110,32 @@ export default async function AdminHoroscopes() {
           </div>
         </section>
 
-        {/* Recent Activity (Optional) */}
+        {/* Quick Actions */}
+        <section className="card bg-base-100 shadow-lg">
+          <div className="card-body">
+            <h2 className="card-title text-xl mb-4">Quick Actions</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link href="/admin/horoscopes/write">
+                <button className="btn btn-primary btn-lg normal-case w-full">
+                  <PencilSquareIcon className="h-5 w-5 mr-2" />
+                  Write Horoscopes
+                </button>
+              </Link>
+              <button className="btn btn-primary btn-outline btn-lg normal-case">
+                <ChartBarIcon className="h-5 w-5 mr-2" />
+                View Horoscopes
+              </button>
+              <Link href="/admin/horoscopes">
+                <button className="btn btn-primary btn-outline btn-lg normal-case">
+                  <SparklesIcon className="h-5 w-5 mr-2" />
+                  Manage Horoscopes
+                </button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Recent Activity */}
         <section className="card bg-base-100 shadow-lg">
           <div className="card-body">
             <h2 className="card-title text-xl mb-4">Recent Horoscopes</h2>
