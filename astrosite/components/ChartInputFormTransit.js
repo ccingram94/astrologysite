@@ -174,7 +174,7 @@ const ChartInputFormTransit = ({ onSubmit }) => {
           Transit Chart Calculator
         </h2>
         <p className="text-secondary/80">
-          Enter your birth details and transit details to generate your astrological chart
+          enter your birth details and transit details to calculate your chart
         </p>
       </div>
 

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { ChevronDownIcon, BookOpenIcon, SparklesIcon, AcademicCapIcon, BoltIcon, CakeIcon, ChatBubbleLeftRightIcon, PencilSquareIcon, MagnifyingGlassIcon, MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, ArrowPathIcon, BookOpenIcon, SparklesIcon, AcademicCapIcon, BoltIcon, CakeIcon, ChatBubbleLeftRightIcon, PencilSquareIcon, MagnifyingGlassIcon, MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
 import NavbarTop from './NavbarTop';
 
 const Navbar = () => {
@@ -32,6 +32,11 @@ const Navbar = () => {
       name: 'Birth Chart', 
       path: '/birthchart', 
       icon: <CakeIcon className="h-4 w-4" /> 
+    },
+    { 
+      name: 'Transit Chart', 
+      path: '/transitchart', 
+      icon: <ArrowPathIcon className="h-4 w-4" /> 
     },
     { 
       name: 'Reports', 
