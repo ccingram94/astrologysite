@@ -1,4 +1,4 @@
-import { auth } from '../../auth';
+import { auth } from '../../../auth';
 import Link from 'next/link';
 import {
   UserIcon,
@@ -8,9 +8,12 @@ import {
   SparklesIcon,
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/solid';
+import prisma from '../../../lib/prisma';
 
-export default async function AdminPage() {
+export default async function AdminUsers() {
   const session = await auth();
+
+  const userCount = await prisma.user.count();
 
   // Access Denied View
   if (!session || session.user.role !== 'admin') {
@@ -42,10 +45,10 @@ export default async function AdminPage() {
         <header className="card bg-base-100 shadow-lg">
           <div className="card-body">
             <h1 className="card-title text-3xl font-bold text-primary">
-              Welcome, Admin
+              Users
             </h1>
             <p className="text-base-content/70">
-              Manage your system efficiently using the tools provided below.
+              View and manage your website users below.
             </p>
           </div>
         </header>
@@ -62,10 +65,25 @@ export default async function AdminPage() {
                 <span className="ml-3 font-semibold text-base-content">Total Users</span>
               </div>
               <div className="mt-4">
-                <h2 className="text-4xl font-extrabold text-primary">1,253</h2>
+                <h2 className="text-4xl font-extrabold text-neutral">{userCount}</h2>
+              </div>
+            </div>
+          </div>
+
+          {/* Messages Card */}
+          <div className="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-200">
+            <div className="card-body">
+              <div className="flex items-center">
+                <div className="rounded-lg bg-primary/10 p-3">
+                  <InboxIcon className="h-6 w-6 text-primary" />
+                </div>
+                <span className="ml-3 font-semibold text-base-content">New Messages</span>
+              </div>
+              <div className="mt-4">
+                <h2 className="text-4xl font-extrabold text-neutral">0</h2>
                 <div className="flex items-center mt-2">
-                  <div className="badge badge-success">+5%</div>
-                  <span className="text-sm text-base-content/60 ml-2">vs last week</span>
+                  <div className="badge bg-primary/30">Pending</div>
+                  <span className="text-sm text-base-content/60 ml-2">awaiting review</span>
                 </div>
               </div>
             </div>
@@ -85,25 +103,6 @@ export default async function AdminPage() {
                 <div className="flex items-center mt-2">
                   <div className="badge badge-info">Live</div>
                   <span className="text-sm text-base-content/60 ml-2">Realtime tracking</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Messages Card */}
-          <div className="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-200">
-            <div className="card-body">
-              <div className="flex items-center">
-                <div className="rounded-lg bg-accent/10 p-3">
-                  <InboxIcon className="h-6 w-6 text-accent" />
-                </div>
-                <span className="ml-3 font-semibold text-base-content">New Messages</span>
-              </div>
-              <div className="mt-4">
-                <h2 className="text-4xl font-extrabold text-accent">12</h2>
-                <div className="flex items-center mt-2">
-                  <div className="badge badge-warning">Pending</div>
-                  <span className="text-sm text-base-content/60 ml-2">Awaiting review</span>
                 </div>
               </div>
             </div>
