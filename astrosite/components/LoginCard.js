@@ -1,20 +1,19 @@
 
-import { auth, signIn } from '../auth';
+import { auth, signIn, signOut } from '../auth';
+import LoginButton from './LoginButton';
 
 export default async function LoginCard() {
   const session = await auth();
   if (!session?.user) return (
-    <form
-    action={async () => {
-      "use server"
-      await signIn("google")
-    }}
-  >
-    <button type="submit">Login with Google</button>
-    <p></p>
-  </form>
+    <div className='card flex flex-col justify-center items-center'>
+      <h1>You are logged out.</h1>
+      <LoginButton />
+    </div>
   );
   return (
-    <p>You are now logged in.</p>
+    <div className='card flex flex-col justify-center items-center'>
+      <h1>You are logged in.</h1>
+      <LoginButton />
+    </div>
   )
 }
