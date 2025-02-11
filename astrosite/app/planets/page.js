@@ -1,5 +1,4 @@
-import Image from 'next/image'
-import planets from '../../../data/planets'
+import Image from 'next/image';
 
 export default function Planets() {
   return (

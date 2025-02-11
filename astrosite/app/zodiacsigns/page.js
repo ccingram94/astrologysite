@@ -1,5 +1,4 @@
-import Image from 'next/image'
-import zodiacSigns from '../../../data/zodiacsigns'
+import Image from 'next/image';
 
 export default function ZodiacSigns() {
   return (
