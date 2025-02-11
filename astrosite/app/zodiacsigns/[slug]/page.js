@@ -2,8 +2,8 @@
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import AccordionMeanings from '../../../components/AccordionMeanings'
-import planets from '../../../../data/planets'
-import zodiacSigns from '../../../../data/zodiacsigns'
+import planets from '../../../data/planets';
+import zodiacSigns from '../../../data/zodiacsigns';
 
 export default function ZodiacSignPage() {
   const params = useParams();
