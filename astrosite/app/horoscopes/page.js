@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { format, parseISO, set } from 'date-fns';
 import dynamic from 'next/dynamic';
-
+import HoroscopeCalendar from '../../components/HoroscopeCalendar';
 
 export default function Horoscopes() {
   const [today, setToday] = useState(null); // Midnight Date for Today's Horoscope
@@ -112,9 +112,9 @@ export default function Horoscopes() {
   };
 
   return (
-    <div className='max-w-full min-h-screen bg-base-100 overflow-hidden'>
+    <div className='max-w-full min-h-screen flex flex-row flex-wrap justify-center bg-base-100 overflow-hidden'>
 
-      <div className="flex flex-row flex-wrap justify-center items-start p-2 bg-base-100">
+      <div className="flex flex-row flex-wrap justify-center items-start p-2 bg-base-100 border-b border-primary/30">
         
         {/* Section 1: Today's Horoscope */}
         <div className="flex flex-col lg:w-1/3 p-4">
@@ -131,12 +131,20 @@ export default function Horoscopes() {
               )}
               
               {!isLoadingToday && todayHoroscope && (
-                <div>
-                  <p className="font-semibold p-2 text-sm text-accent">horoscope for the date</p>
-                  <p className="font-bold text-2xl p-2 text-secondary">{format(new Date(todayHoroscope.date), 'PPPP')}</p>
-                  <p className="font-semibold text-sm lg:text-md p-2 text-primary">{todayHoroscope.placements || 'No placements available.'}</p>
-                  <p className="p-2 lg:p-4 text-justify break-words text-sm max-w-lg text-base-content">
-                    {todayHoroscope.horoscope || 'No horoscope available.'}
+                <div className='flex flex-col justify-center text-center'>
+                  <p className="font-bold text-2xl p-2 text-neutral">{format(new Date(todayHoroscope.date), 'PPPP')}</p>
+                  <p className="font-semibold text-xs p-2 text-primary">
+                    {todayHoroscope.placements.length > 0
+                      ? todayHoroscope.placements.map((placement, index) => (
+                          <span key={index}>
+                            {placement}
+                            {index < todayHoroscope.placements.length - 1 && <span className="mx-1">☙</span>}
+                          </span>
+                        ))
+                      : 'No placements available.'}
+                  </p>
+                  <p className="p-2 lg:p-4 text-justify break-words text-sm max-w-lg text-neutral">
+                    {todayHoroscope.content || 'No horoscope available.'}
                   </p>
                 </div>
               )}
@@ -158,7 +166,7 @@ export default function Horoscopes() {
           <div className="flex flex-row flex-wrap justify-center w-full">
             <div className="flex flex-col bg-base-100 rounded-xl text-base-content p-4 lg:p-8 m-2 w-full 
                           lg:max-w-2xl shadow-xl border border-primary/20">
-              <p className="font-semibold text-2xl p-2 text-secondary">Select a Date:</p>
+              <p className="font-semibold text-2xl p-2 text-neutral">Select a Date:</p>
               <input
                 type="date"
                 onChange={handleSelectedDateChange}
@@ -173,14 +181,16 @@ export default function Horoscopes() {
 
                 {!isSearching && selectedDate && horoscopeSearchResult && (
                   <>
-                    <p className="font-semibold text-2xl p-2 text-secondary">
-                      {format(selectedDate, 'PPPP')}
+                    <p className="font-semibold text-2xl p-2 m-4 text-neutral">
+                      {format(selectedDate, 'PPP')}
                     </p>
-                    <p className="font-semibold text-sm lg:text-md px-2 text-primary">
-                      {horoscopeSearchResult.placements || 'No placements available.'}
+                    <p className="font-semibold text-xs px-2 text-primary">
+                      {horoscopeSearchResult.placements.length > 0
+                        ? horoscopeSearchResult.placements.join(' ☙ ')
+                        : 'No placements available.'}
                     </p>
-                    <p className="p-2 lg:p-4 text-justify text-sm text-base-content">
-                      {horoscopeSearchResult.horoscope || 'No horoscope available.'}
+                    <p className="p-2 lg:p-4 text-justify text-sm text-neutral">
+                      {horoscopeSearchResult.content || 'No horoscope available.'}
                     </p>
                   </>
                 )}
@@ -192,8 +202,8 @@ export default function Horoscopes() {
             </div>
           </div>
         </div>
-
       </div>
+      <HoroscopeCalendar />
     </div>
   );
 }

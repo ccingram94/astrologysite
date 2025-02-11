@@ -19,7 +19,7 @@ model User {
   emailVerified DateTime?
   image         String?
   birthDate     DateTime?
-  role          Role           @default(user)  // Add this line
+  role          Role           @default(user)   
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   accounts      Account[]
@@ -78,9 +78,11 @@ model Authenticator {
 }
 
 model Horoscope {
-  id        String   @id @default(cuid())
-  content   String
-  date      DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  content     String
+  date        DateTime  @unique
+  placements  String[] 
+  retrogrades String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
