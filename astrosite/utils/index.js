@@ -70,3 +70,4 @@ export async function searchLocation(inputValue) {
     };
     return systemMap[system] || system;
   }
+

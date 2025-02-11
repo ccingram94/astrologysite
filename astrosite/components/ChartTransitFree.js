@@ -8,10 +8,12 @@ import planets from '../data/planets';
 import planetsTransit from '../data/planetsTransit';
 import houses from '../data/houses';
 import aspects from '../data/aspects';
+import aspectsTransit from '../data/aspectsTransit';
 import ChartInputFormBirth from './ChartInputFormBirth';
 import ChartInputFormTransit from './ChartInputFormTransit';
 import PlacementsTable from './PlacementsTable';
 import PlacementsTableTransit from './PlacementsTableTransit';
+import PlacementsTableTransitAspect from './PlacementsTableTransitAspect';
 import PlanetSectionTransit from './PlanetSectionTransit';
 import AngleSectionTransit from './AngleSectionTransit';
 import AspectSection from './AspectSection';
@@ -102,7 +104,6 @@ const ChartTransitFree = () => {
 
   const renderHoroscopeData = () => {
     if (!horoscope || !transitHoroscope) return null;
-    console.log(horoscope.Houses);
     return (
       <div className='flex flex-col justify-center items-center text-primary rounded-lg'>
         <div className='flex flex-row flex-wrap justify-center items-start'>
@@ -138,10 +139,11 @@ const ChartTransitFree = () => {
             <div className='overflow-x-auto'>
               <PlacementsTableTransit horoscope={horoscope} transitHoroscope={transitHoroscope} planets={planets} />
             </div>
+            <PlacementsTableTransitAspect horoscope={horoscope} transitHoroscope={transitHoroscope} planets={planets} />
           </div>
         </div>
         <PlanetSectionTransit horoscope={horoscope} transitHoroscope={transitHoroscope} />
-        <AspectSectionTransit horoscope={horoscope} aspects={aspects} transitHoroscope={transitHoroscope} />
+        <AspectSectionTransit horoscope={horoscope} aspectsTransit={aspectsTransit} transitHoroscope={transitHoroscope} />
       </div>
     )
   }

@@ -77,6 +77,8 @@ const AngleSectionTransit = ({ horoscope, planets, transitHoroscope }) => {
     <div className="flex flex-col w-full justify-center items-center mt-12 p-2 lg:p-6 m-2">
       <h3 className="font-bold text-primary text-3xl m-2">Transiting Celestial Points</h3>
       <div className="py-2 join join-vertical w-full text-xs text-justify">
+        {evaluateAngle('ascendant', 'ascendant', horoscope)}
+        {evaluateAngle('midheaven', 'midheaven', horoscope)}
         {evaluateAngle('northnode', 'northnode', horoscope)}
         {evaluateAngle('southnode', 'southnode', horoscope)}
       </div>

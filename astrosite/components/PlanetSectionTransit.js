@@ -1,7 +1,55 @@
 import { evaluatePlanetaryDignity } from '../utils';
+import { getAllTransitAspects } from '../utils/calculateAspect';
 import planetsTransit from '../data/planetsTransit';
 
 const PlanetSection = ({ horoscope, transitHoroscope }) => {
+
+  const planetNames = [
+    'sun', 'moon', 'mercury', 'venus', 'mars',
+    'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'
+  ];
+
+  const planetLabels = [
+    'Sun', 'Moon', 'Mercury', 'Venus', 'Mars',
+    'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'
+  ];
+
+  // birth planets
+  const birthPlanets = [
+    horoscope.CelestialBodies.sun,
+    horoscope.CelestialBodies.moon,
+    horoscope.CelestialBodies.mercury,
+    horoscope.CelestialBodies.venus,
+    horoscope.CelestialBodies.mars,
+    horoscope.CelestialBodies.jupiter,
+    horoscope.CelestialBodies.saturn,
+    horoscope.CelestialBodies.uranus,
+    horoscope.CelestialBodies.neptune,
+    horoscope.CelestialBodies.pluto,
+  ];
+
+  // transit planets
+  const transitPlanets = [
+    transitHoroscope.CelestialBodies.sun,
+    transitHoroscope.CelestialBodies.moon,
+    transitHoroscope.CelestialBodies.mercury,
+    transitHoroscope.CelestialBodies.venus,
+    transitHoroscope.CelestialBodies.mars,
+    transitHoroscope.CelestialBodies.jupiter,
+    transitHoroscope.CelestialBodies.saturn,
+    transitHoroscope.CelestialBodies.uranus,
+    transitHoroscope.CelestialBodies.neptune,
+    transitHoroscope.CelestialBodies.pluto,
+  ];
+
+  // Calculate all aspects once
+  const allAspects = getAllTransitAspects(transitPlanets, birthPlanets);
+
+  const getAspectsForPlanet = (planetKey) => {
+    return allAspects.filter(aspect => 
+      planetNames[aspect.transitIndex].toLowerCase() === planetKey
+    );
+  };
 
   const getNatalHouse = (transitPlanet, horoscope) => {
     // Get transit planet's absolute position (0-360 degrees)
@@ -46,6 +94,7 @@ const PlanetSection = ({ horoscope, transitHoroscope }) => {
         const planetData = planetsTransit[planet.key];
         const natalHouseNumber = getNatalHouse(planet, horoscope);
         const natalHouseLabel = natalHouseNumber;
+        const planetAspects = getAspectsForPlanet(planet.key);
         return (
           <div className='collapse collapse-arrow join-item border border-primary/10 shadow-sm hover:shadow-md transition-all duration-300'>
             <input type="radio" name="planet-accordion" />
@@ -99,18 +148,26 @@ const PlanetSection = ({ horoscope, transitHoroscope }) => {
                   )}
       
                   <p className="text-neutral leading-relaxed p-2">
-                  {planetsTransit[planet.key].transitHouses[natalHouseLabel]}
+                  <i>
+                    {planet.label} is transiting your natal {natalHouseLabel} House:
+                  </i> 
+                  <span className="text-neutral leading-relaxed p-2">
+                    {planetsTransit[planet.key].transitHouses[natalHouseLabel]}
+                  </span>
                   </p>
                 </div>
       
                 <div className="bg-base-300/50 p-2 rounded-lg">
                   <p className="font-bold text-neutral mb-2">
-                    Transiting {planet.label} Aspects
+                    Current {planet.label} Aspects to Natal Planets
                   </p>
                   <div className="flex flex-wrap gap-2 text-sm">
-                    {horoscope.Aspects.points[planet.key].map((aspect, index) => (
-                      <span key={index} className="text-primary text-xs bg-primary/10 rounded-full p-2">
-                        {aspect.point1Label} {aspect.label} {aspect.point2Label}
+                    {planetAspects.map((aspect, index) => (
+                      <span 
+                        key={index} 
+                        className="text-primary text-xs bg-primary/10 rounded-full p-2"
+                      >
+                        {planet.label} {aspect.symbol} Natal {planetLabels[aspect.natalIndex]} ({aspect.orb}°)
                       </span>
                     ))}
                   </div>
