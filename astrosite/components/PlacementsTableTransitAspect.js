@@ -88,7 +88,7 @@ const PlacementsTableTransitAspect = ({ horoscope, transitHoroscope, planets }) 
         Transit Planets in Aspect to Natal Planets
       </h3>
       {/* Use CSS columns for a masonry-like layout */}
-      <div className="columns-1 md:columns-2 lg:columns-3 gap-4">
+      <div className="columns-1 md:columns-2 lg:columns-3 gap-4 ">
         {/* Major Aspects First */}
         <AspectTable 
           aspects={groupedAspects['conjunction']} 

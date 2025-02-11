@@ -110,21 +110,22 @@ const ChartTransitFree = () => {
           <div className='flex flex-col justify-center items-center text-center lg:mx-4 rounded-lg'>
             <h2 className='font-extrabold text-neutral text-4xl lg:text-6xl mb-4'>Transit Chart</h2>
             <div className='flex flex-row flex-wrap justify-center m-2'>
-              <div className='flex flex-col justify-center text-center p-2'>
+              <div className='flex flex-col justify-center text-center p-2 m-2 max-w-xs'>
                 <h2 className='text-xl font-extrabold mt-2'>Birth Date</h2>
                 <h2 className='font-bold text-primary/80 mt-2'>
                   { format(horoscope.origin.utcTimeFormatted, 'PPP')} at { chartData.birthTime }
                 </h2>
-                <h2 className='font-semibold text-sm m-2 max-w-md text-primary/80'>{ chartData.birthLocation.label }</h2>
+                <h2 className='font-semibold text-sm m-2 text-primary/80'>{ chartData.birthLocation.label }</h2>
               </div>
-              <div className='flex flex-col justify-center text-center p-2'>
+              <div className='flex flex-col justify-center text-center p-2 m-2 max-w-xs'>
                 <h2 className='text-xl font-extrabold mt-2'>Transit Date</h2>
                 <h2 className='font-bold text-primary/80 mt-2'>
                   { format(transitHoroscope.origin.utcTimeFormatted, 'PPP')} at { transitChartData.transitTime }
                 </h2>
-                <h2 className='font-semibold text-sm m-2 max-w-md text-primary/80'>{ chartData.birthLocation.label }</h2>
+                <h2 className='font-semibold text-sm m-2 text-primary/80'>{ transitChartData.transitLocation.label }</h2>
               </div>
             </div>
+            <p className='font-semibold text-primary/80 italic text-sm'>major birth chart placements:</p>
             <div className='font-semibold flex flex-row flex-wrap justify-center text-center gap-4 p-4'>
               <h4>{ horoscope.CelestialBodies.sun.Sign.label } Sun</h4>
               <h4>{ horoscope.CelestialBodies.moon.Sign.label } Moon</h4>

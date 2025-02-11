@@ -98,15 +98,14 @@ const AspectSectionTransit = ({ horoscope, aspectsTransit, transitHoroscope }) =
           <div className="space-y-2">
             {aspectData.map((aspect, index) => (
               <div key={index} className="p-2">
-                <div className="flex items-center gap-2">
+                <div className="flex gap-2">
                   <h4 className="text-neutral/80 font-extrabold">
                     Transit {aspect.transitPlanet.label} {aspect.symbol} Natal {aspect.natalPlanet.label}
                   </h4>
-                  <span className="text-xs text-primary/80">
-                    (orb: {aspect.orb}°)
-                  </span>
                 </div>
-                
+                <p className="text-xs text-start text-primary/80 my-2">
+                  orb of {aspect.orb}°
+                </p>
                 <div className="prose max-w-none text-sm text-justify">
                   <p className="text-neutral leading-relaxed">
                     {getAspectsObject(aspectType).planets[aspect.transitPlanet.key][aspect.natalPlanet.key]}
