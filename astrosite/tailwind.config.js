@@ -22,7 +22,7 @@ module.exports = {
           "primary": "#D2AE3C",          // Brand gold
           "primary-content": "#000000",   // Text color on primary background
           "secondary": "#8B7355",        // Earthy brown
-          "accent": "#9B59B6",           // Mystical purple
+          "accent": "#F3EBCD",           // Mystical purple
           "neutral": "#2A303C",          // Dark gray
           "base-100": "#FFFFFF",         // White background
           "base-200": "#FFFFFF",         // White background

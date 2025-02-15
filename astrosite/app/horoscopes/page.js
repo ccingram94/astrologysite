@@ -131,9 +131,9 @@ export default function Horoscopes() {
               )}
               
               {!isLoadingToday && todayHoroscope && (
-                <div className='flex flex-col justify-center text-center'>
+                <div className='flex flex-col justify-center items-center text-center'>
                   <p className="font-bold text-2xl p-2 text-neutral">{format(new Date(todayHoroscope.date), 'PPPP')}</p>
-                  <p className="font-semibold text-xs p-2 text-primary">
+                  <p className="font-semibold text-xs max-w-md lg:text p-2 text-primary">
                     {todayHoroscope.placements.length > 0
                       ? todayHoroscope.placements.map((placement, index) => (
                           <span key={index}>

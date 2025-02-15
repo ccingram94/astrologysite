@@ -1,0 +1,16 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <g>
+  <title>Layer 1</title>
+  <line fill="none" stroke-width="20" x1="130" y1="363" x2="128" y2="541" id="svg_22" stroke="#000000"/>
+  <line fill="none" stroke="#000000" stroke-width="20" x1="594" y1="191" x2="594" y2="192" id="svg_25"/>
+  <ellipse fill="none" stroke="#000000" stroke-width="20" cx="80" cy="220" id="svg_50" rx="30" ry="30"/>
+  <ellipse fill="none" stroke="#000000" stroke-width="20" cx="220" cy="220" id="svg_3" rx="30" ry="30"/>
+  <ellipse ry="80" rx="80" id="svg_4" cy="117.4999" cx="147.00001" stroke-width="20" stroke="#000000" fill="none"/>
+  <ellipse stroke="null" ry="68.50018" rx="70" id="svg_6" cy="122.49992" cx="147.50001" stroke-width="20" fill="#ffffff"/>
+  <ellipse stroke="null" ry="40" rx="39.66667" id="svg_8" cy="182.50007" cx="149.50002" stroke-width="20" fill="#ffffff"/>
+  <line id="svg_11" y2="242.3332" x2="147.66657" y1="155.66656" x1="102.66658" stroke-width="20" stroke="#ffffff" fill="none"/>
+  <line transform="rotate(67.4953 180.376 187.226)" stroke="#ffffff" id="svg_12" y2="207.19319" x2="198.78067" y1="167.25867" x1="161.97071" stroke-width="20" fill="none"/>
+  <line transform="rotate(-166.671 116.709 186.226)" stroke="#ffffff" id="svg_13" y2="209.48925" x2="139.37266" y1="162.96261" x1="94.04543" stroke-width="20" fill="none"/>
+ </g>
+
+</svg>

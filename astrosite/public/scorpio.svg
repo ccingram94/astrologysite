@@ -1,0 +1,17 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <g>
+  <title>Layer 1</title>
+  <line fill="none" stroke-width="20" x1="130" y1="363" x2="128" y2="541" id="svg_22" stroke="#000000"/>
+  <line fill="none" stroke="#000000" stroke-width="20" x1="594" y1="191" x2="594" y2="192" id="svg_25"/>
+  <ellipse fill="none" stroke-width="20" cx="212" cy="223" id="svg_53" rx="50" ry="50" stroke="#000000"/>
+  <rect fill="#ffffff" stroke-width="20" x="197" y="120" width="27" height="81" id="svg_60" stroke="#ffffff"/>
+  <line fill="none" stroke="#000000" stroke-width="20" x1="50" y1="31" x2="50" y2="268" id="svg_62"/>
+  <line fill="none" stroke="#000000" stroke-width="20" x1="180" y1="28" x2="180" y2="265" id="svg_64"/>
+  <line fill="none" stroke-width="20" x1="52" y1="37" x2="118" y2="153" id="svg_65" stroke="#000000"/>
+  <line fill="none" stroke-width="20" x1="86" y1="61" x2="206" y2="125" id="svg_66" stroke="#000000" transform="rotate(90 146 93)"/>
+  <line fill="none" stroke-width="15" x1="116" y1="144" x2="116" y2="160" id="svg_67" stroke="#000000"/>
+  <ellipse stroke="null" ry="39.5" rx="30" id="svg_1" cy="222.5" cx="206" stroke-width="20" fill="#ffffff"/>
+  <path transform="rotate(-135 220.885 162.084)" fill="#000000" stroke-width="10" d="m218.73646,175.4565l7.49355,-8.25939l-14.48841,0l-14.48838,0l0,-5.11295l0,-5.11296l14.32217,0c7.87718,0 14.32216,-0.25915 14.32216,-0.57589c0,-0.31673 -3.13588,-4.03346 -6.96862,-8.25938l-6.96864,-7.6835l6.44115,0l6.44113,0l9.83706,10.82622l9.83706,10.82622l-9.85593,10.8055l-9.85592,10.8055l-6.78097,0l-6.78098,0l7.49357,-8.25939l0,0l0,0.00002z" id="svg_61" stroke="#000000"/>
+ </g>
+
+</svg>

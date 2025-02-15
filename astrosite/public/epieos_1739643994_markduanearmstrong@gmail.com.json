@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "query": "markduanearmstrong@gmail.com",
+    "timestamp": "2025-02-15T18:26:33.614Z"
+  },
+  "data": {
+    "visitor": {
+      "hibp": {
+        "found": "1"
+      },
+      "google": {
+        "id": "105933694408993576247",
+        "services": {
+          "google_maps": "https://www.google.com/maps/contrib/105933694408993576247",
+          "google_calendar": "https://calendar.google.com/calendar/u/0/embed?src=markduanearmstrong@gmail.com",
+          "google_plus_archive": "https://web.archive.org/web/*/plus.google.com/105933694408993576247*"
+        }
+      },
+      "skype": {
+        "accounts": [
+          {
+            "name": "MARK"
+          }
+        ]
+      },
+      "gravatar": true
+    }
+  }
+}

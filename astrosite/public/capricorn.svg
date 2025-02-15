@@ -1,0 +1,25 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <g>
+  <title>Layer 1</title>
+  <line stroke="#000000" id="svg_22" y2="541" x2="128" y1="363" x1="130" stroke-width="20" fill="none"/>
+  <line id="svg_25" y2="192" x2="594" y1="191" x1="594" stroke-width="20" stroke="#000000" fill="none"/>
+  <rect stroke="#ffffff" id="svg_60" height="90" width="184" y="84" x="-17" stroke-width="20" fill="#ffffff"/>
+  <line transform="rotate(90 56 134.5)" stroke="#000000" id="svg_68" y2="134.5" x2="140.5" y1="134.5" x1="-28.5" stroke-width="20" fill="none"/>
+  <ellipse stroke="#000000" ry="50" rx="59.5" id="svg_75" cy="103" cx="115" stroke-width="20" fill="none"/>
+  <rect stroke="null" id="svg_80" height="56" width="98.00001" y="108" x="66" stroke-width="20" fill="#ffffff"/>
+  <line transform="rotate(6.76962 115 143)" id="svg_81" y2="171" x2="104" y1="115" x1="126" stroke-width="19" stroke="#ffffff" fill="none"/>
+  <rect stroke="#ffffff" id="svg_82" height="73" width="86" y="-23" x="222" stroke-width="19" fill="#ffffff"/>
+  <line stroke="#000000" id="svg_86" y2="209" x2="170" y1="109" x1="174" stroke-width="20" fill="none"/>
+  <rect stroke="null" id="svg_90" height="94.99999" width="95" y="125" x="66" stroke-width="20" fill="#ffffff"/>
+  <rect stroke="null" id="svg_91" height="65" width="78" y="156" x="-32" stroke-width="20" fill="#ffffff"/>
+  <ellipse stroke="#000000" ry="39" rx="52" id="svg_77" cy="225" cx="219" stroke-width="20" fill="none"/>
+  <rect stroke="null" id="svg_92" height="65.99999" width="118" y="14" x="185" stroke-width="20" fill="#ffffff"/>
+  <ellipse ry="41" rx="41.5" id="svg_93" cy="418" cx="225.5" stroke-width="20" stroke="#000000" fill="none"/>
+  <line id="svg_94" y2="251" x2="138" y1="202" x1="177" stroke-width="20" stroke="#000000" fill="none"/>
+  <ellipse ry="40" rx="40" id="svg_95" cy="240" cx="99" stroke-width="20" stroke="#000000" fill="none"/>
+  <rect stroke="null" id="svg_96" height="39" width="80" y="178" x="66" stroke-width="20" fill="#ffffff"/>
+  <rect stroke="null" id="svg_97" height="18" width="89" y="217" x="45" stroke-width="20" fill="#ffffff"/>
+  <rect transform="rotate(35.4295 130.134 227.849)" stroke="null" id="svg_98" height="49" width="21.82717" y="203.34871" x="119.2201" stroke-width="20" fill="#ffffff"/>
+ </g>
+
+</svg>

@@ -1,6 +1,7 @@
 const aspects = {
   conjunction: {
     name: "Conjunction",
+    icon: "/conjunction.svg",
     description: "A Conjunction occurs when two planets are at the same degree (or close to it) in an astrological sign in the birth chart.",
     traits: [
       "Unity",
@@ -250,6 +251,7 @@ const aspects = {
   
   opposition: {
     name: "Opposition",
+    icon: "/opposition.svg",
     description: "An Opposition occurs when two planets are approximately 180 degrees apart in the birth chart.",
     traits: [
       "Tension",
@@ -502,6 +504,7 @@ const aspects = {
 
   trine: {
     name: "Trine",
+    icon: "/trine.svg",
     description: "A Trine occurs when two planets are approximately 120 degrees apart in the birth chart.",
     traits: [
       "Harmony",
@@ -692,6 +695,7 @@ const aspects = {
 
   square: {
     name: "Square",
+    icon: "/square.svg",
     description: "A Square occurs when two planets are approximately 90 degrees apart in the birth chart.",
     traits: [
       "Tension",
@@ -896,6 +900,7 @@ const aspects = {
 
   sextile: {
     name: "Sextile",
+    icon: "/sextile.svg",
     description: "A Sextile occurs when two planets are approximately 60 degrees apart in the birth chart.",
     traits: [
       "Opportunity",
@@ -1100,6 +1105,7 @@ const aspects = {
 
   quincunx: {
     name: "Quincunx",
+    icon: "/quincunx.svg",
     description: "A Quincunx, also known as an Inconjunct, occurs when two planets are approximately 150 degrees apart in the birth chart.",
     traits: [
       "Adjustment",
@@ -1304,6 +1310,7 @@ const aspects = {
 
   quintile: {
     name: "Quintile",
+    icon: "/quintile.svg",
     description: "A Quintile occurs when two planets are approximately 72 degrees apart in the birth chart.",
     traits: [
       "Creativity",
@@ -1511,6 +1518,7 @@ const aspects = {
 
   semisquare: {
     name: "Semisquare",
+    icon: "/semisquare.svg",
     description: "A Semisquare occurs when two planets are approximately 45 degrees apart in the birth chart.",
     traits: [
       "Tension",
@@ -1715,6 +1723,7 @@ const aspects = {
 
   semisextile: {
     name: "Semisextile",
+    icon: "/semisextile.svg",
     description: "A Semisextile occurs when two planets are approximately 30 degrees apart in the birth chart.",
     traits: [
       "Subtle connection",
@@ -1919,6 +1928,7 @@ const aspects = {
 
   septile: {
     name: "Septile",
+    icon: "/septile.svg",
     description: "A Septile occurs when two planets are approximately 51.43 degrees apart in the birth chart.",
     traits: [
       "Spiritual connection",
