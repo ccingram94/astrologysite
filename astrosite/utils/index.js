@@ -159,7 +159,7 @@ export async function searchLocation(inputValue) {
     return modLst;
   }
 
-  // Astrological Calculations (getMidheaven, getAscendant)
+  // Astrological Calculations (getMidheaven, getAscendant, getImumCoeli, getDescendant)
 
   export function getMidheaven(localSiderealTime) {
     const obliquityEcliptic = 23.4367;
@@ -214,8 +214,48 @@ export async function searchLocation(inputValue) {
     return modulo(ascendant, 360);
   }
 
+  export function getDescendant(latitude, localSiderealTime) {
+    // The Descendant is always opposite (180 degrees) from the Ascendant
+    const ascendant = getAscendant(latitude, localSiderealTime);
+    return modulo(ascendant + 180, 360);
+  }
+
+  export function getImumCoeli(localSiderealTime) {
+      // The Imum Coeli (IC) is always opposite (180 degrees) from the Midheaven (MC)
+      const midheaven = getMidheaven(localSiderealTime);
+      return modulo(midheaven + 180, 360);
+  }
+
   export function getSignFromDD(decimalDegrees) {
-    return SIGNS.find(sign => sign.zodiacStart <= decimalDegrees && sign.zodiacEnd > decimalDegrees);
+    // Normalize the degree to be between 0 and 360
+    const normalizedDegree = modulo(decimalDegrees, 360);
+    
+    // Find the matching sign
+    const sign = SIGNS.find(sign => 
+      sign.zodiacStart <= normalizedDegree && 
+      sign.zodiacEnd > normalizedDegree
+    );
+  
+    if (!sign) {
+      console.log('No sign found for degree:', normalizedDegree);
+      return SIGNS[0]; // Return Aries as fallback
+    }
+  
+    return sign;
+  }
+  
+
+  export function getDegreeInSign(decimalDegree) {
+    // Ensure the degree is between 0 and 360
+    const normalizedDegree = modulo(decimalDegree, 360);
+    
+    // Get the degree within the 30-degree arc of the sign
+    const degreeInSign = Math.floor(normalizedDegree % 30);
+    
+    // Get the minutes (the decimal part converted to minutes)
+    const minutes = Math.floor(((normalizedDegree % 30) - degreeInSign) * 60);
+  
+    return `${degreeInSign}°${minutes}'`
   }
 
   export function applyZodiacOffsetClockwise(tropicalLongitude) {

@@ -41,7 +41,7 @@ const HouseSection = ({ horoscope, houses, zodiacSigns }) => {
                   House Ruler is {zodiacSigns[house.Sign.key].rulingPlanet} 
                   <span className="text-neutral text-sm ml-2">
                     (in {horoscope.CelestialBodies[`${zodiacSigns[house.Sign.key].rulingPlanet.toLowerCase()}`].Sign.label} in 
-                    the {horoscope.CelestialBodies[`${zodiacSigns[house.Sign.key].rulingPlanet.toLowerCase()}`].House.label} House)
+                    the {horoscope.CelestialBodies[`${zodiacSigns[house.Sign.key].rulingPlanet.toLowerCase()}`].House?.label} House)
                   </span>
                 </p>
               ) : (
@@ -62,7 +62,7 @@ const HouseSection = ({ horoscope, houses, zodiacSigns }) => {
                     {houses[house.label].rulerSign[horoscope.CelestialBodies[`${zodiacSigns[house.Sign.key].rulingPlanet.toLowerCase()}`].Sign.label]}
                   </p>
                   <p className="text-neutral leading-relaxed p-2">
-                    {houses[house.label].rulerHouse[horoscope.CelestialBodies[`${zodiacSigns[house.Sign.key].rulingPlanet.toLowerCase()}`].House.label]}
+                    {houses[house.label].rulerHouse[horoscope.CelestialBodies[`${zodiacSigns[house.Sign.key].rulingPlanet.toLowerCase()}`].House?.label]}
                   </p>
                 </div>
               ) : (

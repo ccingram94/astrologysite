@@ -13,6 +13,13 @@ import PlanetSection from './PlanetSection';
 import HouseSection from './HouseSection';
 import AngleSection from './AngleSection';
 import AspectSection from './AspectSection';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import PDFBirthChart from './PDFBirthChart';
+
+const PDFDownloadButton = dynamic(() => import('./PDFDownloadButton'), {
+  ssr: false,
+  loading: () => <button className="btn btn-primary">Loading PDF...</button>
+});
 
 const ChartBirthFree = () => {
   const [ displayChart, setDisplayChart ] = useState(false);
@@ -51,18 +58,21 @@ const ChartBirthFree = () => {
       language: 'en',
     });
     setHoroscope(horoscopeData);
+    console.log(horoscopeData.Aspects);
     setChartData(formData);
     setDisplayChart(true);
   }
 
   const renderHoroscopeData = () => {
     if (!horoscope) return null;
-    console.log(horoscope.Houses);
     return (
       <div className='flex flex-col justify-center items-center text-primary rounded-lg'>
         <div className='flex flex-row flex-wrap justify-center items-start'>
           <div className='flex flex-col justify-center items-center text-center lg:mx-4 rounded-lg'>
             <h2 className='font-extrabold text-neutral text-4xl lg:text-6xl mb-4'>Birth Chart</h2>
+            <div className='mb-4'>
+              <PDFDownloadButton horoscope={horoscope} chartData={chartData} />
+            </div>
             <h2 className='font-bold mt-2'>
               { format(horoscope.origin.utcTimeFormatted, 'PPP')} at { chartData.birthTime }
             </h2>

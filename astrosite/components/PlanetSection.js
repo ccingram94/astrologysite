@@ -15,7 +15,7 @@ const PlanetSection = ({ horoscope, planets }) => {
                 <div className="flex justify-start items-center p-2 gap-2 text-xs text-primary">
                   <span>{planet.ChartPosition.Ecliptic.ArcDegreesFormatted30}</span>
                   <span>•</span>
-                  <span>{planet.House.label} House</span>
+                  <span>{planet.House?.label} House</span>
                   <span>•</span>
                   <span>{planet.isRetrograde ? 'Retrograde' : 'Direct'}</span>
                 </div>
@@ -56,7 +56,7 @@ const PlanetSection = ({ horoscope, planets }) => {
                   )}
       
                   <p className="text-neutral leading-relaxed p-2">
-                    {planets[planet.key][planet.House.label]}
+                    {planets[planet.key][planet.House?.label]}
                   </p>
                 </div>
       

@@ -70,7 +70,7 @@ const PlacementsTable = ({ horoscope, planets }) => {
               {horoscope.CelestialBodies.venus.ChartPosition.Ecliptic.ArcDegreesFormatted30}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.venus.House.label}
+              {horoscope.CelestialBodies.venus.House?.label}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
