@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { ChevronDownIcon, ArrowPathIcon, BookOpenIcon, SparklesIcon, AcademicCapIcon, BoltIcon, CakeIcon, ChatBubbleLeftRightIcon, PencilSquareIcon, MagnifyingGlassIcon, MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
+import { StarIcon, CalendarDaysIcon, HeartIcon, GlobeAltIcon, ChevronDownIcon, ArrowPathIcon, BookOpenIcon, SparklesIcon, AcademicCapIcon, BoltIcon, CakeIcon, ChatBubbleLeftRightIcon, PencilSquareIcon, MagnifyingGlassIcon, MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
 import NavbarTop from './NavbarTop';
 
 const Navbar = () => {
@@ -34,9 +34,16 @@ const Navbar = () => {
       icon: <CakeIcon className="h-4 w-4" /> 
     },
     { 
-      name: 'Transit Chart', 
-      path: '/transitchart', 
-      icon: <ArrowPathIcon className="h-4 w-4" /> 
+      name: 'All Charts',
+      isDropdown: true,
+      icon: <GlobeAltIcon className="h-4 w-4" />,
+      dropdownItems: [
+        { name: 'Birth Chart', path: '/birthchart', icon: <CakeIcon className="h-4 w-4" />  },
+        { name: 'Transit Chart', path: '/transitchart', icon: <ArrowPathIcon className="h-4 w-4" />  },
+        { name: 'Synastry Chart', path: '/synastrychart', icon: <HeartIcon className="h-4 w-4" />  },
+        { name: 'Annual Profections', path: '/annualprofectionschart', icon: <CalendarDaysIcon className="h-4 w-4" />  },
+        { name: 'Traditional Lots', path: '/sevenlotschart', icon: <StarIcon className="h-4 w-4" />  },
+      ]
     },
     { 
       name: 'Reports', 
@@ -49,10 +56,9 @@ const Navbar = () => {
     <div className="drawer">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col bg-base-100 text-primary">
-      <NavbarTop />
+        <NavbarTop />
         {/* Mobile Navbar */}
         <div className="navbar lg:hidden sticky top-0 z-50 shadow-lg backdrop-blur-lg bg-opacity-95">
-
           <div className="navbar-center">
             <Link href="/" className="btn btn-ghost text-xl">
               <Image src='/logo.webp' height='28' width='28' className='mr-2' alt="Astro Gnosis Logo" />
@@ -60,7 +66,7 @@ const Navbar = () => {
             </Link>
           </div>
 
-          <div className="navbar-end">
+          <div className="navbar-end w-full">
             <label 
               htmlFor="my-drawer" 
               className="btn btn-ghost btn-circle transition-all duration-300"
@@ -85,7 +91,6 @@ const Navbar = () => {
 
         {/* Desktop Navbar */}
         <div className="hidden lg:flex navbar text-base-100 font-bold h-20 sticky top-0 z-50 shadow-lg backdrop-blur-lg bg-opacity-95">
-          
           {/* Logo Section */}
           <div className="navbar-start w-1/3">
             <Link 
@@ -107,16 +112,42 @@ const Navbar = () => {
           <div className="navbar-center w-1/3 flex justify-center">
             <ul className="menu menu-horizontal text-base-100 px-1 flex-nowrap">
               {navItems.map((item) => (
-                <li key={item.path}>
-                  <Link 
-                    href={item.path}
-                    className={`rounded-full text-primary hover:text-secondary transition-all duration-200 flex items-center gap-2 mx-2 whitespace-nowrap px-2 ${
-                      pathname === item.path ? 'text-primary font-bold' : ''
-                    }`}
-                  >
-                    {item.icon}
-                    <span className="hidden xl:inline">{item.name}</span>
-                  </Link>
+                <li key={item.name}>
+                  {item.isDropdown ? (
+                    <div className="dropdown dropdown-hover dropdown-bottom rounded-full">
+                      <label 
+                        tabIndex={0} 
+                        className="rounded-full text-primary hover:text-secondary transition-all duration-200 flex items-center gap-2 mx-2 whitespace-nowrap px-2"
+                      >
+                        {item.icon}
+                        <span className="hidden xl:inline">{item.name}</span>
+                        <ChevronDownIcon className="h-4 w-4" />
+                      </label>
+                      <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        {item.dropdownItems.map((dropdownItem) => (
+                          <li key={dropdownItem.path}>
+                            <Link 
+                              href={dropdownItem.path}
+                              className={`${pathname === dropdownItem.path ? 'text-primary font-bold' : 'text-primary/80'}`}
+                            >
+                              {dropdownItem.icon}
+                              {dropdownItem.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <Link 
+                      href={item.path}
+                      className={`rounded-full text-primary hover:text-secondary transition-all duration-200 flex items-center gap-2 mx-2 whitespace-nowrap px-2 ${
+                        pathname === item.path ? 'text-primary font-bold' : ''
+                      }`}
+                    >
+                      {item.icon}
+                      <span className="hidden xl:inline">{item.name}</span>
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -140,24 +171,52 @@ const Navbar = () => {
         <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
         <ul className="menu p-4 w-80 min-h-full bg-base-100 text-primary relative z-[1000]">
           {navItems.map((item) => (
-            <li key={item.path}>
-              <Link 
-                href={item.path} 
-                onClick={closeDrawer} // Add onClick here
-                className={`hover:text-primary transition-colors duration-200 flex items-center gap-2 ${
-                  pathname === item.path ? 'text-primary font-bold' : ''
-                }`}
-              >
-                {item.icon}
-                {item.name}
-              </Link>
+            <li key={item.name}>
+              {item.isDropdown ? (
+                <div className="collapse collapse-arrow">
+                  <input type="checkbox" /> 
+                  <div className="collapse-title flex items-center gap-2">
+                    {item.icon}
+                    {item.name}
+                  </div>
+                  <div className="collapse-content">
+                    <ul>
+                      {item.dropdownItems.map((dropdownItem) => (
+                        <li key={dropdownItem.path}>
+                          <Link 
+                            href={dropdownItem.path}
+                            onClick={closeDrawer}
+                            className={`hover:text-primary transition-colors duration-200 ${
+                              pathname === dropdownItem.path ? 'text-primary font-bold' : ''
+                            }`}
+                          >
+                            {dropdownItem.icon}
+                            {dropdownItem.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <Link 
+                  href={item.path} 
+                  onClick={closeDrawer}
+                  className={`hover:text-primary transition-colors duration-200 flex items-center gap-2 ${
+                    pathname === item.path ? 'text-primary font-bold' : ''
+                  }`}
+                >
+                  {item.icon}
+                  {item.name}
+                </Link>
+              )}
             </li>
           ))}
           <div className="divider divider-primary/50"></div>
           <li>
             <Link 
               href="/reports" 
-              onClick={closeDrawer} // Add onClick here
+              onClick={closeDrawer}
               className="btn btn-primary text-white hover:btn-secondary hover:text-base-100"
             >
               <SparklesIcon className="h-4 w-4" />
