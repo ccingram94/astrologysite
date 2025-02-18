@@ -28,7 +28,7 @@ module.exports = {
           "base-200": "#FFFFFF",         // White background
           "base-300": "#FFFFFF",         // White background
           "base-content": "#D2AE3C",     // Primary (gold) text color
-          "info": "#7DD3FC",             // Light blue
+          "info": "#D2AE3C",             // Light blue
           "success": "#86EFAC",          // Soft green
           "warning": "#FCD34D",          // Warm yellow
           "error": "#FB7185",            // Soft red

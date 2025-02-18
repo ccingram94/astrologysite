@@ -1,11 +1,12 @@
 import Hero from '../components/Hero';
-import BirthChart from '../components/BirthChart';
+import ChartsPricing from '../components/ChartsPricing';
+import ChartsBanner from '../components/ChartsBanner';
 
 export default function Home() {
   return (
     <main>
       <Hero />
-      <BirthChart />
+      <ChartsBanner />
     </main>
   );
 }
