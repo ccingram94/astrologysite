@@ -35,14 +35,14 @@ const PlacementsTableTransit = ({ horoscope, transitHoroscope, planets }) => {
                 {`${horoscope.CelestialBodies[key].ChartPosition.Ecliptic.ArcDegreesFormatted30} ${horoscope.CelestialBodies[key].Sign.label}`}
               </td>
               <td className="border-b border-primary/10 p-2 text-secondary">
-                {horoscope.CelestialBodies[key].House.label}
+                {horoscope.CelestialBodies[key].House?.label}
               </td>
               <td className="border-b border-primary/10 p-2 text-secondary">
                 {`${transitHoroscope.CelestialBodies[key].ChartPosition.Ecliptic.ArcDegreesFormatted30} ${transitHoroscope.CelestialBodies[key].Sign.label}`}
               </td>
               {transitHoroscope.CelestialBodies[key].House?.label && 
               <td className="border-b border-primary/10 p-2 text-secondary">
-                {transitHoroscope.CelestialBodies[key].House.label}
+                {transitHoroscope.CelestialBodies[key].House?.label}
               </td>
               }
             </tr>

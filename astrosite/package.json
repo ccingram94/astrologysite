@@ -20,6 +20,7 @@
     "@radix-ui/react-slot": "^1.1.1",
     "@react-pdf/renderer": "^4.2.1",
     "ai": "^4.1.34",
+    "astronomia": "^4.1.1",
     "astronomy-engine": "^2.1.19",
     "circular-natal-horoscope-js": "^1.1.0",
     "class-variance-authority": "^0.7.1",

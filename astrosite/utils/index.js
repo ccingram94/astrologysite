@@ -2,6 +2,11 @@ import houses from '../data/houses';
 import zodiacSigns from '../data/zodiacsigns';
 import SIGNS from './constants';
 
+export { default as calculateAscendant } from './calculateAscendant';
+export { default as calculateMidheaven } from './calculateMidheaven';
+export { default as calculateDescendant } from './calculateDescendant';
+export { default as calculateImumCoeli } from './calculateImumCoeli';
+
 // Function for location searching via Nominatim API (free)
 export async function searchLocation(inputValue) {
     if (!inputValue) return [];

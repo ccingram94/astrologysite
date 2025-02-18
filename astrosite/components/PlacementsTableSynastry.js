@@ -35,13 +35,13 @@ const PlacementsTableSynastry = ({ horoscopeA, horoscopeB, planets }) => {
                 {`${horoscopeA.CelestialBodies[key].ChartPosition.Ecliptic.ArcDegreesFormatted30} ${horoscopeA.CelestialBodies[key].Sign.label}`}
               </td>
               <td className="border-b border-primary/10 p-2 text-secondary">
-                {horoscopeA.CelestialBodies[key].House.label}
+                {horoscopeA.CelestialBodies[key].House?.label}
               </td>
               <td className="border-b border-primary/10 p-2 text-secondary">
                 {`${horoscopeB.CelestialBodies[key].ChartPosition.Ecliptic.ArcDegreesFormatted30} ${horoscopeB.CelestialBodies[key].Sign.label}`}
               </td>
               <td className="border-b border-primary/10 p-2 text-secondary">
-                {horoscopeB.CelestialBodies[key].House.label}
+                {horoscopeB.CelestialBodies[key].House?.label}
               </td>
             </tr>
           ))}

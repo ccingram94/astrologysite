@@ -1,11 +1,11 @@
 import Hero from '../components/Hero';
-import AscendantCalculator from '../components/AscendantCalculator';
+import BirthChart from '../components/BirthChart';
 
 export default function Home() {
   return (
     <main>
       <Hero />
-      <AscendantCalculator />
+      <BirthChart />
     </main>
   );
 }
