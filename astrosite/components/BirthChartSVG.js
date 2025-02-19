@@ -21,8 +21,8 @@ const BirthChartSVG = ({ horoscope }) => {
   
   const renderZodiacSign = (index) => {
     const signs = [
-      'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-      'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
+      'ariesgold', 'taurusgold', 'geminigold', 'cancergold', 'leogold', 'virgogold',
+      'libragold', 'scorpiogold', 'sagittariusgold', 'capricorngold', 'aquariusgold', 'piscesgold'
     ];
     
     const angle = (((index * 30 + 180 + 15) * Math.PI) / 180);
@@ -203,9 +203,9 @@ const BirthChartSVG = ({ horoscope }) => {
         {/* Zodiac sections */}
         {Array.from({ length: 12 }).map((_, index) => {
           const getModality = (index) => {
-            if (index % 3 === 0) return "#E7D79C";
-            if (index % 3 === 1) return "#EBDEAD";
-            return "#EFE4BD";
+            if (index % 3 === 0) return "#183242";
+            if (index % 3 === 1) return "#183242";
+            return "#183242";
           };
 
           const startAngle = ((-index * 30 + 90) * Math.PI) / 180;
