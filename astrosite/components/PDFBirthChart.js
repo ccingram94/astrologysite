@@ -202,7 +202,7 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
       ];
       
     // Start at 180 degrees (left side) and rotate counterclockwise
-    const angle = ((index * 30 + 180) * Math.PI) / 180;
+    const angle = (((index * 30 + 180 + 15) * Math.PI) / 180);
     const radius = 220;
     const x = Number.isFinite(angle) ? 250 + Math.cos(angle) * radius - 12 : 250;
     const y = Number.isFinite(angle) ? 250 - Math.sin(angle) * radius - 12 : 250; // Note the negative
