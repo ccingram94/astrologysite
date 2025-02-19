@@ -1,11 +1,39 @@
 'use client'
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Font, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Font, Image, Svg, Circle, Line, Path, G, Text as SvgText } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 import zodiacSigns from '../data/zodiacsigns';
 import { getDescendant, getImumCoeli, getSignFromDD, modulo } from '../utils';
-import Sun from '../public/sun.svg';
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+
+const zodiacIcons = {
+  aries: { uri: `${baseUrl}/aries.png` },
+  taurus: { uri: `${baseUrl}/taurus.png` },
+  gemini: { uri: `${baseUrl}/gemini.png` },
+  cancer: { uri: `${baseUrl}/cancer.png` },
+  leo: { uri: `${baseUrl}/leo.png` },
+  virgo: { uri: `${baseUrl}/virgo.png` },
+  libra: { uri: `${baseUrl}/libra.png` },
+  scorpio: { uri: `${baseUrl}/scorpio.png` },
+  sagittarius: { uri: `${baseUrl}/sagittarius.png` },
+  capricorn: { uri: `${baseUrl}/capricorn.png` },
+  aquarius: { uri: `${baseUrl}/aquarius.png` },
+  pisces: { uri: `${baseUrl}/pisces.png` },
+};
+
+const planetIcons = {
+  sun: { uri: `${baseUrl}/sun.png` },
+  moon: { uri: `${baseUrl}/moon.png` },
+  mercury: { uri: `${baseUrl}/mercury.png` },
+  venus: { uri: `${baseUrl}/venus.png` },
+  mars: { uri: `${baseUrl}/mars.png` },
+  jupiter: { uri: `${baseUrl}/jupiter.png` },
+  saturn: { uri: `${baseUrl}/saturn.png` },
+  uranus: { uri: `${baseUrl}/uranus.png` },
+  neptune: { uri: `${baseUrl}/neptune.png` },
+  pluto: { uri: `${baseUrl}/pluto.png` },
+};
 
 // Montserrat for primary text
 Font.register({
@@ -26,7 +54,23 @@ Font.register({
   ],
 });
 
+
 const styles = StyleSheet.create({
+  chartContainer: {
+    width: '100%',
+    marginVertical: 20,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  zodiacIcon: {
+    width: 24,
+    height: 24,
+  },
+  planetIcon: {
+    width: 16,
+    height: 16,
+  },
   page: {
     flexDirection: 'column',
     backgroundColor: '#ffffff',
@@ -146,8 +190,77 @@ const styles = StyleSheet.create({
 });
 
 
-const PDFBirthChart = ({ horoscope, chartData }) => (
-  <Document>
+const PDFBirthChart = ({ horoscope, chartData }) => {
+  const planets = Object.entries(horoscope.CelestialBodies)
+    .filter(([key]) => key !== 'all')
+    .slice(0, 11); 
+
+    const renderZodiacSign = (index) => {
+      const signs = [
+        'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
+        'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
+      ];
+      
+    // Start at 180 degrees (left side) and rotate counterclockwise
+    const angle = ((index * 30 + 180) * Math.PI) / 180;
+    const radius = 220;
+    const x = Number.isFinite(angle) ? 250 + Math.cos(angle) * radius - 12 : 250;
+    const y = Number.isFinite(angle) ? 250 - Math.sin(angle) * radius - 12 : 250; // Note the negative
+      
+      if (!Number.isFinite(x) || !Number.isFinite(y)) {
+        console.warn(`Invalid coordinates for zodiac sign ${signs[index]}`);
+        return null;
+      }
+    
+      return (
+        <Image
+          style={styles.zodiacIcon}
+          key={`zodiac-${index}`}
+          source={zodiacIcons[signs[index]]}
+          x={x}
+          y={y}
+          width={24}
+          height={24}
+          cache={true}
+        />
+      );
+    };
+    
+    const renderPlanet = (planet, data) => {
+      if (!data?.ChartPosition?.Ecliptic?.DecimalDegrees) {
+        console.warn(`Missing position data for planet ${planet}`);
+        return null;
+      }
+    
+       // Adjust angle calculation to start from left and go counterclockwise
+      const angle = ((data.ChartPosition.Ecliptic.DecimalDegrees + 180) * Math.PI) / 180;
+      const radius = 150;
+      const x = Number.isFinite(angle) ? 250 + Math.cos(angle) * radius - 12 : 250;
+      const y = Number.isFinite(angle) ? 250 - Math.sin(angle) * radius - 12 : 250; // Note the negative
+    
+      if (!Number.isFinite(x) || !Number.isFinite(y)) {
+        console.warn(`Invalid coordinates for planet ${planet}`);
+        return null;
+      }
+    
+      return (
+        <Image
+          style={styles.planetIcon}
+          key={`planet-${planet}`}
+          source={planetIcons[planet]}
+          x={x}
+          y={y}
+          width={24}
+          height={24}
+          cache={true}
+        />
+      );
+    };
+    
+    
+
+  return (
+    <Document>
     <Page size="A4" style={styles.page}>
       {/* Title section remains the same */}
       <View style={styles.titleSection}>
@@ -156,6 +269,159 @@ const PDFBirthChart = ({ horoscope, chartData }) => (
           {format(horoscope.origin.utcTimeFormatted, 'PPP')} at {chartData.birthTime}
         </Text>
         <Text style={styles.reportSubtitle}>{chartData.birthLocation.label}</Text>
+      </View>
+      {/* Chart SVG Section */}
+      <View style={styles.chartContainer}>
+      <Svg width={500} height={500} viewBox="0 0 500 500">
+        {/* Outer circle - #D2AE3C */}
+        <Circle
+          cx={250}
+          cy={250}
+          r={240}
+          stroke="#D2AE3C"
+          strokeWidth={1}
+          fill="none"
+        />
+
+        {/* Inner circle - #F3EBCD */}
+        <Circle
+          cx={250}
+          cy={250}
+          r={200}
+          stroke="#F3EBCD"
+          strokeWidth={1}
+          fill="none"
+        />
+
+        {/* House circle - #F3EBCD */}
+        <Circle
+          cx={250}
+          cy={250}
+          r={100}
+          stroke="#F3EBCD"
+          strokeWidth={1}
+          fill="none"
+        />
+
+        {/* Draw house lines - #F3EBCD */}
+        {horoscope.Houses.map((house, index) => {
+          const angle = (house.ChartPosition.StartPosition.Ecliptic.DecimalDegrees + 180) * Math.PI / 180;
+          const x1 = 250 + Math.cos(angle) * 100;
+          const y1 = 250 - Math.sin(angle) * 100; // Note the negative 
+          const x2 = 250 + Math.cos(angle) * 240;
+          const y2 = 250 - Math.sin(angle) * 240; // Note the negative 
+
+          return (
+            <Line
+              key={index}
+              x1={x1}
+              y1={y1}
+              x2={x2}
+              y2={y2}
+              stroke="#F3EBCD"
+              strokeWidth={1}
+            />
+          );
+        })}
+
+        {/* Add house numbers */}
+        {horoscope.Houses.map((house, index) => {
+          // Get the start position of the current house and the next house
+          const currentHouseStart = house.ChartPosition.StartPosition.Ecliptic.DecimalDegrees;
+          const nextHouseStart = horoscope.Houses[(index + 1) % 12]?.ChartPosition.StartPosition.Ecliptic.DecimalDegrees;
+          
+          // Calculate the middle position
+          // Adjust the angle by adding 180 to match traditional chart layout
+          // Handle the case where we cross over 360 degrees
+          let middlePosition;
+          if (nextHouseStart < currentHouseStart) {
+            middlePosition = (currentHouseStart + (nextHouseStart + 360)) / 2;
+            if (middlePosition >= 360) middlePosition -= 360;
+          } else {
+            middlePosition = (currentHouseStart + nextHouseStart) / 2;
+          }
+          
+          let middleAngle = -(((middlePosition + 30) * Math.PI) / 180);
+          
+          // Position the numbers slightly inside the inner circle
+          const radius = 110;
+          const x = 250 + Math.cos(middleAngle) * radius;
+          const y = 250 + Math.sin(middleAngle) * radius; // Removed the negative
+
+          return (
+            <SvgText
+              key={`house-number-${index}`}
+              x={x}
+              y={y}
+              fontSize={12}
+              textAnchor="middle"
+              alignmentBaseline="middle"
+              fill="#D2AE3C"
+            >
+              {index + 1}
+            </SvgText>
+          );
+        })}
+
+        {/* For planet symbols */}
+        {Object.entries(horoscope.CelestialBodies)
+              .slice(0, 11)
+              .filter(([key]) => key !== 'all' && horoscope.CelestialBodies[key]?.ChartPosition?.Ecliptic)
+              .map(([planet, data]) => renderPlanet(planet, data))}
+
+          {/* Add zodiac sign background sections */}
+          {Array.from({ length: 12 }).map((_, index) => {
+            const getModality = (index) => {
+              if (index % 3 === 0) return "#E7D79C";
+              if (index % 3 === 1) return "#EBDEAD";
+              return "#EFE4BD";
+            };
+
+            const startAngle = ((-index * 30 + 90) * Math.PI) / 180;
+            const endAngle = ((-(index + 1) * 30 + 90) * Math.PI) / 180;
+            
+            // Points for outer arc (r=240)
+            const outerX1 = 250 + Math.cos(startAngle) * 240;
+            const outerY1 = 250 + Math.sin(startAngle) * 240;
+            const outerX2 = 250 + Math.cos(endAngle) * 240;
+            const outerY2 = 250 + Math.sin(endAngle) * 240;
+            
+            // Points for inner arc (r=200)
+            const innerX1 = 250 + Math.cos(startAngle) * 200;
+            const innerY1 = 250 + Math.sin(startAngle) * 200;
+            const innerX2 = 250 + Math.cos(endAngle) * 200;
+            const innerY2 = 250 + Math.sin(endAngle) * 200;
+            
+            // Create the path for the section between the two circles
+            const pathData = `
+              M ${outerX1} ${outerY1}
+              A 240 240 0 0 0 ${outerX2} ${outerY2}
+              L ${innerX2} ${innerY2}
+              A 200 200 0 0 1 ${innerX1} ${innerY1}
+              Z
+            `;
+
+            return (
+              <Path
+                key={`zodiac-section-${index}`}
+                d={pathData}
+                fill={getModality(index)}
+                stroke="none"
+              />
+            );
+          })}
+
+
+          {/* Add zodiac symbols */}
+          {Array.from({ length: 12 }).map((_, index) => renderZodiacSign(index))}
+
+          {/* Add planets */}
+          {Object.entries(horoscope.CelestialBodies)
+            .slice(0, 11)
+            .filter(([key]) => key !== 'all' && horoscope.CelestialBodies[key]?.ChartPosition?.Ecliptic)
+            .map(([planet, data]) => renderPlanet(planet, data))}
+
+        </Svg>
       </View>
       <View style={styles.placementsSection}>
         <Text style={styles.placementsTitle}>Angles</Text>
@@ -342,8 +608,8 @@ const PDFBirthChart = ({ horoscope, chartData }) => (
       )
     ))}
 
-
   </Document>
-);
+  )
+};
 
 export default PDFBirthChart;

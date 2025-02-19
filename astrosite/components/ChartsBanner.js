@@ -24,7 +24,7 @@ const ChartBanner = () => {
     },
     {
       title: "Annual Profections",
-      description: "forecast by year with interpretations for the ruling house, sign, and planet",
+      description: "forecast by year with interpretations for the ruling house, sign, and planet and their influence",
       href: "/annualprofectionschart",
       icon: <CalendarDaysIcon height="48" width="48" />
     },
@@ -37,7 +37,7 @@ const ChartBanner = () => {
   ];
 
   return (
-    <div className="flex flex-col w-full bg-primary">
+    <div className="flex flex-col w-full bg-primary/80 pb-12">
       <div className="text-center mb-8">
         <h2 className="text-3xl text-white font-bold m-6">Free Astrology Tools</h2>
         <p className="text-white/80">calculate and view your charts instantly with detailed interpretations</p>

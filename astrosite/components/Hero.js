@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { SparklesIcon, ChartBarIcon, StarIcon } from '@heroicons/react/24/outline';
-import IconDisplay from './IconDisplay'
+
 
 const Hero = () => {
   const features = [

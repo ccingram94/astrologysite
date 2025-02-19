@@ -1,5 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Add image domains configuration
+  images: {
+    domains: ['localhost'], // Add your domains here
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/**',
+      },
+      // Add additional patterns as needed for production
+    ],
+  },
+
+  // Add output configuration for PDF generation
+  output: 'standalone',
+
   webpack(config) {
     // Find the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule) =>
@@ -26,6 +43,13 @@ const nextConfig = {
     fileLoaderRule.exclude = /\.svg$/i
 
     return config
+  },
+
+  // Enable static image imports
+  experimental: {
+    images: {
+      allowFutureImage: true,
+    },
   },
 };
 

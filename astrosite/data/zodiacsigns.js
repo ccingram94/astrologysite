@@ -242,7 +242,7 @@ const zodiacSigns = {
     },
     aquarius: {
       name: "Aquarius",
-      symbol: "♒&#xFE0E",
+      symbol: "♒",
       image: "/aquarius.webp",
       icon: "/aquarius.svg",
       element: "Air",
@@ -266,7 +266,7 @@ const zodiacSigns = {
     },
     pisces: {
       name: "Pisces",
-      symbol: "♓&#xFE0E",
+      symbol: "♓",
       image: "/pisces.webp",
       icon: "/pisces.svg",
       element: "Water",

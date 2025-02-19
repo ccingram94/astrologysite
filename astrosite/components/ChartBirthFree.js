@@ -34,7 +34,7 @@ const ChartBirthFree = () => {
   const AstroChart = dynamic(() => import('../components/AstroChart'), {
     ssr: false
   });
-
+ 
   const handleFormSubmit = (formData) => {
     const { birthDate, birthTime, birthLocation, houseSystem } = formData;
     const { lat, lon } = birthLocation.coordinates;
@@ -58,7 +58,10 @@ const ChartBirthFree = () => {
       language: 'en',
     });
     setHoroscope(horoscopeData);
-    console.log(horoscopeData.Aspects);
+    console.log(horoscopeData.CelestialBodies);
+    console.log(horoscopeData.Houses);
+    console.log(horoscopeData.Angles);
+    console.log(horoscopeData.Signs);
     setChartData(formData);
     setDisplayChart(true);
   }
