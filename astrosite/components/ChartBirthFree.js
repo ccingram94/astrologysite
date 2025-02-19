@@ -15,6 +15,8 @@ import AngleSection from './AngleSection';
 import AspectSection from './AspectSection';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import PDFBirthChart from './PDFBirthChart';
+import BirthChartSVG from './BirthChartSVG';
+import { findAspects, generateAspectLines } from '../utils/calculateAspectChart';
 
 const PDFDownloadButton = dynamic(() => import('./PDFDownloadButton'), {
   ssr: false,
@@ -30,6 +32,7 @@ const ChartBirthFree = () => {
     birthLocation: null,
     houseSystem: 'whole-sign',
   });
+  const [ aspectLines, setAspectLines ] = useState(null);
 
   const AstroChart = dynamic(() => import('../components/AstroChart'), {
     ssr: false
@@ -58,10 +61,10 @@ const ChartBirthFree = () => {
       language: 'en',
     });
     setHoroscope(horoscopeData);
-    console.log(horoscopeData.CelestialBodies);
-    console.log(horoscopeData.Houses);
-    console.log(horoscopeData.Angles);
-    console.log(horoscopeData.Signs);
+    const aspects = findAspects(horoscopeData.CelestialBodies);
+    const aspectLines = generateAspectLines(aspects.slice(0, 11));
+    setAspectLines(aspectLines);
+    
     setChartData(formData);
     setDisplayChart(true);
   }
@@ -89,7 +92,7 @@ const ChartBirthFree = () => {
           </div>
           <div className='flex flex-row flex-wrap justify-center items-center gap-8'>
             <div className='lg:mt-2 flex flex-col justify-center'>
-              <AstroChart horoscope={horoscope} />
+              <BirthChartSVG horoscope={horoscope} aspectLines={aspectLines} />
             </div>
             <div className='overflow-x-auto'>
               <PlacementsTable horoscope={horoscope} planets={planets} />

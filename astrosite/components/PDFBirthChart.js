@@ -4,6 +4,8 @@ import { Document, Page, Text, View, StyleSheet, Font, Image, Svg, Circle, Line,
 import { format } from 'date-fns';
 import zodiacSigns from '../data/zodiacsigns';
 import { getDescendant, getImumCoeli, getSignFromDD, modulo } from '../utils';
+import { findAspectsPDF, generateAspectLines, groupAspectsByType } from '../utils/calculateAspectPDF';
+
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
@@ -195,6 +197,13 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
     .filter(([key]) => key !== 'all')
     .slice(0, 11); 
 
+  const celestialBodies = Object.entries(horoscope.CelestialBodies)
+  .filter(([key]) => key !== 'all')
+  .map(([_, data]) => data);
+  
+  const aspects = findAspectsPDF(celestialBodies);
+  const aspectLines = generateAspectLines(aspects);
+
     const renderZodiacSign = (index) => {
       const signs = [
         'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
@@ -225,6 +234,49 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
         />
       );
     };
+
+    const renderDegreeMarkers = () => {
+      const markers = [];
+      for (let i = 0; i < 360; i++) {
+        // Convert degree to radians, adjust by 180 to start from left
+        const angle = ((i + 180) * Math.PI) / 180;
+        
+        // Determine marker properties based on position
+        let length = 10; // Default length for normal degree markers
+        let strokeWidth = 0.5; // Default stroke width
+        
+        // Check if it's a decan marker (every 10 degrees within each sign)
+        if (i % 10 === 0) {
+          length = 20; // Twice as long as term markers
+          strokeWidth = 1; // Twice the stroke width
+        }
+        // Check if it's a term marker (every 5 degrees)
+        else if (i % 5 === 0) {
+          length = 10; // Same as normal markers but thicker
+          strokeWidth = 1; // Twice the stroke width
+        }
+    
+        // Calculate start and end points for the marker
+        const innerRadius = 200; // Radius of inner circle
+        const x1 = 250 + Math.cos(angle) * innerRadius;
+        const y1 = 250 - Math.sin(angle) * innerRadius;
+        const x2 = 250 + Math.cos(angle) * (innerRadius - length);
+        const y2 = 250 - Math.sin(angle) * (innerRadius - length);
+    
+        markers.push(
+          <Line
+            key={`degree-${i}`}
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            stroke="#F3EBCD"
+            strokeWidth={strokeWidth}
+          />
+        );
+      }
+      return markers;
+    };    
     
     const renderPlanet = (planet, data) => {
       if (!data?.ChartPosition?.Ecliptic?.DecimalDegrees) {
@@ -234,7 +286,7 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
     
        // Adjust angle calculation to start from left and go counterclockwise
       const angle = ((data.ChartPosition.Ecliptic.DecimalDegrees + 180) * Math.PI) / 180;
-      const radius = 150;
+      const radius = 170;
       const x = Number.isFinite(angle) ? 250 + Math.cos(angle) * radius - 12 : 250;
       const y = Number.isFinite(angle) ? 250 - Math.sin(angle) * radius - 12 : 250; // Note the negative
     
@@ -324,6 +376,21 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
           );
         })}
 
+        {/* aspect lines here */}
+        {aspectLines.map((line) => (
+          <Line
+            key={line.key}
+            x1={line.x1}
+            y1={line.y1}
+            x2={line.x2}
+            y2={line.y2}
+            stroke={line.stroke}
+            strokeWidth={line.strokeWidth}
+          />
+        ))}
+
+        <G>{renderDegreeMarkers()}</G>
+
         {/* Add house numbers */}
         {horoscope.Houses.map((house, index) => {
           // Get the start position of the current house and the next house
@@ -346,7 +413,7 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
           // Position the numbers slightly inside the inner circle
           const radius = 110;
           const x = 250 + Math.cos(middleAngle) * radius;
-          const y = 250 + Math.sin(middleAngle) * radius; // Removed the negative
+          const y = 250 + Math.sin(middleAngle) * radius + 5; // Removed the negative
 
           return (
             <SvgText
