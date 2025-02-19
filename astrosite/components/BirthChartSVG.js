@@ -241,8 +241,8 @@ const BirthChartSVG = ({ horoscope }) => {
           {/* House numbers */}
         {horoscope.Houses.map((house, index) => {
           // Get the start position of the current house and the next house
-          const currentHouseStart = house.ChartPosition.StartPosition.Ecliptic.DecimalDegrees;
-          const nextHouseStart = horoscope.Houses[(index + 1) % 12]?.ChartPosition.StartPosition.Ecliptic.DecimalDegrees;
+          const currentHouseStart = house.ChartPosition.StartPosition.Ecliptic.DecimalDegrees + 180;
+          const nextHouseStart = horoscope.Houses[(index + 1) % 12]?.ChartPosition.StartPosition.Ecliptic.DecimalDegrees + 180;
           
           // Calculate the middle position
           let middlePosition;
