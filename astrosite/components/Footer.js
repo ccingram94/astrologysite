@@ -20,6 +20,11 @@ const Footer = () => {
     { href: '/books', label: 'Books & Guides' },
   ];
 
+  const contactInfo = [
+    { icon: EnvelopeIcon, text: 'gnosisastrology.com' },
+    { icon: MapPinIcon, text: 'Global' },
+  ];
+
   const socialLinks = [
     {
       name: 'Instagram',
@@ -39,56 +44,78 @@ const Footer = () => {
         </svg>
       ),
     },
+    {
+      name: 'Facebook',
+      href: '#',
+      icon: (props) => (
+        <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
+          <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
+        </svg>
+      ),
+    },
+    {
+      name: 'YouTube',
+      href: '#',
+      icon: (props) => (
+        <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
+          <path fillRule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418z" clipRule="evenodd" />
+          <path fillRule="evenodd" d="M15.194 12L10 15V9l5.194 3z" clipRule="evenodd" />
+        </svg>
+      ),
+    },
   ];
 
   return (
-  <footer className="bg-base-100 border-t border-primary/30">
-    <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8">
-      <div className="xl:grid xl:grid-cols-3 xl:gap-8">
-        {/* Company Info */}
-        <div className="space-y-8">
-          <div className="flex items-center space-x-4">
-            <Image
-              src="/logo.webp"
-              height={60}
-              width={60}
-              alt="Logo"
-              className="rounded-full hover:scale-105 transition-all duration-300"
-            />
+    <footer className="bg-gradient-to-b from-base-200 to-base-100 border-t border-primary/10">
+      <div className="mx-auto max-w-7xl px-6 py-12 sm:py-16 lg:px-8">
+        <div className="xl:grid xl:grid-cols-4 xl:gap-8">
+          {/* Company Info */}
+          <div className="space-y-6 xl:col-span-1">
+            <div className="flex items-center">
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/40 to-secondary/40 rounded-full blur opacity-30 group-hover:opacity-70 transition duration-500"></div>
+                <Image
+                  src="/logo.webp"
+                  height={70}
+                  width={70}
+                  alt="AstroGnosis Logo"
+                  className="relative rounded-full hover:scale-105 transition-all duration-300"
+                />
+              </div>
+              <h2 className="ml-4 font-bold text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                AstroGnosis
+              </h2>
+            </div>
+            
+            <p className="text-primary/80 text-sm max-w-md leading-relaxed">
+              Exploring the cosmic tapestry and unlocking celestial wisdom for your personal journey.
+            </p>
+            
+            <div className="space-y-3 mt-6">
+              {contactInfo.map((item, index) => (
+                <div key={index} className="flex items-center text-primary/70 hover:text-primary transition-colors">
+                  <item.icon className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
+                  <span className="text-sm">{item.text}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <h2 className='font-bold text-xl text-primary'>AstroGnosis</h2>
-          <p className="text-primary/70 text-xs max-w-md">
-            Exploring the cosmos and unlocking the secrets of the stars.
-          </p>
-          <div className="flex space-x-6">
-            {socialLinks.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="text-primary/70 hover:text-primary transition-colors duration-300"
-              >
-                <span className="sr-only">{item.name}</span>
-                <item.icon className="h-6 w-6" aria-hidden="true" />
-              </a>
-            ))}
-          </div>
-        </div>
 
-        {/* Navigation */}
-        <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
-          <div className="md:grid md:grid-cols-2 md:gap-8">
+          {/* Navigation */}
+          <div className="mt-12 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
             {/* Quick Links */}
             <div>
-              <h3 className="text-lg font-semibold text-primary">
+              <h3 className="text-base font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent uppercase tracking-wider">
                 Quick Links
               </h3>
-              <ul role="list" className="mt-6 space-y-4">
+              <ul role="list" className="mt-4 space-y-3">
                 {quickLinks.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-primary/70 hover:text-primary transition-colors duration-300"
+                      className="text-primary/70 hover:text-primary text-sm transition-colors duration-200 flex items-center"
                     >
+                      <span className="h-1 w-1 bg-primary/50 rounded-full mr-2"></span>
                       {link.label}
                     </Link>
                   </li>
@@ -97,17 +124,18 @@ const Footer = () => {
             </div>
 
             {/* Services */}
-            <div className="mt-10 md:mt-0">
-              <h3 className="text-lg font-semibold text-primary">
+            <div>
+              <h3 className="text-base font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent uppercase tracking-wider">
                 Our Services
               </h3>
-              <ul role="list" className="mt-6 space-y-4">
+              <ul role="list" className="mt-4 space-y-3">
                 {services.map((service) => (
                   <li key={service.label}>
                     <Link
                       href={service.href}
-                      className="text-primary/70 hover:text-primary transition-colors duration-300"
+                      className="text-primary/70 hover:text-primary text-sm transition-colors duration-200 flex items-center"
                     >
+                      <span className="h-1 w-1 bg-primary/50 rounded-full mr-2"></span>
                       {service.label}
                     </Link>
                   </li>
@@ -115,19 +143,71 @@ const Footer = () => {
               </ul>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Bottom Bar */}
-      <div className="mt-16 border-t border-primary/20 pt-8 sm:mt-20 lg:mt-24">
-        <div className="flex flex-col items-center justify-center gap-4 md:flex-row">
-          <p className="text-primary/70 text-sm">
-            &copy; {currentYear} Gnostic Astrology. All rights reserved.
-          </p>
+          {/* Newsletter */}
+          <div className="mt-12 xl:mt-0 xl:col-span-1">
+            <h3 className="text-base font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent uppercase tracking-wider">
+              Subscribe to our newsletter
+            </h3>
+            <p className="mt-4 text-sm text-primary/70 leading-relaxed">
+              Get celestial insights and exclusive content delivered to your inbox.
+            </p>
+            <form className="mt-4">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <label htmlFor="email-address" className="sr-only">
+                  Email address
+                </label>
+                <input
+                  id="email-address"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  className="w-full min-w-0 appearance-none rounded-md border-0 bg-base-300/50 px-3 py-1.5 text-base-content shadow-sm ring-1 ring-inset ring-primary/10 placeholder:text-primary/40 focus:ring-2 focus:ring-inset focus:ring-primary/50 sm:w-64 sm:text-sm sm:leading-6 transition-all duration-200"
+                  placeholder="Enter your email"
+                />
+                <button
+                  type="submit"
+                  className="flex-none rounded-md bg-gradient-to-r from-primary to-secondary px-3.5 py-2 text-sm font-semibold text-base-100 shadow-sm hover:from-primary/90 hover:to-secondary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-all duration-200"
+                >
+                  Subscribe
+                </button>
+              </div>
+            </form>
+
+            {/* Social Links */}
+            <div className="mt-8">
+              <h3 className="text-sm font-medium text-primary/80">Follow Us</h3>
+              <div className="flex space-x-5 mt-4">
+                {socialLinks.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className="text-primary/60 hover:text-primary transition-colors duration-300"
+                    aria-label={`Follow on ${item.name}`}
+                  >
+                    <span className="sr-only">{item.name}</span>
+                    <item.icon className="h-5 w-5" aria-hidden="true" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="mt-12 pt-8 border-t border-primary/10">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-primary/60">
+            <p>&copy; {currentYear} AstroGnosis. All rights reserved.</p>
+            <div className="flex space-x-6">
+              <Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
+              <Link href="/cookies" className="hover:text-primary transition-colors">Cookie Policy</Link>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </footer>
+    </footer>
   );
 };
 

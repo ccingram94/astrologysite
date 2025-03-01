@@ -24,7 +24,7 @@ const ChartBanner = () => {
     },
     {
       title: "Annual Profections",
-      description: "forecast by year with interpretations for the ruling house, sign, and planet and their influence",
+      description: "forecast by year with interpretations for the ruling house, sign, and planet and their",
       href: "/annualprofectionschart",
       icon: <CalendarDaysIcon height="48" width="48" />
     },

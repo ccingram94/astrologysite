@@ -25,7 +25,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Sun.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.sun.House.label}
+              {horoscope.CelestialBodies.sun.House?.label}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -40,7 +40,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Moon.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.moon.House.label}
+              {horoscope.CelestialBodies.moon.House?.label}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -55,7 +55,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Mercury.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.mercury.House.label}
+              {horoscope.CelestialBodies.mercury.House?.label}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -85,7 +85,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Mars.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.mars.House.label}
+              {horoscope.CelestialBodies.mars.House?.label}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -100,7 +100,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Jupiter.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.jupiter.House.label}
+              {horoscope.CelestialBodies.jupiter.House?.label}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -115,7 +115,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Saturn.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.saturn.House.label}
+              {horoscope.CelestialBodies.saturn.House?.label}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -130,7 +130,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Uranus.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.uranus.House.label}
+              {horoscope.CelestialBodies.uranus.House?.label}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -145,7 +145,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Neptune.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.neptune.House.label}
+              {horoscope.CelestialBodies.neptune.House?.label}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -160,7 +160,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Pluto.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.pluto.House.label}
+              {horoscope.CelestialBodies.pluto.House?.label}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
