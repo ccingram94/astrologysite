@@ -1,29 +1,40 @@
 import sidereal from 'astronomia/sidereal';
-import julian from 'astronomia/julian';
-import base from 'astronomia/base';
 
-export const calculateLocalSiderealTime = (date, longitude) => {
-  // 1. Get Julian Day
-  const jd = julian.DateToJD(date)
-  
-  // 2. Get Greenwich Sidereal Time (GST)
-  // Using apparent sidereal time for highest accuracy
-  const gst = sidereal.apparent(jd) // in seconds
+/**
+ * Calculate Local Sidereal Time
+ * @param {number} julianDate - Julian Ephemeris Date
+ * @param {number|string} longitude - Geographic longitude in degrees (East positive)
+ * @returns {number} Local Sidereal Time in degrees (0-360)
+ */
+export default function calculateLocalSiderealTime(julianDate, longitude) {
+  try {
+    // Convert longitude to number if it's a string
+    const longNum = Number(longitude);
+    
+    // Get Greenwich Mean Sidereal Time in seconds
+    const gmst = sidereal.mean(julianDate);
+    
+    // Convert GMST from seconds to degrees
+    const gmstDegrees = (gmst / 86400) * 360;
+    
+    // Add longitude to get Local Sidereal Time
+    let lst = (gmstDegrees + longNum) % 360;
+    
+    // Ensure positive result
+    if (lst < 0) {
+      lst += 360;
+    }
 
-  // 3. Convert GST to hours
-  const gstHours = gst / 3600 
+    console.log({
+      gmst,
+      gmstDegrees,
+      longitude: longNum,
+      finalLST: lst
+    });
 
-  // 4. Calculate Local Sidereal Time
-  // Convert longitude to hours (divide by 15)
-  const longitudeHours = longitude / 15
-  
-  // Add longitude hours to GST (subtract for west longitude)
-  let lst = gstHours - longitudeHours
-  
-  // Ensure result is in range 0-24
-  lst = base.pmod(lst, 24)
-
-  return lst // Returns LST in decimal hours
+    return lst;
+  } catch (error) {
+    console.error('Error calculating Local Sidereal Time:', error);
+    throw error;
+  }
 }
-
-export default calculateLocalSiderealTime;

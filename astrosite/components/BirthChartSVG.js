@@ -3,21 +3,11 @@ import React from 'react';
 import Image from 'next/image';
 import { findAspects, generateAspectLines } from '../utils/calculateAspectChart';
 
-const findAspectsSVG = (celestialBodies) => {  
-  return findAspects(celestialBodies); // Use the existing findAspects function
-};
+const BirthChartSVG = ({ horoscope, newHoroscope }) => {
 
-const BirthChartSVG = ({ horoscope }) => {
-
-  const celestialBodies = Object.entries(horoscope.CelestialBodies)
+  const planets = Object.entries(newHoroscope.planets)
   .filter(([key]) => key !== 'all')
   .map(([_, data]) => data);
-
-  // Calculate aspects
-  const aspects = findAspectsSVG(celestialBodies);
-
-  // Generate aspect lines
-  const aspectLines = generateAspectLines(aspects);
   
   const renderZodiacSign = (index) => {
     const signs = [
@@ -54,12 +44,9 @@ const BirthChartSVG = ({ horoscope }) => {
     );
   };
   
+
   const renderPlanet = (planet, data) => {
-    if (!data?.ChartPosition?.Ecliptic?.DecimalDegrees) {
-      return null;
-    }
-    
-    const angle = ((data.ChartPosition.Ecliptic.DecimalDegrees + 180) * Math.PI) / 180;
+    const angle = ((data.degree + 180) * Math.PI) / 180;
     const radius = 170;
     const x = Number.isFinite(angle) ? 250 + Math.cos(angle) * radius - 12 : 250;
     const y = Number.isFinite(angle) ? 250 - Math.sin(angle) * radius - 12 : 250;
@@ -165,6 +152,7 @@ const BirthChartSVG = ({ horoscope }) => {
         />
 
         {/* House lines */}
+        
         {horoscope.Houses.map((house, index) => {
           const angle = (house.ChartPosition.StartPosition.Ecliptic.DecimalDegrees + 180) * Math.PI / 180;
           const x1 = 250 + Math.cos(angle) * 100;
@@ -185,27 +173,14 @@ const BirthChartSVG = ({ horoscope }) => {
           );
         })}
 
-        {/* Aspect lines */}
-        {aspectLines.map((line) => (
-        <line
-          key={line.key}
-          x1={line.x1}
-          y1={line.y1}
-          x2={line.x2}
-          y2={line.y2}
-          stroke={line.stroke}
-          strokeWidth={line.strokeWidth}
-        />
-      ))}
-
         <g>{renderDegreeMarkers()}</g>
 
         {/* Zodiac sections */}
         {Array.from({ length: 12 }).map((_, index) => {
           const getModality = (index) => {
-            if (index % 3 === 0) return "#183242";
-            if (index % 3 === 1) return "#183242";
-            return "#183242";
+            if (index % 3 === 0) return "#2A303C";
+            if (index % 3 === 1) return "#2A303C";
+            return "#2A303C";
           };
 
           const startAngle = ((-index * 30 + 90) * Math.PI) / 180;
@@ -238,7 +213,8 @@ const BirthChartSVG = ({ horoscope }) => {
             />
           );
         })}
-          {/* House numbers */}
+
+        {/* House numbers */}
         {horoscope.Houses.map((house, index) => {
           // Get the start position of the current house and the next house
           const currentHouseStart = house.ChartPosition.StartPosition.Ecliptic.DecimalDegrees + 180;
@@ -281,9 +257,7 @@ const BirthChartSVG = ({ horoscope }) => {
       {Array.from({ length: 12 }).map((_, index) => renderZodiacSign(index))}
 
       {/* Planets */}
-      {Object.entries(horoscope.CelestialBodies)
-        .slice(0, 11)
-        .filter(([key]) => key !== 'all' && horoscope.CelestialBodies[key]?.ChartPosition?.Ecliptic)
+      {Object.entries(newHoroscope.planets)
         .map(([planet, data]) => renderPlanet(planet, data))}
     </div>
   );

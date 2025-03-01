@@ -1,30 +1,64 @@
 import base from 'astronomia/base';
 import sidereal from 'astronomia/sidereal';
+import { DateToJD } from 'astronomia/julian';
+import modulo from './modulo';
+import degreesToRadians from './degreesToRadians';
+import radiansToDegrees from './radiansToDegrees';
+import { getSignFromDD } from './getSignFromDD';
+import getDegreesInSign from './getDegreesInSign';
+import decimalDegreesToDMS from './decimalDegreesToDMS';
+import getZodiacSign from './getZodiacSign';
 
 /**
  * Calculates the Midheaven (MC) angle for a given time and location
  * @param {Date} dateObj - JavaScript Date object of birth date and time
  * @param {number} lat - Latitude of birth location
  * @param {number} lon - Longitude of birth location
- * @param {number} jd - Julian Day
  * @returns {number} Midheaven angle in degrees (0-360)
  */
-export const calculateMidheaven = (dateObj, lat, lon, jd) => {
-  // Calculate Local Sidereal Time
-  const [century, dayFrac] = sidereal.JDToCFrac(jd);
-  const gmst = sidereal.mean(jd);
-  const lst = (gmst / 3600 + lon / 15) % 24;
-  const lstRad = (lst * 15) * Math.PI / 180;
 
-  // Earth's obliquity
-  const obliquity = 23.4393 * Math.PI / 180;
-  const [sinObl, cosObl] = base.sincos(obliquity);
+const cosFromDegrees = (degrees) => Math.cos(degreesToRadians(degrees));
 
-  // Calculate Midheaven
-  const mc = Math.atan2(Math.sin(lstRad) * cosObl, Math.cos(lstRad));
-  const mcDeg = base.pmod(mc * 180 / Math.PI + 360, 360);
+const tanFromDegrees = (degrees) => Math.tan(degreesToRadians(degrees));
 
-  return mcDeg;
-};
 
-export default calculateMidheaven;
+export default function calculateMidheaven(lst) {
+  try {
+    // Earth's obliquity
+    const obliquity = 23.4367;
+
+    const tanLST = tanFromDegrees(lst);
+    const cosOE = cosFromDegrees(obliquity);
+    let midheaven = radiansToDegrees(Math.atan(tanLST/cosOE));
+
+  // Correcting for quadrant
+  if (midheaven < 0) {
+    midheaven += 360;
+  }
+
+  if (midheaven > lst) {
+    midheaven -= 180;
+  }
+
+  if (midheaven < 0) {
+    midheaven += 180;
+  }
+
+  if (midheaven < 180 && lst >= 180) {
+    midheaven += 180;
+  }
+
+  const mcDeg = modulo(midheaven, 360);
+
+    return {
+      label: 'Midheaven',
+      key: 'midheaven',
+      degree: mcDeg,
+      sign: getZodiacSign(mcDeg),
+      degreeInSign: decimalDegreesToDMS(getDegreesInSign(mcDeg))
+    };
+  } catch (error) {
+    console.error('Error calculating Midheaven:', error);
+    throw error;
+  }
+}

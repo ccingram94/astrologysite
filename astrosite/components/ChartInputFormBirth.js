@@ -1,17 +1,44 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { searchLocation, houseSystemOptions } from '../utils';
+import julian from 'astronomia';
+import lookup from 'tz-lookup';
+import { parseISO } from 'date-fns';
+import { fromZonedTime, toZonedTime } from 'date-fns-tz';
+import calculateUTC from '../utils/calculateUTC';
+import calculateJulianDate from '../utils/calculateJulianDate';
+import calculateLocalSiderealTime from '../utils/calculateLocalSiderealTime';
+import calculateAscendant from '../utils/calculateAscendant';
+import calculateMidheaven from '../utils/calculateMidheaven';
+import calculateDescendant from '../utils/calculateDescendant';
+import calculateImumCoeli from '../utils/calculateImumCoeli';
+import calculateHouseCusps from '../utils/calculateHouseCusps';
+import calculateSun from '../utils/calculateSun';
+import calculateMoon from '../utils/calculateMoon';
+import calculateMercury from '../utils/calculateMercury';
+import calculateVenus from '../utils/calculateVenus';
+import calculateMars from '../utils/calculateMars';
+import calculateJupiter from '../utils/calculateJupiter';
+import calculateSaturn from '../utils/calculateSaturn';
+import calculateUranus from '../utils/calculateUranus';
+import calculateNeptune from '../utils/calculateNeptune';
+import calculatePluto from '../utils/calculatePluto';
+
 
 const ChartInputFormBirth = ({ onSubmit }) => {
   const [birthDate, setBirthDate] = useState('');
   const [birthTime, setBirthTime] = useState('');
   const [birthLocation, setBirthLocation] = useState(null);
   const [houseSystem, setHouseSystem] = useState('whole-sign');
+  const [julianDate, setJulianDate] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isHouseSystemOpen, setIsHouseSystemOpen] = useState(false);
+  const [ angles, setAngles ] = useState(null);
+  const [ houseCusps, setHouseCusps ] = useState(null);
+  const [ planets, setPlanets ] = useState(null);
   
   const dropdownRef = useRef(null);
   const houseSystemRef = useRef(null);
@@ -61,12 +88,91 @@ const ChartInputFormBirth = ({ onSubmit }) => {
       alert('Please fill in all fields');
       return;
     }
+
+    const lat = birthLocation.coordinates.lat;
+    const lon = birthLocation.coordinates.lon;
+
+    const utcDate = calculateUTC(birthDate, birthTime, birthLocation).utcISOString;
+    const julianDate = calculateJulianDate(utcDate);
+    const lst = calculateLocalSiderealTime(julianDate, lon);
+
+    // calculate Angles (Ascendant, Midheaven, Descendant, Imum Coeli)
+    const ascendant = calculateAscendant(lst, lat);
+    const midheaven = calculateMidheaven(lst);
+    const descendant = calculateDescendant(ascendant.degree);
+    const imumcoeli = calculateImumCoeli (midheaven.degree);
+    const angles = {
+      'Ascendant': ascendant,
+      'Midheaven': midheaven,
+      'Descendant': descendant,
+      'ImumCoeli': imumcoeli
+    }
+    setAngles(angles);
+    
+    // calculate House Cusps based on chosen houseSystem
+    const cusps = calculateHouseCusps(houseSystem, ascendant.degree, midheaven.degree, lat, lst);
+    const houseCusps = {
+      'First': cusps[0],
+      'Second': cusps[1],
+      'Third': cusps[2],
+      'Fourth': cusps[3],
+      'Fifth': cusps[4],
+      'Sixth': cusps[5],
+      'Seventh': cusps[6],
+      'Eighth': cusps[7],
+      'Ninth': cusps[8],
+      'Tenth': cusps[9],
+      'Eleventh': cusps[10],
+      'Twelfth': cusps[11]
+    }
+    setHouseCusps(houseCusps);
+
+    // calculate Planets
+    const sun = calculateSun(julianDate);
+    const moon = calculateMoon(julianDate);
+    const mercury = calculateMercury(julianDate);
+    const venus = calculateVenus(julianDate);
+    const mars = calculateMars(julianDate);
+    const jupiter = calculateJupiter(julianDate);
+    const saturn = calculateSaturn(julianDate);
+    const uranus = calculateUranus(julianDate);
+    const neptune = calculateNeptune(julianDate);
+    const pluto = calculatePluto(julianDate);
+    const planets = {
+      'Sun': sun,
+      'Moon': moon,
+      'Mercury': mercury,
+      'Venus': venus,
+      'Mars': mars,
+      'Jupiter': jupiter,
+      'Saturn': saturn,
+      'Uranus': uranus,
+      'Neptune': neptune,
+      'Pluto': pluto
+    }
+    setPlanets(planets);
+
+    // create full horoscope with all data
+    const myHoroscope = {
+      angles: angles,
+      houseCusps: houseCusps,
+      planets: planets,
+    }
+
+
+    console.log('Latitude (my code): ' + lat);
+    console.log('Longitude (my code): ' + lon);
+    console.log('UTC Date (my code): ' + utcDate);
+    console.log('Julian Date (my code): ' + julianDate);
+    console.log('Local Sidereal Time (my code): ' + lst);
+
     
     onSubmit({
       birthDate,
       birthTime,
       birthLocation,
-      houseSystem
+      houseSystem,
+      myHoroscope
     });
   };
 

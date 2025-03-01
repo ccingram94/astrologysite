@@ -3,6 +3,8 @@ import ChartBirthFree from '../../components/ChartBirthFree';
 
 export default function BirthChart() {
   return (
+  <>
     <ChartBirthFree />
+  </>
   );
 }

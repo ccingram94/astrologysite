@@ -1,17 +1,35 @@
-import base from 'astronomia/base';
-import calculateAscendant from './calculateAscendant';
+import modulo from "./modulo";
+import getZodiacSign from "./getZodiacSign";
+import getDegreesInSign from "./getDegreesInSign";
+import decimalDegreesToDMS from "./decimalDegreesToDMS";
 
 /**
- * Calculates the Descendant (DSC) angle for a given time and location
- * @param {Date} dateObj - JavaScript Date object of birth date and time
- * @param {number} lat - Latitude of birth location
- * @param {number} lon - Longitude of birth location
- * @param {number} jd - Julian Day
- * @returns {number} Descendant angle in degrees (0-360)
+ * Calculate the Descendant using the Ascendant value
+ * @param {number} ascendant - Ascendant in degrees (0-360)
+ * @returns {Object} Descendant information
  */
-export const calculateDescendant = (dateObj, lat, lon, jd) => {
-  const asc = calculateAscendant(dateObj, lat, lon, jd);
-  return base.pmod(asc + 180, 360);
-};
+export default function calculateDescendant(ascendantDegree) {
+  try {
+    // Handle both object and number inputs
+    const ascDegree = Number(ascendantDegree);
+    
+    // Check if the input is valid
+    if (typeof ascDegree !== 'number' || isNaN(ascDegree)) {
+      throw new Error('Invalid input for Descendant calculation');
+    }
 
-export default calculateDescendant;
+    // Descendant is always 180° from the Ascendant
+    let descendant = modulo(ascDegree + 180, 360);
+
+    return {
+      label: 'Descendant',
+      key: 'descendant',
+      degree: descendant,
+      sign: getZodiacSign(descendant),
+      degreeInSign: decimalDegreesToDMS(getDegreesInSign(descendant))
+    };
+  } catch (error) {
+    console.error('Error calculating Descendant:', error);
+    throw error;
+  }
+}

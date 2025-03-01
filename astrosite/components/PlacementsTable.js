@@ -1,6 +1,6 @@
 'use client';
 
-const PlacementsTable = ({ horoscope, planets }) => {
+const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
   return (
     <div className="overflow-x-auto text-primary">
       <table className="table table-compact bg-base-100 border border-primary/20">
@@ -19,10 +19,10 @@ const PlacementsTable = ({ horoscope, planets }) => {
               <span className="text-secondary ml-2">Sun</span>
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.sun.Sign.label}
+              {newHoroscope.planets.Sun.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.sun.ChartPosition.Ecliptic.ArcDegreesFormatted30}
+              {newHoroscope.planets.Sun.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
               {horoscope.CelestialBodies.sun.House.label}
@@ -34,10 +34,10 @@ const PlacementsTable = ({ horoscope, planets }) => {
               <span className="text-secondary ml-2">Moon</span>
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.moon.Sign.label}
+              {newHoroscope.planets.Moon.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.moon.ChartPosition.Ecliptic.ArcDegreesFormatted30}
+              {newHoroscope.planets.Moon.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
               {horoscope.CelestialBodies.moon.House.label}
@@ -49,10 +49,10 @@ const PlacementsTable = ({ horoscope, planets }) => {
               <span className="text-secondary ml-2">Mercury</span>
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.mercury.Sign.label}
+              {newHoroscope.planets.Mercury.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.mercury.ChartPosition.Ecliptic.ArcDegreesFormatted30}
+              {newHoroscope.planets.Mercury.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
               {horoscope.CelestialBodies.mercury.House.label}
@@ -64,10 +64,10 @@ const PlacementsTable = ({ horoscope, planets }) => {
               <span className="text-secondary ml-2">Venus</span>
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.venus.Sign.label}
+              {newHoroscope.planets.Venus.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.venus.ChartPosition.Ecliptic.ArcDegreesFormatted30}
+              {newHoroscope.planets.Venus.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
               {horoscope.CelestialBodies.venus.House?.label}
@@ -79,10 +79,10 @@ const PlacementsTable = ({ horoscope, planets }) => {
               <span className="text-secondary ml-2">Mars</span>
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.mars.Sign.label}
+              {newHoroscope.planets.Mars.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.mars.ChartPosition.Ecliptic.ArcDegreesFormatted30}
+              {newHoroscope.planets.Mars.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
               {horoscope.CelestialBodies.mars.House.label}
@@ -94,10 +94,10 @@ const PlacementsTable = ({ horoscope, planets }) => {
               <span className="text-secondary ml-2">Jupiter</span>
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.jupiter.Sign.label}
+              {newHoroscope.planets.Jupiter.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.jupiter.ChartPosition.Ecliptic.ArcDegreesFormatted30}
+              {newHoroscope.planets.Jupiter.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
               {horoscope.CelestialBodies.jupiter.House.label}
@@ -109,10 +109,10 @@ const PlacementsTable = ({ horoscope, planets }) => {
               <span className="text-secondary ml-2">Saturn</span>
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.saturn.Sign.label}
+              {newHoroscope.planets.Saturn.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.saturn.ChartPosition.Ecliptic.ArcDegreesFormatted30}
+              {newHoroscope.planets.Saturn.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
               {horoscope.CelestialBodies.saturn.House.label}
@@ -124,10 +124,10 @@ const PlacementsTable = ({ horoscope, planets }) => {
               <span className="text-secondary ml-2">Uranus</span>
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.uranus.Sign.label}
+              {newHoroscope.planets.Uranus.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.uranus.ChartPosition.Ecliptic.ArcDegreesFormatted30}
+              {newHoroscope.planets.Uranus.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
               {horoscope.CelestialBodies.uranus.House.label}
@@ -139,10 +139,10 @@ const PlacementsTable = ({ horoscope, planets }) => {
               <span className="text-secondary ml-2">Neptune</span>
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.neptune.Sign.label}
+              {newHoroscope.planets.Neptune.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.neptune.ChartPosition.Ecliptic.ArcDegreesFormatted30}
+              {newHoroscope.planets.Neptune.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
               {horoscope.CelestialBodies.neptune.House.label}
@@ -154,10 +154,10 @@ const PlacementsTable = ({ horoscope, planets }) => {
               <span className="text-secondary ml-2">Pluto</span>
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.pluto.Sign.label}
+              {newHoroscope.planets.Pluto.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.pluto.ChartPosition.Ecliptic.ArcDegreesFormatted30}
+              {newHoroscope.planets.Pluto.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
               {horoscope.CelestialBodies.pluto.House.label}
@@ -169,7 +169,7 @@ const PlacementsTable = ({ horoscope, planets }) => {
               <span className="text-secondary ml-2">Ascendant</span>
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.Angles.ascendant.Sign.label}
+              {newHoroscope.angles.Ascendant.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
               {horoscope.Angles.ascendant.ChartPosition.Ecliptic.ArcDegreesFormatted30}
@@ -182,7 +182,7 @@ const PlacementsTable = ({ horoscope, planets }) => {
               <span className="text-secondary ml-2">Midheaven</span>
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.Angles.midheaven.Sign.label}
+              {newHoroscope.angles.Midheaven.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
               {horoscope.Angles.midheaven.ChartPosition.Ecliptic.ArcDegreesFormatted30}

@@ -1,33 +1,61 @@
 import base from 'astronomia/base';
-import sidereal from 'astronomia/sidereal';
+import * as sidereal from 'astronomia/sidereal';
+import * as nutation from 'astronomia/nutation';
+import modulo from './modulo';
+import degreesToRadians from './degreesToRadians';
+import radiansToDegrees from './radiansToDegrees';
+import getDegreesInSign from './getDegreesInSign';
+import decimalDegreesToDMS from './decimalDegreesToDMS';
+import getZodiacSign from './getZodiacSign';
 
 /**
- * Calculates the Ascendant (ASC) angle for a given time and location
- * @param {Date} dateObj - JavaScript Date object of birth date and time
- * @param {number} lat - Latitude of birth location
- * @param {number} lon - Longitude of birth location
- * @param {number} jd - Julian Day
- * @returns {number} Ascendant angle in degrees (0-360)
+ * Calculate the Ascendant (rising sign) using pre-calculated Julian Date and Local Sidereal Time
+ * @param {number} julianDate - Julian Date
+ * @param {number} lst - Local Sidereal Time in hours (0-24)
+ * @param {number} lat - Latitude in decimal degrees (North positive)
+ * @returns {number} Ascendant in degrees (0-360)
  */
-export const calculateAscendant = (dateObj, lat, lon, jd) => {
-  // Calculate Local Sidereal Time
-  const [century, dayFrac] = sidereal.JDToCFrac(jd);
-  const gmst = sidereal.mean(jd); // Greenwich Mean Sidereal Time in seconds
-  const lst = (gmst / 3600 + lon / 15) % 24; // Convert to hours and adjust for longitude
-  const lstRad = (lst * 15) * Math.PI / 180; // Convert to radians
 
-  // Earth's obliquity
-  const obliquity = 23.4393 * Math.PI / 180;
-  
-  const [sinLat, cosLat] = base.sincos(lat * Math.PI / 180);
-  const [sinObl, cosObl] = base.sincos(obliquity);
-  
-  // Calculate Ascendant
-  const tanAsc = -Math.cos(lstRad) / (Math.sin(lstRad) * cosObl + Math.tan(lat * Math.PI / 180) * sinObl);
-  const asc = Math.atan(tanAsc);
-  const ascDeg = base.pmod(asc * 180 / Math.PI + 360, 360);
+const sinFromDegrees = (degrees) => Math.sin(degreesToRadians(degrees));
+const cosFromDegrees = (degrees) => Math.cos(degreesToRadians(degrees));
+const tanFromDegrees = (degrees) => Math.tan(degreesToRadians(degrees));
 
-  return ascDeg;
-};
+export default function calculateAscendant(lst, latitude) {
+  try {
+    // LST is already in degrees (0-360), no need to multiply by 15
+    const lstDegrees = lst;
+    
+    // Obliquity of the ecliptic
+    const obliquity = 23.4367;
+    
+    // Convert to radians
+    const lstRad = degreesToRadians(lstDegrees);
+    const latRad = degreesToRadians(latitude);
 
-export default calculateAscendant;
+    // Calculate ascendant using the correct formula
+    const ascRad = Math.atan2(
+      Math.cos(lstRad),
+      -(Math.sin(lstRad) * Math.cos(degreesToRadians(obliquity)) + 
+        Math.tan(latRad) * Math.sin(degreesToRadians(obliquity)))
+    );
+
+    // Convert to degrees
+    let ascendant = radiansToDegrees(ascRad);
+
+    // Ensure result is between 0 and 360 degrees
+    if (ascendant < 0) {
+      ascendant += 360;
+    }
+
+    return {
+      label: 'Ascendant',
+      key: 'ascendant',
+      degree: ascendant,
+      sign: getZodiacSign(ascendant),
+      degreeInSign: decimalDegreesToDMS(getDegreesInSign(ascendant))
+    };
+  } catch (error) {
+    console.error('Error calculating Ascendant:', error);
+    throw error;
+  }
+}

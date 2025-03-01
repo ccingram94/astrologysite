@@ -43,6 +43,8 @@ const BirthChart = () => {
     houseSystem: 'whole-sign',
   });
 
+  console.log(chartData)
+
   const AstroChart = dynamic(() => import('./AstroChart'), {
     ssr: false
   });

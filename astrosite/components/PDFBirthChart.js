@@ -3,25 +3,27 @@ import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Font, Image, Svg, Circle, Line, Path, G, Text as SvgText } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 import zodiacSigns from '../data/zodiacsigns';
-import { getDescendant, getImumCoeli, getSignFromDD, modulo } from '../utils';
+import { getSignFromDD, modulo } from '../utils';
+import calculateDescendant from '../utils/calculateDescendant';
+import calculateImumCoeli from '../utils/calculateImumCoeli';
 import { findAspectsPDF, generateAspectLines, groupAspectsByType } from '../utils/calculateAspectPDF';
 
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
 const zodiacIcons = {
-  aries: { uri: `${baseUrl}/aries.png` },
-  taurus: { uri: `${baseUrl}/taurus.png` },
-  gemini: { uri: `${baseUrl}/gemini.png` },
-  cancer: { uri: `${baseUrl}/cancer.png` },
-  leo: { uri: `${baseUrl}/leo.png` },
-  virgo: { uri: `${baseUrl}/virgo.png` },
-  libra: { uri: `${baseUrl}/libra.png` },
-  scorpio: { uri: `${baseUrl}/scorpio.png` },
-  sagittarius: { uri: `${baseUrl}/sagittarius.png` },
-  capricorn: { uri: `${baseUrl}/capricorn.png` },
-  aquarius: { uri: `${baseUrl}/aquarius.png` },
-  pisces: { uri: `${baseUrl}/pisces.png` },
+  aries: { uri: `${baseUrl}/ariesgold.png` },
+  taurus: { uri: `${baseUrl}/taurusgold.png` },
+  gemini: { uri: `${baseUrl}/geminigold.png` },
+  cancer: { uri: `${baseUrl}/cancergold.png` },
+  leo: { uri: `${baseUrl}/leogold.png` },
+  virgo: { uri: `${baseUrl}/virgogold.png` },
+  libra: { uri: `${baseUrl}/libragold.png` },
+  scorpio: { uri: `${baseUrl}/scorpiogold.png` },
+  sagittarius: { uri: `${baseUrl}/sagittariusgold.png` },
+  capricorn: { uri: `${baseUrl}/capricorngold.png` },
+  aquarius: { uri: `${baseUrl}/aquariusgold.png` },
+  pisces: { uri: `${baseUrl}/piscesgold.png` },
 };
 
 const planetIcons = {
@@ -36,6 +38,41 @@ const planetIcons = {
   neptune: { uri: `${baseUrl}/neptune.png` },
   pluto: { uri: `${baseUrl}/pluto.png` },
 };
+
+const planetIconsGold = {
+  sun: { uri: `${baseUrl}/sungold.png` },
+  moon: { uri: `${baseUrl}/moongold.png` },
+  mercury: { uri: `${baseUrl}/mercurygold.png` },
+  venus: { uri: `${baseUrl}/venusgold.png` },
+  mars: { uri: `${baseUrl}/marsgold.png` },
+  jupiter: { uri: `${baseUrl}/jupitergold.png` },
+  saturn: { uri: `${baseUrl}/saturngold.png` },
+  uranus: { uri: `${baseUrl}/uranusgold.png` },
+  neptune: { uri: `${baseUrl}/neptunegold.png` },
+  pluto: { uri: `${baseUrl}/plutogold.png` },
+};
+
+const angleIcons = {
+  ascendant: { uri: `${baseUrl}/ascendantgold.png` },
+  descendant: { uri: `${baseUrl}/descendantgold.png` },
+  midheaven: { uri: `${baseUrl}/midheavengold.png` },
+  imumcoeli: { uri: `${baseUrl}/imumcoeligold.png` },
+}
+
+const aspectIcons = {
+  conjunction: { uri: `${baseUrl}/conjunctiongold.png` },
+  opposition: { uri: `${baseUrl}/oppositiongold.png` },
+  square: { uri: `${baseUrl}/squaregold.png` },
+  trine: { uri: `${baseUrl}/trinegold.png` },
+  sextile: { uri: `${baseUrl}/sextilegold.png` },
+  quincunx: { uri: `${baseUrl}/quincunxgold.png` },
+  quintile: { uri: `${baseUrl}/quintilegold.png` },
+  'semi-square': { uri: `${baseUrl}/semisquaregold.png` },
+  'semi-sextile': { uri: `${baseUrl}/semisextilegold.png` },
+  septile: { uri: `${baseUrl}/septilegold.png` },
+}
+
+'quincunx', 'quintile', 'semi-square', 'semi-sextile', 'septile'
 
 // Montserrat for primary text
 Font.register({
@@ -74,6 +111,12 @@ const styles = StyleSheet.create({
     height: 16,
   },
   page: {
+    flexDirection: 'column',
+    backgroundColor: '#ffffff',
+    padding: 40,
+    fontFamily: 'Lato',
+  },
+  firstPage: {
     flexDirection: 'column',
     backgroundColor: '#ffffff',
     padding: 40,
@@ -118,6 +161,12 @@ const styles = StyleSheet.create({
     fontWeight: 300,
     letterSpacing: 0.5,
   },
+  displayIconAndText: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   placementsTitle: {
     fontSize: 36,
     marginBottom: 15,
@@ -151,6 +200,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 10,
     marginBottom: 10,
+    borderCollapse: 'collapse',
   },
   tableRow: {
     flexDirection: 'row',
@@ -158,6 +208,49 @@ const styles = StyleSheet.create({
     borderBottomColor: '#F3EACE',
     minHeight: 35,
     alignItems: 'center',
+    paddingVertical: 8,
+  },
+  tableCell: {
+    fontSize: 10,
+    color: '#2A303C',
+    padding: 4,
+  },
+  planetColumn: {
+    width: '25%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  signColumn: {
+    width: '25%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  degreeColumn: {
+    width: '30%',
+  },
+  houseColumn: {
+    width: '20%',
+  },
+  houseNumberColumn: {
+    width: '20%',
+  },
+  cuspColumn: {
+    width: '40%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rulerColumn: {
+    width: '40%',
+  },
+  iconContainer: {
+    marginRight: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  tableIcon: {
+    width: 12,
+    height: 12,
+    marginRight: 4,
   },
   tableHeader: {
     backgroundColor: '#F3EACE',
@@ -169,30 +262,70 @@ const styles = StyleSheet.create({
     color: '#D2AE3C',
     fontFamily: 'Montserrat',
   },
-  tableCell: {
-    padding: 8,
-    fontSize: 13,
-    color: '#2A303C',
-  },
+  // For the Planets table
   columnPlanet: {
     width: '25%',
-  },
-  columnPosition: {
-    width: '40%',
-  },
-  columnHouse: {
-    width: '35%',
-  },
-  columnHouseCusp: {
-    width: '40%',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   columnSign: {
-    width: '60%',
+    width: '25%', // Increased from 25% to accommodate sign names
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  columnDegree: {
+    width: '25%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  columnHouse: {
+    width: '25%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  // For the Big Three table
+  columnPoint: {
+    width: '50%',
+  },
+  columnPosition: {
+    width: '50%',
+  },
+  // For the Angles table
+  columnHouseCusp: {
+    width: '50%',
+  },
+  columnSign: {
+    width: '50%',
+  },
+  // For the Houses table
+  columnHouse: {
+    width: '35%', // Increased from 25% to prevent wrapping
+  },
+  columnCusp: {
+    width: '35%',
+  },
+  columnRuler: {
+    width: '30%',
   },
 });
 
 
 const PDFBirthChart = ({ horoscope, chartData }) => {
+
+  const birthDate = new Date(horoscope.origin.utcTimeFormatted);
+
+  const descendant = calculateDescendant(
+    birthDate,
+    horoscope.origin.latitude,
+    horoscope.origin.longitude,
+  );
+  
+  const imumCoeli = calculateImumCoeli(
+    birthDate,
+    horoscope.origin.latitude,
+    horoscope.origin.longitude,
+  );
+
   const planets = Object.entries(horoscope.CelestialBodies)
     .filter(([key]) => key !== 'all')
     .slice(0, 11); 
@@ -313,7 +446,7 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
 
   return (
     <Document>
-    <Page size="A4" style={styles.page}>
+    <Page size="A4" style={styles.firstPage}>
       {/* Title section remains the same */}
       <View style={styles.titleSection}>
         <Text style={styles.reportTitle}>Birth Chart</Text>
@@ -439,9 +572,9 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
           {/* Add zodiac sign background sections */}
           {Array.from({ length: 12 }).map((_, index) => {
             const getModality = (index) => {
-              if (index % 3 === 0) return "#E7D79C";
-              if (index % 3 === 1) return "#EBDEAD";
-              return "#EFE4BD";
+              if (index % 3 === 0) return "#2A303C";
+              if (index % 3 === 1) return "#2A303C";
+              return "#2A303C";
             };
 
             const startAngle = ((-index * 30 + 90) * Math.PI) / 180;
@@ -490,66 +623,131 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
 
         </Svg>
       </View>
-      <View style={styles.placementsSection}>
-        <Text style={styles.placementsTitle}>Angles</Text>
-        <View style={styles.table}>
-          <View style={[styles.tableRow, styles.tableHeader]}>
-            <Text style={[styles.tableHeaderCell, styles.columnHouseCusp]}>Angle</Text>
-            <Text style={[styles.tableHeaderCell, styles.columnSign]}>Position</Text>
-          </View>
-          {[
-            { key: 'Ascendant', label: 'Ascendant (ASC)' },
-            { key: 'Midheaven', label: 'Midheaven (MC)' },
-          ].map((angle) => (
-            <View style={styles.tableRow} key={angle.key}>
-              <Text style={[styles.tableCell, styles.columnHouseCusp]}>
-                {angle.label}
-              </Text>
-              <Text style={[styles.tableCell, styles.columnSign]}>
-                {angle.getPosition 
-                  ? angle.getPosition()
-                  : `${horoscope[angle.key].ChartPosition.Ecliptic.ArcDegreesFormatted30} ${horoscope[angle.key].Sign.label}`
-                }
-              </Text>
-            </View>
-          ))}
+    </Page>
+
+    <Page size="A4" style={styles.page}>
+    <View style={styles.placementsSection}>
+      <Text style={styles.placementsTitle}>Angles</Text>
+      <View style={styles.table}>
+        <View style={[styles.tableRow, styles.tableHeader]}>
+          <Text style={[styles.tableHeaderCell, styles.columnHouseCusp]}>Angle</Text>
+          <Text style={[styles.tableHeaderCell, styles.columnSign]}>Position</Text>
         </View>
+        {[
+          { 
+            key: 'Ascendant', 
+            icon: angleIcons.ascendant, 
+            label: 'Ascendant',
+            useHoroscope: true 
+          },
+          { 
+            key: 'Midheaven', 
+            icon: angleIcons.midheaven, 
+            label: 'Midheaven',
+            useHoroscope: true 
+          },
+          { 
+            key: 'Descendant', 
+            icon: angleIcons.descendant, 
+            label: 'Descendant',
+            useHoroscope: false,
+            getValue: () => descendant,
+            getSign: () => getSignFromDD(descendant)
+          },
+          { 
+            key: 'ImumCoeli', 
+            icon: angleIcons.imumcoeli, 
+            label: 'Imum Coeli',
+            useHoroscope: false,
+            getValue: () => imumCoeli,
+            getSign: () => getSignFromDD(imumCoeli)
+          },
+        ].map((angle) => (
+          <View style={styles.tableRow} key={angle.key}>
+            <Image
+              style={styles.tableIcon}
+              source={angle.icon}
+              cache={true}
+            />
+            <Text style={[styles.tableCell, styles.columnHouseCusp]}>
+              {angle.label}
+            </Text>
+            <Image
+              style={styles.tableIcon}
+              source={zodiacIcons[
+                angle.useHoroscope 
+                  ? horoscope[angle.key].Sign.key
+                  : angle.getSign().key.toLowerCase()
+              ]}
+              cache={true}
+            />
+            <Text style={[styles.tableCell, styles.columnSign]}>
+              {angle.useHoroscope 
+                ? `${horoscope[angle.key].ChartPosition.Ecliptic.ArcDegreesFormatted30} ${horoscope[angle.key].Sign.label}`
+                : `${(angle.getValue() % 30).toFixed(2)}° ${getSignFromDD(angle.getValue())}`
+              }
+            </Text>
+          </View>
+        ))}
       </View>
+    </View>
       <View style={styles.placementsSection}>
-        <Text style={styles.placementsTitle}>Big Three</Text>
-        <View style={styles.table}>
+          <Text style={styles.placementsTitle}>Big Three</Text>
+          <View style={styles.table}>
           <View style={[styles.tableRow, styles.tableHeader]}>
-            <Text style={[styles.tableHeaderCell, styles.columnHouseCusp]}>Point</Text>
-            <Text style={[styles.tableHeaderCell, styles.columnSign]}>Position</Text>
+            <Text style={[styles.tableHeaderCell, styles.columnPoint]}>Point</Text>
+            <Text style={[styles.tableHeaderCell, styles.columnPosition]}>Position</Text>
           </View>
-          {[
-            { key: 'Sun Sign', icon: '/sun.svg', data: `${horoscope.CelestialBodies.sun.ChartPosition.Ecliptic.ArcDegreesFormatted30} ${horoscope.CelestialBodies.sun.Sign.label} ` },
-            { key: 'Moon Sign', icon: '/sun.svg', data: `${horoscope.CelestialBodies.moon.ChartPosition.Ecliptic.ArcDegreesFormatted30} ${horoscope.CelestialBodies.moon.Sign.label} ` },
-            { key: 'Rising Sign', icon: '/sun.svg', data: `${horoscope.Ascendant.ChartPosition.Ecliptic.ArcDegreesFormatted30}  ${ horoscope.Ascendant.Sign.label }` },
-          ].map((placement) => (
-            <View style={styles.tableRow} key={placement.key}>
-              <Text style={[styles.tableCell, styles.columnHouseCusp]}>
-                {placement.key}
-              </Text>
-              <Text style={[styles.tableCell, styles.columnSign]}>
-                {placement.data}
-              </Text>
+            {[
+              { key: 'Sun Sign', icon: planetIconsGold.sun, sign: horoscope.CelestialBodies.sun.Sign.key, data: `${horoscope.CelestialBodies.sun.ChartPosition.Ecliptic.ArcDegreesFormatted30} ${horoscope.CelestialBodies.sun.Sign.label} ` },
+              { key: 'Moon Sign', icon: planetIconsGold.moon, sign: horoscope.CelestialBodies.moon.Sign.key, data: `${horoscope.CelestialBodies.moon.ChartPosition.Ecliptic.ArcDegreesFormatted30} ${horoscope.CelestialBodies.moon.Sign.label} ` },
+              { key: 'Rising (Ascendant)', icon: angleIcons.ascendant, sign: horoscope.Ascendant.Sign.key, data: `${horoscope.Ascendant.ChartPosition.Ecliptic.ArcDegreesFormatted30}  ${ horoscope.Ascendant.Sign.label }` },
+            ].map((placement) => (
+              <View style={styles.tableRow} key={placement.key}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', width: '50%' }}>
+                  <Image
+                    style={styles.tableIcon}
+                    source={placement.icon}
+                    cache={true}
+                  />
+                  <Text style={styles.tableCell}>
+                    {placement.key}
+                  </Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', width: '50%' }}>
+                  <Image
+                    style={styles.tableIcon}
+                    source={zodiacIcons[placement.sign]}
+                    cache={true}
+                  />
+                  <Text style={[styles.tableCell, styles.columnSign]}>
+                    {placement.data}
+                  </Text>
+                </View>
+              </View>
+            ))}
           </View>
-          ))}
         </View>
-      </View>
     </Page>
     
     <Page size="A4" style={styles.page}>
       <View style={styles.placementsSection}>
         <Text style={styles.placementsTitle}>Planets</Text>
         <View style={styles.table}>
-          <View style={[styles.tableRow, styles.tableHeader]}>
-            <Text style={[styles.tableHeaderCell, styles.columnPlanet]}>Planet</Text>
-            <Text style={[styles.tableHeaderCell, styles.columnPosition]}>Sign</Text>
-            <Text style={[styles.tableHeaderCell, styles.columnPosition]}>Degree</Text>
-            <Text style={[styles.tableHeaderCell, styles.columnHouse]}>House</Text>
+        <View style={[styles.tableRow, styles.tableHeader]}>
+          <View style={{ width: '25%' }}>
+            <Text style={[styles.tableHeaderCell]}>Planet</Text>
           </View>
+          <View style={{ width: '25%' }}>
+            <Text style={[styles.tableHeaderCell]}>Sign</Text>
+          </View>
+          <View style={{ width: '25%' }}>
+            <Text style={[styles.tableHeaderCell]}>Degree</Text>
+          </View>
+          <View style={{ width: '30%' }}>
+            <Text style={[styles.tableHeaderCell]}>House</Text>
+          </View>
+        </View>
           {[
             'sun',
             'moon',
@@ -563,18 +761,36 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
             'pluto'
           ].map((planet) => (
             <View style={styles.tableRow} key={planet}>
-              <Text style={[styles.tableCell, styles.columnPlanet]}>
-                {planet.charAt(0).toUpperCase() + planet.slice(1)}
-              </Text>
-              <Text style={[styles.tableCell, styles.columnPosition]}>
-                {`${horoscope.CelestialBodies[planet].Sign.label}`}
-              </Text>
-              <Text style={[styles.tableCell, styles.columnPosition]}>
-                {`${horoscope.CelestialBodies[planet].ChartPosition.Ecliptic.ArcDegreesFormatted30}`}
-              </Text>
-              <Text style={[styles.tableCell, styles.columnHouse]}>
-                {horoscope.CelestialBodies[planet].House?.label}
-              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', width: '25%' }}>
+                <Image
+                  style={styles.tableIcon}
+                  source={planetIconsGold[planet]}
+                  cache={true}
+                />
+                <Text style={styles.tableCell}>
+                  {planet.charAt(0).toUpperCase() + planet.slice(1)}
+                </Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', width: '25%' }}>
+                <Image
+                  style={styles.tableIcon}
+                  source={zodiacIcons[horoscope.CelestialBodies[planet].Sign.key.toLowerCase()]}
+                  cache={true}
+                />
+                <Text style={[styles.tableCell, styles.columnPosition]}>
+                  {`${horoscope.CelestialBodies[planet].Sign.label}`}
+                </Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', width: '25%' }}>
+                <Text style={[styles.tableCell, styles.columnPosition]}>
+                  {`${horoscope.CelestialBodies[planet].ChartPosition.Ecliptic.ArcDegreesFormatted30}`}
+                </Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', width: '30%' }}>
+                <Text style={[styles.tableCell, styles.columnHouse]}>
+                  {horoscope.CelestialBodies[planet].House?.label}
+                </Text>
+              </View>
             </View>
           ))}
         </View>
@@ -585,20 +801,65 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
       <View style={styles.placementsSection}>
         <Text style={styles.placementsTitle}>Houses</Text>
         <View style={styles.table}>
-          <View style={[styles.tableRow, styles.tableHeader]}>
-            <Text style={[styles.tableHeaderCell, styles.columnHouseCusp]}>House</Text>
-            <Text style={[styles.tableHeaderCell, styles.columnSign]}>Cusp</Text>
-            <Text style={[styles.tableHeaderCell, styles.columnSign]}>Ruler</Text>
-          </View>
+        <View style={[styles.tableRow, styles.tableHeader]}>
+          <Text style={[styles.tableHeaderCell, styles.columnHouse]}>House</Text>
+          <Text style={[styles.tableHeaderCell, styles.columnCusp]}>Cusp</Text>
+          <Text style={[styles.tableHeaderCell, styles.columnRuler]}>Ruler</Text>
+        </View>
           {horoscope.Houses.map((house, index) => (
             <View style={styles.tableRow} key={index}>
-              <Text style={[styles.tableCell, styles.columnHouseCusp]}>{house.label} House</Text>
-              <Text style={[styles.tableCell, styles.columnSign]}>
-                {`${house.ChartPosition.StartPosition.Ecliptic.ArcDegreesFormatted30} ${house.Sign.label}`}
-              </Text>
-              <Text style={[styles.tableCell, styles.columnSign]}>
-                { Array.isArray(zodiacSigns[house.Sign.key].rulingPlanet) ? `${zodiacSigns[house.Sign.key].rulingPlanet[1]} (Traditional), ${zodiacSigns[house.Sign.key].rulingPlanet[0]} (Modern)` : zodiacSigns[house.Sign.key].rulingPlanet }
-              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', width: '30%' }}>
+                <Text style={[styles.tableCell, styles.columnHouseCusp]}>
+                  {house.label}
+                </Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', width: '30%' }}>
+                <Image
+                  style={styles.tableIcon}
+                  source={zodiacIcons[house.Sign.key.toLowerCase()]}
+                  cache={true}
+                />
+                <Text style={[styles.tableCell]}>
+                  {`${house.ChartPosition.StartPosition.Ecliptic.ArcDegreesFormatted30} ${house.Sign.label}`}
+                </Text>
+              </View>
+              <View style={{ width: '40%' }}>
+                {Array.isArray(zodiacSigns[house.Sign.key].rulingPlanet) ? (
+                  <View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <Image
+                        style={styles.tableIcon}
+                        source={planetIconsGold[zodiacSigns[house.Sign.key].rulingPlanet[1].toLowerCase()]}
+                        cache={true}
+                      />
+                      <Text style={[styles.tableCell]}>
+                        {`${zodiacSigns[house.Sign.key].rulingPlanet[1]} (Traditional)`}
+                      </Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <Image
+                        style={styles.tableIcon}
+                        source={planetIconsGold[zodiacSigns[house.Sign.key].rulingPlanet[0].toLowerCase()]}
+                        cache={true}
+                      />
+                      <Text style={[styles.tableCell]}>
+                        {`${zodiacSigns[house.Sign.key].rulingPlanet[0]} (Modern)`}
+                      </Text>
+                    </View>
+                  </View>
+                ) : (
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Image
+                      style={styles.tableIcon}
+                      source={planetIconsGold[zodiacSigns[house.Sign.key].rulingPlanet.toLowerCase()]}
+                      cache={true}
+                    />
+                    <Text style={[styles.tableCell]}>
+                      {zodiacSigns[house.Sign.key].rulingPlanet}
+                    </Text>
+                  </View>
+                )}
+              </View>
             </View>
           ))}
         </View>
@@ -608,6 +869,20 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
     <Page size="A4" style={styles.page}>
       <View style={styles.placementsSection}>
         <Text style={styles.placementsTitle}>Major Aspects</Text>
+        {['conjunction', 'opposition', 'square', 'trine', 'sextile'].map((aspectType, index) => (
+          horoscope.Aspects.types[aspectType]?.length > 0 && (
+            <View style={styles.displayIconAndText} key={index}>
+              <Image
+                style={styles.tableIcon}
+                source={aspectIcons[aspectType]}
+                cache={true}
+              />
+              <Text style={styles.sectionTitle}>
+                {horoscope.Aspects.types[aspectType].length} {aspectType.charAt(0).toUpperCase() + aspectType.slice(1)}s
+              </Text>
+            </View>
+            )
+        ))}   
       </View>
     </Page>
 
@@ -629,7 +904,13 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
               {horoscope.Aspects.types[aspectType].map((aspect, index) => (
                 <View style={styles.tableRow} key={index}>
                   <Text style={[styles.tableCell, styles.columnHouseCusp]}>{aspect.point1Label}</Text>
-                  <Text style={[styles.tableCell, styles.columnSign]}>{aspectType}</Text>
+                  <View style={[styles.tableCell, styles.columnSign]}>
+                    <Image 
+                      style={styles.tableIcon}
+                      source={aspectIcons[aspectType]}
+                      cache={true}
+                    />
+                  </View>
                   <Text style={[styles.tableCell, styles.columnSign]}>{aspect.point2Label}</Text>
                   <Text style={[styles.tableCell, styles.columnSign]}>{aspect.orb.toFixed(1)}°</Text>
                 </View>
@@ -641,8 +922,22 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
     ))}   
 
     <Page size="A4" style={styles.page}>
-      <View style={styles.placementsSection}>
+    <View style={styles.placementsSection}>
         <Text style={styles.placementsTitle}>Minor Aspects</Text>
+        {['quincunx', 'quintile', 'semi-square', 'semi-sextile', 'septile'].map((aspectType, index) => (
+          horoscope.Aspects.types[aspectType]?.length > 0 && (
+            <View style={styles.displayIconAndText} key={index}>
+              <Image
+                style={styles.tableIcon}
+                source={aspectIcons[aspectType]}
+                cache={true}
+              />
+              <Text style={styles.sectionTitle}>
+                {horoscope.Aspects.types[aspectType].length} {aspectType.charAt(0).toUpperCase() + aspectType.slice(1)}s
+              </Text>
+            </View>
+            )
+        ))}   
       </View>
     </Page>
 
@@ -652,7 +947,7 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
         <Page size="A4" style={styles.page} key={index}>
           <View style={styles.placementsSection}>
             <Text style={styles.sectionTitle}>
-              {aspectType.charAt(0).toUpperCase() + aspectType.slice(1).replace('-', ' ')}s
+              {aspectType.charAt(0).toUpperCase() + aspectType.slice(1).replace('-', ' ')}
             </Text>
             <View style={styles.table}>
               <View style={[styles.tableRow, styles.tableHeader]}>
@@ -664,7 +959,13 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
               {horoscope.Aspects.types[aspectType].map((aspect, index) => (
                 <View style={styles.tableRow} key={index}>
                   <Text style={[styles.tableCell, styles.columnHouseCusp]}>{aspect.point1Label}</Text>
-                  <Text style={[styles.tableCell, styles.columnSign]}>{aspectType.replace('-', ' ')}</Text>
+                  <View style={[styles.tableCell, styles.columnSign]}>
+                    <Image 
+                      style={styles.tableIcon}
+                      source={aspectIcons[aspectType]}
+                      cache={true}
+                    />
+                  </View>
                   <Text style={[styles.tableCell, styles.columnSign]}>{aspect.point2Label}</Text>
                   <Text style={[styles.tableCell, styles.columnSign]}>{aspect.orb.toFixed(1)}°</Text>
                 </View>

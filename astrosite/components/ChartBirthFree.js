@@ -17,6 +17,10 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import PDFBirthChart from './PDFBirthChart';
 import BirthChartSVG from './BirthChartSVG';
 import { findAspects, generateAspectLines } from '../utils/calculateAspectChart';
+import calculateAscendant from '../utils/calculateAscendant';
+import { calculateMidheaven } from '../utils/calculateMidheaven';
+import { calculateDescendant } from '../utils/calculateDescendant';
+import { calculateImumCoeli } from '../utils/calculateImumCoeli';
 
 const PDFDownloadButton = dynamic(() => import('./PDFDownloadButton'), {
   ssr: false,
@@ -26,6 +30,7 @@ const PDFDownloadButton = dynamic(() => import('./PDFDownloadButton'), {
 const ChartBirthFree = () => {
   const [ displayChart, setDisplayChart ] = useState(false);
   const [ horoscope, setHoroscope ] = useState(null);
+  const [ newHoroscope, setNewHoroscope ] = useState(null);
   const [ chartData, setChartData ] = useState({
     birthDate: '',
     birthTime: '',
@@ -39,8 +44,13 @@ const ChartBirthFree = () => {
   });
  
   const handleFormSubmit = (formData) => {
-    const { birthDate, birthTime, birthLocation, houseSystem } = formData;
+    const { birthDate, birthTime, birthLocation, houseSystem, myHoroscope } = formData;
     const { lat, lon } = birthLocation.coordinates;
+
+    const date = new Date(`${birthDate}T${birthTime}`);
+    console.log(myHoroscope);
+    setNewHoroscope(myHoroscope);
+
     const origin = new Origin({
       year: parseInt(birthDate.split('-')[0]),
       month: parseInt(birthDate.split('-')[1] - 1),
@@ -60,17 +70,19 @@ const ChartBirthFree = () => {
       customOrbs: {},
       language: 'en',
     });
+    
     setHoroscope(horoscopeData);
     const aspects = findAspects(horoscopeData.CelestialBodies);
     const aspectLines = generateAspectLines(aspects.slice(0, 11));
     setAspectLines(aspectLines);
-    
+    console.log(horoscopeData);
     setChartData(formData);
     setDisplayChart(true);
   }
 
   const renderHoroscopeData = () => {
-    if (!horoscope) return null;
+    console.log(newHoroscope.angles.Ascendant.sign)
+    if (!newHoroscope) return null;
     return (
       <div className='flex flex-col justify-center items-center text-primary rounded-lg'>
         <div className='flex flex-row flex-wrap justify-center items-start'>
@@ -84,25 +96,21 @@ const ChartBirthFree = () => {
             </h2>
             <h2 className='font-semibold text-sm m-2 max-w-md text-primary/90'>{ chartData.birthLocation.label }</h2>
             <div className='font-semibold flex flex-row flex-wrap justify-center text-center gap-4 p-4'>
-              <h4>{ horoscope.CelestialBodies.sun.Sign.label } Sun</h4>
-              <h4>{ horoscope.CelestialBodies.moon.Sign.label } Moon</h4>
-              <h4>{ horoscope.Ascendant.Sign.label } Ascendant</h4>
-              <h4>{ horoscope.Midheaven.Sign.label } Midheaven</h4>
+              <h4>{ newHoroscope.planets.Sun.sign } Sun</h4>
+              <h4>{ newHoroscope.planets.Moon.sign } Moon</h4>
+              <h4>{ newHoroscope.angles.Ascendant.sign } Ascendant</h4>
+              <h4>{ newHoroscope.angles.Midheaven.sign } Midheaven</h4>
             </div>
           </div>
           <div className='flex flex-row flex-wrap justify-center items-center gap-8'>
             <div className='lg:mt-2 flex flex-col justify-center'>
-              <BirthChartSVG horoscope={horoscope} aspectLines={aspectLines} />
+              <BirthChartSVG horoscope={horoscope} aspectLines={aspectLines} newHoroscope={newHoroscope} />
             </div>
             <div className='overflow-x-auto'>
-              <PlacementsTable horoscope={horoscope} planets={planets} />
+              <PlacementsTable horoscope={horoscope} planets={planets} newHoroscope={newHoroscope} />
             </div>
           </div>
         </div>
-        <PlanetSection horoscope={horoscope} planets={planets} />
-        <HouseSection horoscope={horoscope} houses={houses} zodiacSigns={zodiacSigns} />
-        <AngleSection horoscope={horoscope} planets={planets} />
-        <AspectSection horoscope={horoscope} aspects={aspects} />
       </div>
     )
   }
