@@ -1,6 +1,24 @@
 'use client'
 import React, { useMemo, useEffect } from 'react';
-import Image from 'next/image';
+
+// Function to calculate the rotation offset needed to position the Ascendant at the left (9 o'clock)
+const calculateChartRotation = (horoscope) => {
+  if (!horoscope || !horoscope.angles || !horoscope.angles.Ascendant) {
+    return 0; // Default rotation if no Ascendant is available
+  }
+
+  // Get the Ascendant's degree
+  const ascendantDegree = horoscope.angles.Ascendant.degree;
+  
+  // In SVG coordinates, 0° is at the right (3 o'clock), 90° is at the bottom (6 o'clock),
+  // 180° is at the left (9 o'clock), and 270° is at the top (12 o'clock)
+  
+  // To place Ascendant at the left (180° in SVG), we calculate how much to rotate
+  // We need to rotate so that ascendantDegree aligns with 180° in SVG
+  const rotationOffset = 180 - ascendantDegree;
+  
+  return rotationOffset;
+};
 
 const BirthChartSVG = ({ horoscope, newHoroscope }) => {
   // For debugging
@@ -10,55 +28,10 @@ const BirthChartSVG = ({ horoscope, newHoroscope }) => {
       console.log("HOUSE CUSPS:", horoscope.houseCusps);
     }
   }, [horoscope]);
-  
-  // Use the provided horoscope.planets data
-  const renderZodiacSign = (index) => {
-    const signs = [
-      'ariesgold', 'taurusgold', 'geminigold', 'cancergold', 'leogold', 'virgogold',
-      'libragold', 'scorpiogold', 'sagittariusgold', 'capricorngold', 'aquariusgold', 'piscesgold'
-    ];
-    
-    // Rotate 90° counterclockwise - with Ascendant at the left (180° in SVG coordinates)
-    const angle = (((index * 30 + 15) * Math.PI) / 180);
-    const radius = 220;
-    
-    // Calculate exact position on circle
-    const exactX = Number.isFinite(angle) ? 250 + Math.cos(angle) * radius : 250;
-    const exactY = Number.isFinite(angle) ? 250 - Math.sin(angle) * radius : 250;
-    
-    // Apply vertical correction - pull in towards center slightly
-    // Apply more correction at the top and bottom, less at the sides
-    const verticalCorrectionFactor = Math.abs(Math.sin(angle)) * 6; // 0-6px varying by position
-    
-    // Adjust y position based on position (pull toward center)
-    const adjustedY = exactY > 250 
-      ? exactY - verticalCorrectionFactor  // Below center, pull up
-      : exactY + verticalCorrectionFactor; // Above center, pull down
-    
-    if (!Number.isFinite(exactX) || !Number.isFinite(adjustedY)) {
-      return null;
-    }
-    
-    return (
-      <div
-        key={`zodiac-${index}`}
-        className="absolute z-[10] transform -translate-x-1/2 -translate-y-1/2"
-        style={{
-          left: `${(exactX/500)*100}%`,
-          top: `${(adjustedY/500)*100}%`,
-        }}
-      >
-        <Image
-          src={`/${signs[index]}.png`}
-          alt={signs[index]}
-          width={24}
-          height={24}
-          priority
-          className="w-[16px] h-[16px] sm:w-[20px] sm:h-[20px] md:w-[24px] md:h-[24px]"
-        />
-      </div>
-    );
-  };
+
+  const chartRotation = useMemo(() => {
+    return calculateChartRotation(horoscope);
+  }, [horoscope]);
   
   // Calculate adjusted planet and angle positions to prevent collisions
   const celestialPositions = useMemo(() => {
@@ -211,18 +184,57 @@ const BirthChartSVG = ({ horoscope, newHoroscope }) => {
     return adjustedPositions;
   }, [horoscope]);
 
+  // SVG-based zodiac sign renderer instead of div+Image approach
+  const renderZodiacSign = (index) => {
+    const signs = [
+      'signs/ariesgold', 'signs/taurusgold', 'signs/geminigold', 'signs/cancergold', 'signs/leogold', 'signs/virgogold',
+      'signs/libragold', 'signs/scorpiogold', 'signs/sagittariusgold', 'signs/capricorngold', 'signs/aquariusgold', 'signs/piscesgold'
+    ];
+    
+    const angle = (((index * 30 + 15) * Math.PI) / 180) + (chartRotation * Math.PI / 180);
+    const radius = 220;
+    
+    const exactX = Number.isFinite(angle) ? 250 + Math.cos(angle) * radius : 250;
+    const exactY = Number.isFinite(angle) ? 250 - Math.sin(angle) * radius : 250;
+    
+    const verticalCorrectionFactor = Math.abs(Math.sin(angle));
+    const adjustedY = exactY > 250 
+      ? exactY - verticalCorrectionFactor
+      : exactY + verticalCorrectionFactor;
+    
+    if (!Number.isFinite(exactX) || !Number.isFinite(adjustedY)) {
+      return null;
+    }
+    
+    // Size based on viewport - same relative sizes as before
+    const iconSize = 24;
+    
+    return (
+      <image
+        key={`zodiac-${index}`}
+        href={`/${signs[index]}.png`}
+        x={exactX - (iconSize/2)}
+        y={adjustedY - (iconSize/2)}
+        width={iconSize}
+        height={iconSize}
+        preserveAspectRatio="xMidYMid meet"
+      />
+    );
+  };
+
   const renderPositionLines = () => {
     if (!celestialPositions.length) return null;
     
     return celestialPositions.map(object => {
       // Calculate position for the original degree (point on the degree circle)
-      const originalAngle = (object.originalDegree * Math.PI) / 180;
+      // Apply chart rotation to the original degree position
+      const originalAngle = ((object.originalDegree + chartRotation) * Math.PI) / 180;
       const degreeRadius = 200; // The radius where the degree marks are
       const x1 = 250 + Math.cos(originalAngle) * degreeRadius;
       const y1 = 250 - Math.sin(originalAngle) * degreeRadius;
       
-      // Calculate adjusted object position
-      const adjustedAngle = (object.degree * Math.PI) / 180;
+      // Calculate adjusted object position with rotation
+      const adjustedAngle = ((object.degree + chartRotation) * Math.PI) / 180;
       const objectRadius = object.radius;
       
       // For angles, we'll make the line shorter - have it go halfway
@@ -239,86 +251,83 @@ const BirthChartSVG = ({ horoscope, newHoroscope }) => {
         y2 = 250 - Math.sin(adjustedAngle) * objectRadius;
       }
       
-      // Always draw lines for angles, and for planets that moved from original position
-      if (object.type === 'angle' || 
-          Math.abs(object.originalDegree - object.degree) > 0.1 || 
-          Math.abs(object.radius - 170) > 0.1) {
-        return (
-          <line
-            key={`position-line-${object.key}`}
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke="#D2AE3C"
-            strokeWidth={0.75}
-            strokeDasharray="2,2"
-          />
-        );
-      }
-      return null;
+      return (
+        <line
+          key={`position-line-${object.key}`}
+          x1={x1}
+          y1={y1}
+          x2={x2}
+          y2={y2}
+          stroke="#D2AE3C"
+          strokeWidth={0.75}
+          strokeDasharray="2,2"
+        />
+      );
     });
-  };
+  };   
   
+  // SVG-based celestial object renderer
   const renderCelestialObject = (celestialObj) => {
-    // Use adjusted position
     const { degree, radius, key, type, imageName } = celestialObj;
     
-    // Calculate position from adjusted degree and radius
-    const angle = (degree * Math.PI) / 180;
+    const angle = ((degree * Math.PI) / 180) + (chartRotation * Math.PI / 180);
     const exactX = 250 + Math.cos(angle) * radius;
     const exactY = 250 - Math.sin(angle) * radius;
     
-    // Apply vertical correction - pull in towards center slightly
-    // Apply more correction at the top and bottom, less at the sides
-    const verticalCorrectionFactor = Math.abs(Math.sin(angle)) * 6; // 0-6px varying by position
-    
-    // Adjust y position based on position (pull toward center)
+    const verticalCorrectionFactor = Math.abs(Math.sin(angle));
     const adjustedY = exactY > 250 
-      ? exactY - verticalCorrectionFactor  // Below center, pull up
-      : exactY + verticalCorrectionFactor; // Above center, pull down
+      ? exactY - verticalCorrectionFactor
+      : exactY + verticalCorrectionFactor;
     
     if (!Number.isFinite(exactX) || !Number.isFinite(adjustedY)) {
       return null;
     }
 
-    // For planets, use key as the image name
-    // For angles, use the explicit imageName (or fallback to key)
     const imageFileName = type === 'angle' ? (imageName || key) : key;
     
+    // Determine the correct subdirectory based on object type
+    const subDir = type === 'angle' ? 'angles' : 'planets';
+    
+    // Size based on viewport - same relative sizes as before
+    const iconSize = 24;
+    
     return (
-      <div
+      <image
         key={`celestial-${key}`}
-        className="absolute z-[10] transform -translate-x-1/2 -translate-y-1/2"
-        style={{
-          left: `${(exactX/500)*100}%`,
-          top: `${(adjustedY/500)*100}%`,
-        }}
-      >
-        <Image
-          src={`/${imageFileName}.png`}
-          alt={key}
-          width={24}
-          height={24}
-          priority
-          className="z-[2] w-[16px] h-[16px] sm:w-[20px] sm:h-[20px] md:w-[24px] md:h-[24px]"
-        />
-      </div>
+        href={`/${subDir}/${imageFileName}.png`}
+        x={exactX - (iconSize/2)}
+        y={adjustedY - (iconSize/2)}
+        width={iconSize}
+        height={iconSize}
+        preserveAspectRatio="xMidYMid meet"
+      />
     );
   };
 
   const renderDegreeMarkers = () => {
     const markers = [];
     for (let i = 0; i < 360; i++) {
-      // Adjust degree markers to match new orientation
-      const angle = ((i) * Math.PI) / 180;
-      let length = 10;
+      // Apply chart rotation to align with zodiac signs
+      const angle = ((i + chartRotation) * Math.PI) / 180;
+      
+      // Determine marker length and width based on position within zodiac sign
+      let length = 5; // Default small tick
       let strokeWidth = 0.5;
       
-      if (i % 10 === 0) {
+      // Calculate position within the current sign (0-29)
+      const positionInSign = i % 30;
+      
+      // Larger markers for:
+      if (positionInSign === 0) {
+        // Sign boundaries (0° of each sign)
         length = 20;
+        strokeWidth = 1.5;
+      } else if (positionInSign % 10 === 0) {
+        // Decans (10° and 20° within each sign)
+        length = 15;
         strokeWidth = 1;
-      } else if (i % 5 === 0) {
+      } else if (positionInSign % 5 === 0) {
+        // Terms/bounds divisions (5°, 15°, 25° within each sign)
         length = 10;
         strokeWidth = 1;
       }
@@ -342,65 +351,102 @@ const BirthChartSVG = ({ horoscope, newHoroscope }) => {
       );
     }
     return markers;
-  };
+  };  
 
   // Calculate aspect lines between planets
   const renderAspectLines = () => {
     if (!horoscope || !horoscope.aspects) return null;
-
+    
     return horoscope.aspects.map((aspect, index) => {
-      // Check if aspect has the required properties
-      if (!aspect.planet1 || !aspect.planet2) return null;
+      // Skip if aspect doesn't have the required properties
+      if (!aspect.point1?.name || !aspect.point2?.name) return null;
       
-      // Get the planets involved in the aspect
-      const planet1Key = aspect.planet1.toLowerCase();
-      const planet2Key = aspect.planet2.toLowerCase();
+      // Get planet names from the aspect data
+      const planet1Name = aspect.point1.name;
+      const planet2Name = aspect.point2.name;
       
-      // Get planet data
-      const planet1 = horoscope.planets[planet1Key];
-      const planet2 = horoscope.planets[planet2Key];
+      // Get degrees directly from aspect data
+      const planet1Degree = aspect.point1.degree;
+      const planet2Degree = aspect.point2.degree;
       
-      if (!planet1 || !planet2) return null;
+      if (planet1Degree === undefined || planet2Degree === undefined) {
+        return null;
+      }
       
-      // Modified angle calculations for aspects
-      const angle1 = ((planet1.degree) * Math.PI) / 180;
-      const angle2 = ((planet2.degree) * Math.PI) / 180;
+      // Apply chart rotation for proper positioning
+      const angle1 = ((planet1Degree + chartRotation) * Math.PI) / 180;
+      const angle2 = ((planet2Degree + chartRotation) * Math.PI) / 180;
       
-      const radius = 90; // Inside the house circle
+      // Use the full radius of the inner circle
+      const radius = 100;
       
       const x1 = 250 + Math.cos(angle1) * radius;
       const y1 = 250 - Math.sin(angle1) * radius;
       const x2 = 250 + Math.cos(angle2) * radius;
       const y2 = 250 - Math.sin(angle2) * radius;
-
-      // Set style based on aspect type
-      let strokeDasharray = "none";
-      let strokeWidth = 1;
-      let strokeColor = "#F3EBCD";
       
-      if (aspect.level === "minor") {
-        strokeDasharray = "3,3";
-        strokeWidth = 0.75;
+      // Set stroke width based on aspect importance
+      let strokeWidth;
+      
+      // Graduated boldness by importance level
+      if (aspect.name === "conjunction" || aspect.name === "opposition") {
+        // Level 1: Most important - conjunction and opposition
+        strokeWidth = 1.0;
+      } else if (aspect.name === "square" || aspect.name === "trine") {
+        // Level 2: Second most important - square and trine
+        strokeWidth = 0.5;
+      } else if (aspect.name === "sextile") {
+        // Level 3: Third most important - sextile
+        strokeWidth = 0.25;
+      } else {
+        // Level 4: Least important - all minor aspects
+        strokeWidth = 0.25;
       }
       
+      // Always use dashed lines for minor aspects, solid for major
+      let strokeDasharray = aspect.level === "minor" ? "3,3" : "none";
+      
+      // Assign colors based on aspect type
+      let strokeColor;
+      
       switch (aspect.name) {
-        case "conjunction":
-          strokeColor = "#5d9df5"; // Blue
-          break;
-        case "opposition":
-          strokeColor = "#f55d5d"; // Red
-          break;
+        // Positive aspects with harmonizing blue variations
         case "trine":
-          strokeColor = "#5df55d"; // Green
-          break;
-        case "square":
-          strokeColor = "#f5b95d"; // Orange
+          strokeColor = "#D2AE3C"; // Brightest royal blue that complements gold
           break;
         case "sextile":
-          strokeColor = "#b95df5"; // Purple
+          strokeColor = "#D2AE3C"; // Medium blue
+          break;
+        case "quintile":
+          strokeColor = "#2A4C7A"; // Darker blue
+          break;
+        case "semi-sextile":
+          strokeColor = "#30578C"; // Between medium and dark blue
+          break;
+          
+        // Negative aspects with variations of red that complement the theme
+        case "opposition":
+          strokeColor = "#C13030"; // Bright red complementing gold theme
+          break;
+        case "square":
+          strokeColor = "#A82828"; // Medium red
+          break;
+        case "semi-square":
+          strokeColor = "#872020"; // Darker red
+          break;
+        case "quincunx":
+          strokeColor = "#941F1F"; // Between medium and dark red
+          break;
+          
+        // Neutral aspects
+        case "conjunction":
+          strokeColor = "#D2AE3C"; // Using theme color for conjunction
+          break;
+        case "septile":
+          strokeColor = "#8F7A31"; // Darker variant of theme color
           break;
         default:
-          strokeColor = "#F3EBCD"; // Light color for other aspects
+          strokeColor = "#A6915A"; // Neutral variant of the theme color
       }
       
       return (
@@ -418,7 +464,7 @@ const BirthChartSVG = ({ horoscope, newHoroscope }) => {
       );
     });
   };
-
+  
   return (
     <div className="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] md:w-[500px] md:h-[500px] lg:w-[600px] lg:h-[600px] overflow-hidden">
       <svg 
@@ -462,11 +508,19 @@ const BirthChartSVG = ({ horoscope, newHoroscope }) => {
         />
 
         {/* House lines */}
-        {horoscope && horoscope.houseCusps && Object.entries(horoscope.houseCusps).map(([key, house], index) => {
-          if (!house.degree) return null;
+        {horoscope && horoscope.houseCusps && Object.entries(horoscope.houseCusps).map(([key, house]) => {
+          // Skip if not a valid house object or has no key or degree
+          if (!house || !house.key || house.degree === undefined || house.degree === null) {
+            console.log(`Skipping house line for invalid house:`, house);
+            return null;
+          }
           
-          // Modified angle calculation for house lines
-          const angle = (house.degree) * Math.PI / 180;
+          // Make sure we're working with a number
+          let houseDegree = typeof house.degree === 'string' ? parseFloat(house.degree) : house.degree;
+          
+          // Calculate angle with chart rotation
+          const angle = ((houseDegree + chartRotation) % 360) * Math.PI / 180;
+          
           const x1 = 250 + Math.cos(angle) * 100;
           const y1 = 250 - Math.sin(angle) * 100;
           const x2 = 250 + Math.cos(angle) * 240;
@@ -474,7 +528,7 @@ const BirthChartSVG = ({ horoscope, newHoroscope }) => {
 
           return (
             <line
-              key={`house-line-${index}`}
+              key={`house-line-${house.key}`}
               x1={x1}
               y1={y1}
               x2={x2}
@@ -489,121 +543,108 @@ const BirthChartSVG = ({ horoscope, newHoroscope }) => {
 
         {/* Zodiac sections */}
         {Array.from({ length: 12 }).map((_, index) => {
-          const getModality = (index) => {
-            if (index % 3 === 0) return "#2A303C";
-            if (index % 3 === 1) return "#2A303C";
-            return "#2A303C";
-          };
-
-          // Modified angle calculation for zodiac sections
-          // Start with Ascendant at the left (0° = left side)
-          const startAngle = ((-index * 30) * Math.PI) / 180; // +90 degrees from previous
-          const endAngle = ((-(index + 1) * 30) * Math.PI) / 180; // +90 degrees from previous
-          
-          const outerX1 = 250 + Math.cos(startAngle) * 240;
-          const outerY1 = 250 + Math.sin(startAngle) * 240;
-          const outerX2 = 250 + Math.cos(endAngle) * 240;
-          const outerY2 = 250 + Math.sin(endAngle) * 240;
-          
-          const innerX1 = 250 + Math.cos(startAngle) * 200;
-          const innerY1 = 250 + Math.sin(startAngle) * 200;
-          const innerX2 = 250 + Math.cos(endAngle) * 200;
-          const innerY2 = 250 + Math.sin(endAngle) * 200;
-          
-          const pathData = `
-            M ${outerX1} ${outerY1}
-            A 240 240 0 0 0 ${outerX2} ${outerY2}
-            L ${innerX2} ${innerY2}
-            A 200 200 0 0 1 ${innerX1} ${innerY1}
-            Z
-          `;
-
-          return (
-            <path
-              key={`zodiac-section-${index}`}
-              d={pathData}
-              fill={getModality(index)}
-              stroke="none"
-            />
-          );
-        })}
+        // Calculate angles with chart rotation
+        // Each sign is 30 degrees
+        const startDegree = index * 30;
+        const endDegree = (index + 1) * 30;
+        
+        // Apply chart rotation to both start and end angles
+        const rotatedStartAngle = ((startDegree + chartRotation) * Math.PI) / 180;
+        const rotatedEndAngle = ((endDegree + chartRotation) * Math.PI) / 180;
+        
+        const outerX1 = 250 + Math.cos(rotatedStartAngle) * 240;
+        const outerY1 = 250 - Math.sin(rotatedStartAngle) * 240;
+        const outerX2 = 250 + Math.cos(rotatedEndAngle) * 240;
+        const outerY2 = 250 - Math.sin(rotatedEndAngle) * 240;
+        
+        const innerX1 = 250 + Math.cos(rotatedStartAngle) * 200;
+        const innerY1 = 250 - Math.sin(rotatedStartAngle) * 200;
+        const innerX2 = 250 + Math.cos(rotatedEndAngle) * 200;
+        const innerY2 = 250 - Math.sin(rotatedEndAngle) * 200;
+        
+        // Optional: We can add a thin line to separate zodiac sections if needed
+        return (
+          <line
+            key={`zodiac-divider-${index}`}
+            x1={outerX1}
+            y1={outerY1}
+            x2={innerX1}
+            y2={innerY1}
+            stroke="#F3EBCD"
+            strokeWidth={0.5}
+          />
+        );
+      })}
         
         {/* Position lines for planets and angles */}
         {renderPositionLines()}
 
         {/* House numbers */}
-        {horoscope && horoscope.houseCusps && Object.entries(horoscope.houseCusps).map(([key, house], index) => {
-          if (!house.degree) return null;
-          
-          // Get the next house's degree
-          const houseKeys = Object.keys(horoscope.houseCusps);
-          const nextHouseKey = houseKeys[(index + 1) % houseKeys.length];
-          const nextHouse = horoscope.houseCusps[nextHouseKey];
-          
-          if (!nextHouse || !nextHouse.degree) return null;
+        {horoscope && horoscope.houseCusps && 
+          Array.from({length: 12}, (_, i) => i + 1).map(houseNumber => {
+            // Find the corresponding house in the houseCusps object
+            const houseKey = houseNumber.toString();
+            const house = Object.values(horoscope.houseCusps).find(h => h.key === houseKey);
+            
+            if (!house || house.degree === undefined || house.degree === null) {
+              console.log(`Missing house ${houseKey} data:`, house);
+              return null;
+            }
+            
+            // Get next house (or wrap to house 1)
+            const nextHouseKey = ((houseNumber % 12) + 1).toString();
+            const nextHouse = Object.values(horoscope.houseCusps).find(h => h.key === nextHouseKey);
+            
+            if (!nextHouse || nextHouse.degree === undefined || nextHouse.degree === null) {
+              console.log(`Missing next house ${nextHouseKey} data:`, nextHouse);
+              return null;
+            }
+            
+            // Convert to numbers and ensure they're normalized
+            let houseDegree = typeof house.degree === 'string' ? parseFloat(house.degree) : house.degree;
+            let nextHouseDegree = typeof nextHouse.degree === 'string' ? parseFloat(nextHouse.degree) : nextHouse.degree;
+            
+            // Calculate middle position accounting for 0° crossing
+            let middlePosition;
+            // If next house degree is smaller, we're crossing 0°
+            if (nextHouseDegree < houseDegree) {
+              nextHouseDegree += 360; // Add 360 to make it greater
+            }
+            
+            // Calculate the middle
+            middlePosition = (houseDegree + nextHouseDegree) / 2;
+            // Normalize back to 0-360 range
+            middlePosition = middlePosition % 360;
+            
+            // Calculate display angle with chart rotation
+            const displayAngle = ((middlePosition + chartRotation) % 360) * Math.PI / 180;
+            
+            // Position for house number
+            const radius = 110; // Distance from center
+            const x = 250 + Math.cos(displayAngle) * radius;
+            const y = 250 - Math.sin(displayAngle) * radius;
 
-          // Calculate middle position
-          let middlePosition;
-          if (nextHouse.degree < house.degree) {
-            middlePosition = (house.degree + (nextHouse.degree + 360)) / 2;
-            if (middlePosition >= 360) middlePosition -= 360;
-          } else {
-            middlePosition = (house.degree + nextHouse.degree) / 2;
-          }
-          
-          // Modified angle calculation for house numbers
-          const middleAngle = ((middlePosition) * Math.PI) / 180;
-          
-          const radius = 110;
-          const x = 250 + Math.cos(middleAngle) * radius;
-          const y = 250 - Math.sin(middleAngle) * radius;
+            // Use SVG image instead of foreignObject
+            return (
+              <image
+                key={`house-number-${houseKey}`}
+                href={`/housenumbers/${houseKey}gold.jpg`}
+                x={x - 8} // Offset by half the width
+                y={y - 8} // Offset by half the height
+                width={16}
+                height={16}
+                preserveAspectRatio="xMidYMid meet"
+              />
+            );
+          })
+        }
+      
+        {/* Zodiac signs - now inside SVG */}
+        {Array.from({ length: 12 }).map((_, index) => renderZodiacSign(index))}
 
-          return (
-            <text
-              key={`house-number-${index}`}
-              x={x}
-              y={y}
-              fontSize="12"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fill="#D2AE3C"
-              className="font-semibold"
-            >
-              {house.key}
-            </text>
-          );
-        })}
-
-        {/* Add Horizon Line (Ascendant-Descendant axis) */}
-        <line
-          x1={250}
-          y1={10}
-          x2={250}
-          y2={490}
-          stroke="#D2AE3C"
-          strokeWidth={1}
-          strokeDasharray="5,5"
-          strokeOpacity={0.7}
-        />
-        
-        {/* Add Meridian Line (MC-IC axis) */}
-        <line
-          x1={10}
-          y1={250}
-          x2={490}
-          y2={250}
-          stroke="#D2AE3C"
-          strokeWidth={1}
-          strokeDasharray="5,5"
-          strokeOpacity={0.7}
-        />
+        {/* Render all celestial objects - now inside SVG */}
+        {celestialPositions.map(obj => renderCelestialObject(obj))}
       </svg>
-
-      {/* Zodiac signs */}
-      {Array.from({ length: 12 }).map((_, index) => renderZodiacSign(index))}
-
-      {/* Render all celestial objects (planets and angles) with adjusted positions */}
-      {celestialPositions.map(obj => renderCelestialObject(obj))}
     </div>
   );
 };
