@@ -10,8 +10,9 @@ import getDegreesInSign from './getDegreesInSign';
 import dmsString from './dmsString';
 import decimalDegreesToDMS from './decimalDegreesToDMS';
 import getZodiacSign from './getZodiacSign';
+import getHousePlacement from './getHousePlacement';
 
-export default function calculateVenus(jde) {
+export default function calculateVenus(jde, houseCusps) {
   try {
     // Create Venus and Earth instances
     const venus = new planetposition.Planet(vsop87Bvenus);
@@ -35,13 +36,17 @@ export default function calculateVenus(jde) {
     // Ensure result is between 0 and 360 degrees
     venusLongitude = modulo(venusLongitude, 360);
 
+    // Get house placement if house cusps are provided
+    const house = houseCusps ? getHousePlacement(venusLongitude, houseCusps) : null;
+
     return {
       label: 'Venus',
       key: 'venus',
       degree: venusLongitude,
       sign: getZodiacSign(venusLongitude),
       degreeInSign: decimalDegreesToDMS(getDegreesInSign(venusLongitude)),
-      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(venusLongitude)))
+      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(venusLongitude))),
+      house: house
     };
   } catch (error) {
     console.error('Error calculating Venus position:', error);

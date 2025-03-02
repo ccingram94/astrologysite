@@ -20,13 +20,16 @@ export default function calculateImumCoeli(midheavenDegree) {
 
     // IC is always 180° from the Midheaven
     let ic = modulo(mcDegree + 180, 360);
+    
+    // Only get the degree within the sign (0-30) for display
+    const degreeInSign = getDegreesInSign(ic);
 
     return {
       label: 'Imum Coeli',
       key: 'ic',
       degree: ic,
       sign: getZodiacSign(ic),
-      degreeInSign: decimalDegreesToDMS(getDegreesInSign(ic))
+      degreeInSign: decimalDegreesToDMS(degreeInSign)
     };
   } catch (error) {
     console.error('Error calculating Imum Coeli:', error);

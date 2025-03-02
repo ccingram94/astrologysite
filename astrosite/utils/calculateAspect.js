@@ -1,169 +1,153 @@
-
-
-// data for calculating aspects
-const ASPECTS = {
-  'conjunction': {
-    symbol: '☌',
-    level: 'major',
-    angle: 0,
-    defaultOrb: 8
-  },
-  'opposition': {
-    symbol: '☍',
-    level: 'major',
-    angle: 180,
-    defaultOrb: 8
-  },
-  'trine': {
-    symbol: '△',
-    level: 'major',
-    angle: 120,
-    defaultOrb: 8
-  },
-  'square': {
-    symbol: '□',
-    level: 'major',
-    angle: 90,
-    defaultOrb: 7
-  },
-  'sextile': {
-    symbol: '*',
-    level: 'major',
-    angle: 60,
-    defaultOrb: 6
-  },
-  'quincunx': {
-    symbol: 'Qx',
-    level: 'minor',
-    angle: 150,
-    defaultOrb: 5
-  },
-  'quintile': {
-    symbol: 'Q',
-    level: 'minor',
-    angle: 72,
-    defaultOrb: 1
-  },
-  'septile': {
-    symbol: 'S',
-    level: 'minor',
-    angle: 51.5,
-    defaultOrb: 1
-  },
-  'semi-square': {
-    symbol: '∠',
-    level: 'minor',
-    angle: 45,
-    defaultOrb: 1
-  },
-  'semi-sextile': {
-    symbol: '⊊',
-    level: 'minor',
-    angle: 30,
-    defaultOrb: 1
-  }
-}
-
-
-// Calculate the shortest angular distance between two points on a 360° circle
-const getOrb = (angle1, angle2, aspectAngle) => {
-  const diff = Math.abs(angle2 - angle1);
-  const orb = Math.abs(diff - aspectAngle);
-  return Math.min(orb, 360 - orb);
-};
-
-// Check if two positions form a specific aspect
-const checkAspect = (pos1, pos2, aspectAngle, maxOrb) => {
-  const orb = getOrb(pos1, pos2, aspectAngle);
-  return orb <= maxOrb ? orb : false;
-};
-
-// Main function to find all aspects between two positions
-export const findAspects = (transitPlanet, natalPlanet) => {
-  const aspects = [];
-  const transitDegrees = transitPlanet.ChartPosition.Ecliptic.DecimalDegrees;
-  const natalDegrees = natalPlanet.ChartPosition.Ecliptic.DecimalDegrees;
-
-  Object.entries(ASPECTS).forEach(([name, aspect]) => {
-    const orb = checkAspect(transitDegrees, natalDegrees, aspect.angle, aspect.defaultOrb);
-    
-    if (orb !== false) {
-      aspects.push({
-        name,
-        ...aspect,
-        orb: Number(orb.toFixed(2)),
-        transitPlanet,
-        natalPlanet
-      });
+/**
+ * Calculates the aspect between two celestial points
+ * 
+ * @param {Object} point1 - First celestial point (planet or angle)
+ * @param {Object} point2 - Second celestial point (planet or angle)
+ * @param {Object} customOrbs - Optional custom orbs for specific aspects
+ * @returns {Object|null} - The aspect details or null if no aspect is found
+ */
+export default function calculateAspect(point1, point2, customOrbs = {}) {
+  // Aspect definitions
+  const ASPECTS = {
+    'conjunction': {
+      symbol: '☌',
+      level: 'major',
+      angle: 0,
+      defaultOrb: 8
+    },
+    'opposition': {
+      symbol: '☍',
+      level: 'major',
+      angle: 180,
+      defaultOrb: 8
+    },
+    'trine': {
+      symbol: '△',
+      level: 'major',
+      angle: 120,
+      defaultOrb: 8
+    },
+    'square': {
+      symbol: '□',
+      level: 'major',
+      angle: 90,
+      defaultOrb: 7
+    },
+    'sextile': {
+      symbol: '*',
+      level: 'major',
+      angle: 60,
+      defaultOrb: 6
+    },
+    'quincunx': {
+      symbol: 'Qx',
+      level: 'minor',
+      angle: 150,
+      defaultOrb: 5
+    },
+    'quintile': {
+      symbol: 'Q',
+      level: 'minor',
+      angle: 72,
+      defaultOrb: 1
+    },
+    'septile': {
+      symbol: 'S',
+      level: 'minor',
+      angle: 51.5,
+      defaultOrb: 1
+    },
+    'semi-square': {
+      symbol: '∠',
+      level: 'minor',
+      angle: 45,
+      defaultOrb: 1
+    },
+    'semi-sextile': {
+      symbol: '⊊',
+      level: 'minor',
+      angle: 30,
+      defaultOrb: 1
     }
-  });
+  };
 
-  // Sort aspects by orb (most exact first)
-  return aspects.sort((a, b) => a.orb - b.orb);
-};
-
-// Function to get all aspects between transit and natal planets
-export const getAllTransitAspects = (transitPlanets, birthPlanets) => {
-  const aspectList = [];
-
-  transitPlanets.forEach((transitPlanet, transitIndex) => {
-    birthPlanets.forEach((natalPlanet, natalIndex) => {
-      const aspects = findAspects(transitPlanet, natalPlanet);
-      
-      if (aspects.length > 0) {
-        aspects.forEach(aspect => {
-          aspectList.push({
-            transitIndex,
-            natalIndex,
-            ...aspect
-          });
-        });
-      }
-    });
-  });
-  console.log(aspectList);
-  return aspectList;
-};
-
-// Function to find only conjunctions between two positions
-export const findConjunctions = (transitPlanet, natalPlanet) => {
-  const transitDegrees = transitPlanet.ChartPosition.Ecliptic.DecimalDegrees;
-  const natalDegrees = natalPlanet.ChartPosition.Ecliptic.DecimalDegrees;
-  const conjunctionAspect = ASPECTS['conjunction'];
-  
-  const orb = checkAspect(transitDegrees, natalDegrees, conjunctionAspect.angle, conjunctionAspect.defaultOrb);
-  
-  if (orb !== false) {
-    return {
-      name: 'conjunction',
-      ...conjunctionAspect,
-      orb: Number(orb.toFixed(2)),
-      transitPlanet,
-      natalPlanet
-    };
+  // Make sure we have valid points to compare
+  if (!point1?.degree || !point2?.degree) {
+    return null;
   }
+
+  // Calculate the angular distance between the two points
+  let angle = Math.abs(point1.degree - point2.degree);
   
-  return null;
-};
+  // Ensure the shortest arc distance (should be ≤ 180°)
+  if (angle > 180) {
+    angle = 360 - angle;
+  }
 
-// Function to get all conjunctions between transit and natal planets
-export const getAllConjunctions = (transitPlanets, birthPlanets) => {
-  const conjunctionList = [];
+  // Check each aspect
+  for (const [aspectName, aspectData] of Object.entries(ASPECTS)) {
+    // Get orb for this aspect (use custom orb if specified)
+    const orb = customOrbs[aspectName] || aspectData.defaultOrb;
+    
+    // Calculate the difference between the actual angle and the aspect angle
+    const difference = Math.abs(angle - aspectData.angle);
+    
+    // If within orb, we've found an aspect
+    if (difference <= orb) {
+      // Calculate applying/separating and exact status
+      let applying = false;
+      let exact = false;
+      let orbalDistance = difference;
 
-  transitPlanets.forEach((transitPlanet, transitIndex) => {
-    birthPlanets.forEach((natalPlanet, natalIndex) => {
-      const conjunction = findConjunctions(transitPlanet, natalPlanet);
-      
-      if (conjunction) {
-        conjunctionList.push({
-          transitIndex,
-          natalIndex,
-          ...conjunction
-        });
+      // More details about the orb
+      if (difference < 0.5) {
+        exact = true;
+      } else {
+        // This is a simplification - for more accurate applying/separating calculation
+        // we would need to consider the planet speeds and directions
+        // This assumes point2 is typically faster than point1
+        // For a more accurate calculation in a real system, 
+        // you'd need to check actual planet directions and speeds
+        const point1InZodiacOrder = point1.degree;
+        let point2InZodiacOrder = point2.degree;
+        
+        // Adjust for 0° crossing
+        if (aspectData.angle === 0 && 
+            Math.abs(point1InZodiacOrder - point2InZodiacOrder) > 180) {
+          if (point2InZodiacOrder < point1InZodiacOrder) {
+            point2InZodiacOrder += 360;
+          } else {
+            point2InZodiacOrder -= 360;
+          }
+        }
+        
+        applying = point2InZodiacOrder < point1InZodiacOrder;
       }
-    });
-  });
 
-  // Sort conjunctions by orb (most exact first)
-  return conjunctionList.sort((a, b) => a.orb - b.orb);
-};
+      return {
+        name: aspectName,
+        symbol: aspectData.symbol,
+        level: aspectData.level,
+        angle: aspectData.angle,
+        orb: difference,
+        maxOrb: orb,
+        applying: applying,
+        separating: !applying && !exact,
+        exact: exact,
+        point1: {
+          name: point1.label,
+          degree: point1.degree,
+          sign: point1.sign
+        },
+        point2: {
+          name: point2.label,
+          degree: point2.degree,
+          sign: point2.sign
+        }
+      };
+    }
+  }
+
+  // No aspect found
+  return null;
+}

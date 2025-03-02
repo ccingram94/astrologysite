@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { Origin, Horoscope } from 'circular-natal-horoscope-js';
 import { format } from 'date-fns';
 import zodiacSigns from '../data/zodiacsigns';
 import planets from '../data/planets';
@@ -13,14 +12,8 @@ import PlanetSection from './PlanetSection';
 import HouseSection from './HouseSection';
 import AngleSection from './AngleSection';
 import AspectSection from './AspectSection';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import PDFBirthChart from './PDFBirthChart';
 import BirthChartSVG from './BirthChartSVG';
 import { findAspects, generateAspectLines } from '../utils/calculateAspectChart';
-import calculateAscendant from '../utils/calculateAscendant';
-import { calculateMidheaven } from '../utils/calculateMidheaven';
-import { calculateDescendant } from '../utils/calculateDescendant';
-import { calculateImumCoeli } from '../utils/calculateImumCoeli';
 
 const PDFDownloadButton = dynamic(() => import('./PDFDownloadButton'), {
   ssr: false,
@@ -35,7 +28,6 @@ const PDFDownloadButton = dynamic(() => import('./PDFDownloadButton'), {
 const ChartBirthFree = () => {
   const [displayChart, setDisplayChart] = useState(false);
   const [horoscope, setHoroscope] = useState(null);
-  const [newHoroscope, setNewHoroscope] = useState(null);
   const [chartData, setChartData] = useState({
     birthDate: '',
     birthTime: '',
@@ -51,38 +43,18 @@ const ChartBirthFree = () => {
  
   const handleFormSubmit = (formData) => {
     setIsLoading(true);
-    const { birthDate, birthTime, birthLocation, houseSystem, myHoroscope } = formData;
-    const { lat, lon } = birthLocation.coordinates;
+    const { birthDate, birthTime, birthLocation, houseSystem, horoscope } = formData;
 
-    const date = new Date(`${birthDate}T${birthTime}`);
-    console.log(myHoroscope);
-    setNewHoroscope(myHoroscope);
-
-    const origin = new Origin({
-      year: parseInt(birthDate.split('-')[0]),
-      month: parseInt(birthDate.split('-')[1] - 1),
-      date: parseInt(birthDate.split('-')[2]),
-      hour: parseInt(birthTime.split(':')[0]),
-      minute: parseInt(birthTime.split(':')[1]),
-      latitude: parseFloat(lat),
-      longitude: parseFloat(lon),
-    });
+    console.log("Your Horoscope Data: ");
+    console.log(horoscope);
+    setHoroscope(horoscope);
     
-    const horoscopeData = new Horoscope({
-      origin,
-      houseSystem: houseSystem,
-      zodiac: 'tropical',
-      aspectPoints: ['bodies', 'points', 'angles'],
-      aspectTypes: ['major', 'minor'],
-      customOrbs: {},
-      language: 'en',
-    });
-    
-    setHoroscope(horoscopeData);
-    const aspects = findAspects(horoscopeData.CelestialBodies);
+    const aspects = findAspects(horoscope.planets);
     const aspectLines = generateAspectLines(aspects.slice(0, 11));
     setAspectLines(aspectLines);
-    console.log(horoscopeData);
+    
+    console.log("Your chart data: ")
+    console.log(formData);
     setChartData(formData);
     setDisplayChart(true);
     
@@ -93,7 +65,7 @@ const ChartBirthFree = () => {
   }
 
   const renderHoroscopeData = () => {
-    if (!newHoroscope) return null;
+    if (!horoscope) return null;
     
     return (
       <div className="animate-fadeIn">
@@ -116,7 +88,7 @@ const ChartBirthFree = () => {
             
             <div className="mt-6 space-y-2">
               <p className="text-xl font-medium">
-                {format(horoscope.origin.utcTimeFormatted, 'PPPP')} at {chartData.birthTime}
+                {format(new Date(chartData.birthDate + 'T' + chartData.birthTime), 'PPPP')} at {chartData.birthTime}
               </p>
               <p className="text-base-content/70">
                 {chartData.birthLocation.label}
@@ -131,37 +103,39 @@ const ChartBirthFree = () => {
             <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-4 rounded-xl border border-primary/10 shadow-sm">
                 <div className="text-xs uppercase tracking-wider text-primary/70">Sun</div>
-                <div className="font-bold text-lg mt-1">{newHoroscope.planets.Sun.sign}</div>
+                <div className="font-bold text-lg mt-1">{horoscope.planets.Sun.sign}</div>
               </div>
               
               <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-4 rounded-xl border border-primary/10 shadow-sm">
                 <div className="text-xs uppercase tracking-wider text-primary/70">Moon</div>
-                <div className="font-bold text-lg mt-1">{newHoroscope.planets.Moon.sign}</div>
+                <div className="font-bold text-lg mt-1">{horoscope.planets.Moon.sign}</div>
               </div>
               
               <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-4 rounded-xl border border-primary/10 shadow-sm">
                 <div className="text-xs uppercase tracking-wider text-primary/70">Ascendant</div>
-                <div className="font-bold text-lg mt-1">{newHoroscope.angles.Ascendant.sign}</div>
+                <div className="font-bold text-lg mt-1">{horoscope.angles.Ascendant.sign}</div>
               </div>
               
               <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-4 rounded-xl border border-primary/10 shadow-sm">
                 <div className="text-xs uppercase tracking-wider text-primary/70">Midheaven</div>
-                <div className="font-bold text-lg mt-1">{newHoroscope.angles.Midheaven.sign}</div>
+                <div className="font-bold text-lg mt-1">{horoscope.angles.Midheaven.sign}</div>
               </div>
             </div>
           </div>
 
           {/* Chart Section */}
           <div className="grid lg:grid-cols-2 gap-8 items-center">
-            <div className="bg-gradient-to-br from-base-100 to-base-200/20 rounded-2xl p-4 shadow-lg border border-primary/5">
+            <div className="bg-gradient-to-br from-base-100 to-base-200/20 rounded-2xl p-4">
               <div className="flex justify-center">
-                <BirthChartSVG horoscope={horoscope} aspectLines={aspectLines} newHoroscope={newHoroscope} />
+                {horoscope && horoscope && (
+                  <BirthChartSVG horoscope={horoscope} />
+                )}
               </div>
             </div>
             
-            <div className="bg-gradient-to-br from-base-100 to-base-200/20 rounded-2xl p-4 shadow-lg border border-primary/5 overflow-hidden">
+            <div className="bg-gradient-to-br from-base-100 to-base-200/20 rounded-2xl p-4 overflow-hidden">
               <div className="overflow-x-auto">
-                <PlacementsTable horoscope={horoscope} planets={planets} newHoroscope={newHoroscope} />
+                <PlacementsTable planets={planets} newHoroscope={horoscope} />
               </div>
             </div>
           </div>

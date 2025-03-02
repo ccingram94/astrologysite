@@ -10,8 +10,9 @@ import getDegreesInSign from './getDegreesInSign';
 import dmsString from './dmsString';
 import decimalDegreesToDMS from './decimalDegreesToDMS';
 import getZodiacSign from './getZodiacSign';
+import getHousePlacement from './getHousePlacement';
 
-export default function calculateMars(jde) {
+export default function calculateMars(jde, houseCusps) {
   try {
     // Create Mars and Earth instances
     const mars = new planetposition.Planet(vsop87Bmars);
@@ -35,13 +36,17 @@ export default function calculateMars(jde) {
     // Ensure result is between 0 and 360 degrees
     marsLongitude = modulo(marsLongitude, 360);
 
+    // Get house placement if house cusps are provided
+    const house = houseCusps ? getHousePlacement(marsLongitude, houseCusps) : null;
+
     return {
       label: 'Mars',
       key: 'mars',
       degree: marsLongitude,
       sign: getZodiacSign(marsLongitude),
       degreeInSign: decimalDegreesToDMS(getDegreesInSign(marsLongitude)),
-      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(marsLongitude)))
+      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(marsLongitude))),
+      house: house
     };
   } catch (error) {
     console.error('Error calculating Mars position:', error);

@@ -20,13 +20,16 @@ export default function calculateDescendant(ascendantDegree) {
 
     // Descendant is always 180° from the Ascendant
     let descendant = modulo(ascDegree + 180, 360);
+    
+    // Only get the degree within the sign (0-30) for display
+    const degreeInSign = getDegreesInSign(descendant);
 
     return {
       label: 'Descendant',
       key: 'descendant',
       degree: descendant,
       sign: getZodiacSign(descendant),
-      degreeInSign: decimalDegreesToDMS(getDegreesInSign(descendant))
+      degreeInSign: decimalDegreesToDMS(degreeInSign)
     };
   } catch (error) {
     console.error('Error calculating Descendant:', error);

@@ -10,8 +10,9 @@ import getDegreesInSign from './getDegreesInSign';
 import dmsString from './dmsString';
 import decimalDegreesToDMS from './decimalDegreesToDMS';
 import getZodiacSign from './getZodiacSign';
+import getHousePlacement from './getHousePlacement';
 
-export default function calculateSaturn(jde) {
+export default function calculateSaturn(jde, houseCusps) {
   try {
     // Create Saturn and Earth instances
     const saturn = new planetposition.Planet(vsop87Bsaturn);
@@ -35,13 +36,17 @@ export default function calculateSaturn(jde) {
     // Ensure result is between 0 and 360 degrees
     saturnLongitude = modulo(saturnLongitude, 360);
 
+    // Get house placement if house cusps are provided
+    const house = houseCusps ? getHousePlacement(saturnLongitude, houseCusps) : null;
+
     return {
       label: 'Saturn',
       key: 'saturn',
       degree: saturnLongitude,
       sign: getZodiacSign(saturnLongitude),
       degreeInSign: decimalDegreesToDMS(getDegreesInSign(saturnLongitude)),
-      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(saturnLongitude)))
+      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(saturnLongitude))),
+      house: house
     };
   } catch (error) {
     console.error('Error calculating Saturn position:', error);

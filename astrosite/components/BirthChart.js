@@ -43,8 +43,6 @@ const BirthChart = () => {
     houseSystem: 'whole-sign',
   });
 
-  console.log(chartData)
-
   const AstroChart = dynamic(() => import('./AstroChart'), {
     ssr: false
   });
@@ -53,13 +51,10 @@ const BirthChart = () => {
   const handleFormSubmit = (formData) => {
     const { birthDate, birthTime, birthLocation, houseSystem } = formData;
     const { lat, lon } = birthLocation.coordinates;
-    console.log(birthDate, birthTime, birthLocation);
-    console.log(lat, lon);
 
     // Convert date to Julian Day
     const dateObj = new Date(`${birthDate}T${birthTime}`);
     const jd = julian.DateToJD(dateObj);
-    console.log(jd);
 
     // Create data for chartData (horoscope data)
 
@@ -88,8 +83,6 @@ const BirthChart = () => {
     planetaryPositions,
     planetaryMotions,
   );
-
-  console.log(chartData);
   
   setChartData(chartData);
   setDisplayChart(true);

@@ -10,8 +10,9 @@ import getDegreesInSign from './getDegreesInSign';
 import dmsString from './dmsString';
 import decimalDegreesToDMS from './decimalDegreesToDMS';
 import getZodiacSign from './getZodiacSign';
+import getHousePlacement from './getHousePlacement';
 
-export default function calculateUranus(jde) {
+export default function calculateUranus(jde, houseCusps) {
   try {
     // Create Uranus and Earth instances
     const uranus = new planetposition.Planet(vsop87Buranus);
@@ -35,13 +36,17 @@ export default function calculateUranus(jde) {
     // Ensure result is between 0 and 360 degrees
     uranusLongitude = modulo(uranusLongitude, 360);
 
+    // Get house placement if house cusps are provided
+    const house = houseCusps ? getHousePlacement(uranusLongitude, houseCusps) : null;
+
     return {
       label: 'Uranus',
       key: 'uranus',
       degree: uranusLongitude,
       sign: getZodiacSign(uranusLongitude),
       degreeInSign: decimalDegreesToDMS(getDegreesInSign(uranusLongitude)),
-      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(uranusLongitude)))
+      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(uranusLongitude))),
+      house: house
     };
   } catch (error) {
     console.error('Error calculating Uranus position:', error);

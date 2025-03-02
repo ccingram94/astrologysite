@@ -25,13 +25,6 @@ export default function calculateLocalSiderealTime(julianDate, longitude) {
       lst += 360;
     }
 
-    console.log({
-      gmst,
-      gmstDegrees,
-      longitude: longNum,
-      finalLST: lst
-    });
-
     return lst;
   } catch (error) {
     console.error('Error calculating Local Sidereal Time:', error);

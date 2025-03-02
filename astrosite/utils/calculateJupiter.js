@@ -10,8 +10,9 @@ import getDegreesInSign from './getDegreesInSign';
 import dmsString from './dmsString';
 import decimalDegreesToDMS from './decimalDegreesToDMS';
 import getZodiacSign from './getZodiacSign';
+import getHousePlacement from './getHousePlacement';
 
-export default function calculateJupiter(jde) {
+export default function calculateJupiter(jde, houseCusps) {
   try {
     // Create Jupiter and Earth instances
     const jupiter = new planetposition.Planet(vsop87Bjupiter);
@@ -35,13 +36,17 @@ export default function calculateJupiter(jde) {
     // Ensure result is between 0 and 360 degrees
     jupiterLongitude = modulo(jupiterLongitude, 360);
 
+    // Get house placement if house cusps are provided
+    const house = houseCusps ? getHousePlacement(jupiterLongitude, houseCusps) : null;
+
     return {
       label: 'Jupiter',
       key: 'jupiter',
       degree: jupiterLongitude,
       sign: getZodiacSign(jupiterLongitude),
       degreeInSign: decimalDegreesToDMS(getDegreesInSign(jupiterLongitude)),
-      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(jupiterLongitude)))
+      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(jupiterLongitude))),
+      house: house
     };
   } catch (error) {
     console.error('Error calculating Jupiter position:', error);

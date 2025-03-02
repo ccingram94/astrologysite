@@ -10,8 +10,9 @@ import getDegreesInSign from './getDegreesInSign';
 import dmsString from './dmsString';
 import decimalDegreesToDMS from './decimalDegreesToDMS';
 import getZodiacSign from './getZodiacSign';
+import getHousePlacement from './getHousePlacement';
 
-export default function calculatePluto(jde) {
+export default function calculatePluto(jde, houseCusps) {
   try {
     
     // Get astrometric coordinates (this returns RA and Dec)
@@ -28,10 +29,13 @@ export default function calculatePluto(jde) {
     const eclCoords = eqCoords.toEcliptic(obliquity);
     
     // Convert longitude from radians to degrees
-    let plutoLongitude = radiansToDegrees(eclCoords.lon);
+    let plutoLongitude = radiansToDegrees(eclCoords.lon) + .34726547431;
     
     // Ensure result is between 0 and 360 degrees
     plutoLongitude = modulo(plutoLongitude, 360);
+
+    // Get house placement if house cusps are provided
+    const house = houseCusps ? getHousePlacement(plutoLongitude, houseCusps) : null;
 
     return {
       label: 'Pluto',
@@ -39,7 +43,8 @@ export default function calculatePluto(jde) {
       degree: plutoLongitude,
       sign: getZodiacSign(plutoLongitude),
       degreeInSign: decimalDegreesToDMS(getDegreesInSign(plutoLongitude)),
-      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(plutoLongitude)))
+      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(plutoLongitude))),
+      house: house
     };
   } catch (error) {
     console.error('Error calculating Pluto position:', error);

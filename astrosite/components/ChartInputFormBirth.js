@@ -8,6 +8,7 @@ import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 import calculateUTC from '../utils/calculateUTC';
 import calculateJulianDate from '../utils/calculateJulianDate';
 import calculateLocalSiderealTime from '../utils/calculateLocalSiderealTime';
+import calculateAspect from '../utils/calculateAspect';
 import calculateAscendant from '../utils/calculateAscendant';
 import calculateMidheaven from '../utils/calculateMidheaven';
 import calculateDescendant from '../utils/calculateDescendant';
@@ -126,17 +127,19 @@ const ChartInputFormBirth = ({ onSubmit }) => {
     }
     setHouseCusps(houseCusps);
 
+
+
     // calculate Planets
-    const sun = calculateSun(julianDate);
-    const moon = calculateMoon(julianDate);
-    const mercury = calculateMercury(julianDate);
-    const venus = calculateVenus(julianDate);
-    const mars = calculateMars(julianDate);
-    const jupiter = calculateJupiter(julianDate);
-    const saturn = calculateSaturn(julianDate);
-    const uranus = calculateUranus(julianDate);
-    const neptune = calculateNeptune(julianDate);
-    const pluto = calculatePluto(julianDate);
+    const sun = calculateSun(julianDate, houseCusps);
+    const moon = calculateMoon(julianDate, houseCusps);
+    const mercury = calculateMercury(julianDate, houseCusps);
+    const venus = calculateVenus(julianDate, houseCusps);
+    const mars = calculateMars(julianDate, houseCusps);
+    const jupiter = calculateJupiter(julianDate, houseCusps);
+    const saturn = calculateSaturn(julianDate, houseCusps);
+    const uranus = calculateUranus(julianDate, houseCusps);
+    const neptune = calculateNeptune(julianDate, houseCusps);
+    const pluto = calculatePluto(julianDate, houseCusps);
     const planets = {
       'Sun': sun,
       'Moon': moon,
@@ -151,27 +154,79 @@ const ChartInputFormBirth = ({ onSubmit }) => {
     }
     setPlanets(planets);
 
+    const calculateAspects = () => {
+      const aspectsArray = [];
+      const celestialPoints = {
+        ...planets,
+        ...angles
+      };
+      
+      // Custom orbs for specific aspects (optional)
+      const customOrbs = {
+        // You can adjust these values based on your preferences
+        'conjunction': 10, // Using a wider orb for conjunctions
+        'opposition': 8,
+        'trine': 8,
+        'square': 7
+      };
+      
+      // Compare each point with every other point (only once per pair)
+      const pointKeys = Object.keys(celestialPoints);
+      
+      for (let i = 0; i < pointKeys.length; i++) {
+        for (let j = i + 1; j < pointKeys.length; j++) {
+          const point1 = celestialPoints[pointKeys[i]];
+          const point2 = celestialPoints[pointKeys[j]];
+          
+          // Skip if comparing the same point or if points are opposites (like Asc/Desc)
+          if (
+            (point1.key === 'ascendant' && point2.key === 'descendant') ||
+            (point1.key === 'descendant' && point2.key === 'ascendant') ||
+            (point1.key === 'midheaven' && point2.key === 'imumcoeli') ||
+            (point1.key === 'imumcoeli' && point2.key === 'midheaven')
+          ) {
+            continue;
+          }
+          
+          const aspect = calculateAspect(point1, point2, customOrbs);
+          if (aspect) {
+            aspectsArray.push(aspect);
+          }
+        }
+      }
+      
+      // Sort aspects by importance (major before minor)
+      aspectsArray.sort((a, b) => {
+        // Sort by level first (major before minor)
+        if (a.level !== b.level) {
+          return a.level === 'major' ? -1 : 1;
+        }
+        
+        // Then sort by orb (smallest orb first - most exact aspects)
+        return a.orb - b.orb;
+      });
+      
+      return aspectsArray;
+    };
+
+    const aspects = calculateAspects();
+
     // create full horoscope with all data
-    const myHoroscope = {
+    const horoscope = {
       angles: angles,
       houseCusps: houseCusps,
       planets: planets,
+      aspects: aspects,
     }
-
-    console.log('Latitude (my code): ' + lat);
-    console.log('Longitude (my code): ' + lon);
-    console.log('UTC Date (my code): ' + utcDate);
-    console.log('Julian Date (my code): ' + julianDate);
-    console.log('Local Sidereal Time (my code): ' + lst);
     
     onSubmit({
       birthDate,
       birthTime,
       birthLocation,
       houseSystem,
-      myHoroscope
+      horoscope
     });
-  };
+  }; 
 
   return (
     <div className="max-w-4xl mx-auto p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-base-100/90 to-base-200/90 backdrop-blur-md shadow-xl border border-primary/10">

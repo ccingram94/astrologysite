@@ -10,8 +10,9 @@ import getDegreesInSign from './getDegreesInSign';
 import dmsString from './dmsString';
 import decimalDegreesToDMS from './decimalDegreesToDMS';
 import getZodiacSign from './getZodiacSign';
+import getHousePlacement from './getHousePlacement';
 
-export default function calculateMercury(jde) { 
+export default function calculateMercury(jde, houseCusps) { 
   try {
     // Create Mercury and Earth instances
     const mercury = new planetposition.Planet(vsop87Bmercury);
@@ -35,13 +36,17 @@ export default function calculateMercury(jde) {
     // Ensure result is between 0 and 360 degrees
     mercuryLongitude = modulo(mercuryLongitude, 360);
 
+    // Get house placement if house cusps are provided
+    const house = houseCusps ? getHousePlacement(mercuryLongitude, houseCusps) : null;
+
     return {
       label: 'Mercury',
       key: 'mercury',
       degree: mercuryLongitude,
       sign: getZodiacSign(mercuryLongitude),
       degreeInSign: decimalDegreesToDMS(getDegreesInSign(mercuryLongitude)),
-      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(mercuryLongitude)))
+      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(mercuryLongitude))),
+      house: house
     };
   } catch (error) {
     console.error('Error calculating Mercury position:', error);

@@ -242,7 +242,6 @@ export async function searchLocation(inputValue) {
     );
   
     if (!sign) {
-      console.log('No sign found for degree:', normalizedDegree);
       return SIGNS[0]; // Return Aries as fallback
     }
   

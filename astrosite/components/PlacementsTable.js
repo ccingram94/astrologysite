@@ -1,6 +1,6 @@
 'use client';
 
-const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
+const PlacementsTable = ({ planets, newHoroscope }) => {
   return (
     <div className="overflow-x-auto text-primary">
       <table className="table table-compact bg-base-100 border border-primary/20">
@@ -25,7 +25,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Sun.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.sun.House?.label}
+              {newHoroscope.planets.Sun.house && `${getHouseLabel(newHoroscope.planets.Sun.house)}`}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -40,7 +40,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Moon.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.moon.House?.label}
+              {newHoroscope.planets.Moon.house && `${getHouseLabel(newHoroscope.planets.Moon.house)}`}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -55,7 +55,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Mercury.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.mercury.House?.label}
+              {newHoroscope.planets.Mercury.house && `${getHouseLabel(newHoroscope.planets.Mercury.house)}`}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -70,7 +70,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Venus.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.venus.House?.label}
+              {newHoroscope.planets.Venus.house && `${getHouseLabel(newHoroscope.planets.Venus.house)}`}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -85,7 +85,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Mars.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.mars.House?.label}
+              {newHoroscope.planets.Mars.house && `${getHouseLabel(newHoroscope.planets.Mars.house)}`}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -100,7 +100,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Jupiter.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.jupiter.House?.label}
+              {newHoroscope.planets.Jupiter.house && `${getHouseLabel(newHoroscope.planets.Jupiter.house)}`}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -115,7 +115,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Saturn.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.saturn.House?.label}
+              {newHoroscope.planets.Saturn.house && `${getHouseLabel(newHoroscope.planets.Saturn.house)}`}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -130,7 +130,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Uranus.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.uranus.House?.label}
+              {newHoroscope.planets.Uranus.house && `${getHouseLabel(newHoroscope.planets.Uranus.house)}`}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -145,7 +145,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Neptune.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.neptune.House?.label}
+              {newHoroscope.planets.Neptune.house && `${getHouseLabel(newHoroscope.planets.Neptune.house)}`}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -160,7 +160,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.planets.Pluto.degreeFormatted}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.CelestialBodies.pluto.House?.label}
+              {newHoroscope.planets.Pluto.house && `${getHouseLabel(newHoroscope.planets.Pluto.house)}`}
             </td>
           </tr>
           <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
@@ -172,7 +172,7 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.angles.Ascendant.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.Angles.ascendant.ChartPosition.Ecliptic.ArcDegreesFormatted30}
+              {formatDegree(newHoroscope.angles.Ascendant.degreeInSign)}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">First</td>
           </tr>
@@ -185,14 +185,87 @@ const PlacementsTable = ({ horoscope, planets, newHoroscope }) => {
               {newHoroscope.angles.Midheaven.sign}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">
-              {horoscope.Angles.midheaven.ChartPosition.Ecliptic.ArcDegreesFormatted30}
+              {formatDegree(newHoroscope.angles.Midheaven.degreeInSign)}
             </td>
             <td className="border-b border-primary/10 p-2 text-secondary">Tenth</td>
+          </tr>
+          <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
+            <td className="border-b border-primary/10 p-2">
+              <span className="text-primary font-bold">D</span>
+              <span className="text-secondary ml-2">Descendant</span>
+            </td>
+            <td className="border-b border-primary/10 p-2 text-secondary">
+              {newHoroscope.angles.Descendant?.sign || (newHoroscope.angles.Ascendant?.sign && getOppositeSign(newHoroscope.angles.Ascendant.sign))}
+            </td>
+            <td className="border-b border-primary/10 p-2 text-secondary">
+              {newHoroscope.angles.Descendant?.degreeInSign ? formatDegree(newHoroscope.angles.Descendant.degreeInSign) : 
+              newHoroscope.angles.Ascendant?.degreeInSign ? formatDegree(newHoroscope.angles.Ascendant.degreeInSign) : ''}
+            </td>
+            <td className="border-b border-primary/10 p-2 text-secondary">Seventh</td>
+          </tr>
+          <tr className="text-xs hover:bg-base-200 transition-colors duration-200">
+            <td className="border-b border-primary/10 p-2">
+              <span className="text-primary font-bold">IC</span>
+              <span className="text-secondary ml-2">Imum Coeli</span>
+            </td>
+            <td className="border-b border-primary/10 p-2 text-secondary">
+              {newHoroscope.angles.ImumCoeli?.sign || (newHoroscope.angles.Midheaven?.sign && getOppositeSign(newHoroscope.angles.Midheaven.sign))}
+            </td>
+            <td className="border-b border-primary/10 p-2 text-secondary">
+              {newHoroscope.angles.ImumCoeli?.degreeInSign ? formatDegree(newHoroscope.angles.ImumCoeli.degreeInSign) :
+              newHoroscope.angles.Midheaven?.degreeInSign ? formatDegree(newHoroscope.angles.Midheaven.degreeInSign) : ''}
+            </td>
+            <td className="border-b border-primary/10 p-2 text-secondary">Fourth</td>
           </tr>
         </tbody>
       </table>
     </div>
   );
+};
+
+// Helper function to format degree from degreeInSign object
+const formatDegree = (degreeInSign) => {
+  if (!degreeInSign) return '';
+  const { degrees, minutes, seconds } = degreeInSign;
+  
+  if (seconds) {
+    return `${degrees}° ${minutes}' ${seconds}''`;
+  } else {
+    return `${degrees}° ${minutes}'`;
+  }
+};
+
+// Helper function to get house label from house number
+const getHouseLabel = (houseNumber) => {
+  const houseLabels = [
+    'First', 'Second', 'Third', 'Fourth', 
+    'Fifth', 'Sixth', 'Seventh', 'Eighth', 
+    'Ninth', 'Tenth', 'Eleventh', 'Twelfth'
+  ];
+  
+  // Convert to zero-based index
+  const index = parseInt(houseNumber) - 1;
+  
+  if (index >= 0 && index < 12) {
+    return houseLabels[index];
+  }
+  
+  return `House ${houseNumber}`;
+};
+
+// Helper function to get opposite sign
+const getOppositeSign = (sign) => {
+  const signs = [
+    'Aries', 'Taurus', 'Gemini', 'Cancer', 
+    'Leo', 'Virgo', 'Libra', 'Scorpio', 
+    'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
+  ];
+  
+  const index = signs.indexOf(sign);
+  if (index === -1) return null;
+  
+  // Return the sign that's 6 positions away (opposite)
+  return signs[(index + 6) % 12];
 };
 
 export default PlacementsTable;

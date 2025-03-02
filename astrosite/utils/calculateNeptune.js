@@ -10,8 +10,9 @@ import getDegreesInSign from './getDegreesInSign';
 import dmsString from './dmsString';
 import decimalDegreesToDMS from './decimalDegreesToDMS';
 import getZodiacSign from './getZodiacSign';
+import getHousePlacement from './getHousePlacement';
 
-export default function calculateNeptune(jde) {
+export default function calculateNeptune(jde, houseCusps) {
   try {
     // Create Neptune and Earth instances
     const neptune = new planetposition.Planet(vsop87Bneptune);
@@ -35,13 +36,17 @@ export default function calculateNeptune(jde) {
     // Ensure result is between 0 and 360 degrees
     neptuneLongitude = modulo(neptuneLongitude, 360);
 
+    // Get house placement if house cusps are provided
+    const house = houseCusps ? getHousePlacement(neptuneLongitude, houseCusps) : null;
+
     return {
       label: 'Neptune',
       key: 'neptune',
       degree: neptuneLongitude,
       sign: getZodiacSign(neptuneLongitude),
       degreeInSign: decimalDegreesToDMS(getDegreesInSign(neptuneLongitude)),
-      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(neptuneLongitude)))
+      degreeFormatted: dmsString(decimalDegreesToDMS(getDegreesInSign(neptuneLongitude))),
+      house: house
     };
   } catch (error) {
     console.error('Error calculating Neptune position:', error);
