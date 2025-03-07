@@ -44,13 +44,6 @@ const nextConfig = {
 
     return config
   },
-
-  // Enable static image imports
-  experimental: {
-    images: {
-      allowFutureImage: true,
-    },
-  },
 };
 
 export default nextConfig;

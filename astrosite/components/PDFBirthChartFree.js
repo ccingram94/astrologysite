@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
   
 });
 
-const PDFBirthChart = ({ horoscope, chartData }) => {
+const PDFBirthChartFree = ({ horoscope, chartData }) => {
   // Early return for empty data to prevent errors
   if (!horoscope || !chartData) {
     return (
@@ -1277,38 +1277,6 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
                 );
               })}
             </View>
-            {/* Add some explanation of the Big Three for better spacing on the page */}
-            <View>
-              {/* Sun Sign */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={zodiacIcons[horoscope.planets.Sun.sign]} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Sun Sign is {horoscope.planets.Sun.sign}</Text>
-              </View>
-              <Text style={[styles.introText]}>{bigthree.sun[horoscope.planets.Sun.sign]}</Text> 
-
-              {/* Moon Sign */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={zodiacIcons[horoscope.planets.Moon.sign]} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Moon Sign is {horoscope.planets.Moon.sign}</Text>
-              </View>
-              <Text style={[styles.introText]}>{bigthree.moon[horoscope.planets.Moon.sign]}</Text>
-
-              {/* Rising Sign */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={zodiacIcons[horoscope.angles.Ascendant.sign]} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Rising Sign (Ascendant) is {horoscope.angles.Ascendant.sign}</Text>
-              </View>
-              <Text style={[styles.introText]}>{bigthree.ascendant[horoscope.angles.Ascendant.sign]}</Text>
-            </View>
           </View>
         </Page>
 
@@ -1357,51 +1325,6 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
                   </View>
                 );
               })}
-            </View>
-            <View>
-              <Text style={[styles.introText]}>
-                The four angles are critical points in your birth chart that represent different areas of life.  
-                The Ascendant (ASC) marks the eastern horizon at your birth time. It represents your outward personality, physical appearance, and how you approach new situations.  
-                The Midheaven (MC) marks the highest point in your chart. It represents your public image, career path, reputation, and ambitions.  
-                The Descendant (DSC) marks the western horizon at your birth time. It represents your approach to relationships, partnerships, and how you relate to others.  
-                The Imum Coeli (IC) marks the lowest point in your chart. It represents your foundations, home life, family, and private self.  
-              </Text>
-              {/* Ascendant */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={zodiacIcons[horoscope.angles.Ascendant.sign]} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Ascendant (Rising Sign) is {horoscope.angles.Ascendant.sign}</Text>
-              </View>
-              <Text style={[styles.introText]}>{angles.ascendant[horoscope.angles.Ascendant.sign]}</Text> 
-              {/* Midheaven */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={zodiacIcons[horoscope.angles.Midheaven.sign]} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Midheaven (Medium Coeli) is {horoscope.angles.Midheaven.sign}</Text>
-              </View>
-              <Text style={[styles.introText]}>{angles.midheaven[horoscope.angles.Midheaven.sign]}</Text> 
-              {/* Descendant */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={zodiacIcons[horoscope.angles.Descendant.sign]} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Descendant is {horoscope.angles.Descendant.sign}</Text>
-              </View>
-              <Text style={[styles.introText]}>{angles.descendant[horoscope.angles.Descendant.sign]}</Text> 
-              {/* Imum Coeli */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={zodiacIcons[horoscope.angles.ImumCoeli.sign]} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Imum Coeli is {horoscope.angles.ImumCoeli.sign}</Text>
-              </View>
-              <Text style={[styles.introText]}>{angles.imumcoeli[horoscope.angles.ImumCoeli.sign]}</Text> 
             </View>
           </View>
         </Page>
@@ -1512,10 +1435,6 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
                 </View>
               </View>
             </View>
-            <Text style={styles.introText}>{sect.descriptionLong}</Text>
-            { horoscope.sect.sect == 'Diurnal' && <Text style={styles.introText}>{sect.diurnal.description}</Text> }
-            { horoscope.sect.sect == 'Nocturnal' && <Text style={styles.introText}>{sect.nocturnal.description}</Text> }
-            
           </View>
         </Page>
 
@@ -1590,123 +1509,6 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
                 );
               })}
             </View>
-          </View>
-        </Page>
-
-        {/* Planets Descriptions Page */}
-        <Page size="A4" style={styles.page}>
-          <View style={styles.placementsSection}>
-            <Text style={styles.placementsTitle}>Planet Interpretations</Text>
-              {/* Sun  */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={planetIconsGold.sun} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Sun in {horoscope.planets.Sun.sign} ({horoscope.planets.Sun.degreeFormatted}) in the {houseNames[horoscope.planets.Sun.house]} House</Text>
-              </View>
-              <Text style={[styles.introText]}>{planetsData.sun.descriptionShort}</Text>
-              <Text style={[styles.introText]}>{planetsData.sun[horoscope.planets.Sun.sign]}</Text>
-              <Text style={[styles.introText]}>{planetsData.sun[houseNames[horoscope.planets.Sun.house]]}</Text>
-              {/* Moon  */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={planetIconsGold.moon} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Moon in {horoscope.planets.Moon.sign} ({horoscope.planets.Moon.degreeFormatted}) in the {houseNames[horoscope.planets.Moon.house]} House</Text>
-              </View>
-              <Text style={[styles.introText]}>{planetsData.moon.descriptionShort}</Text>
-              <Text style={[styles.introText]}>{planetsData.moon[horoscope.planets.Sun.sign]}</Text>
-              <Text style={[styles.introText]}>{planetsData.moon[houseNames[horoscope.planets.Moon.house]]}</Text>
-              {/* Mercury */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={planetIconsGold.mercury} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Mercury in {horoscope.planets.Mercury.sign} ({horoscope.planets.Mercury.degreeFormatted}) in the {houseNames[horoscope.planets.Mercury.house]} House</Text>
-              </View>
-              <Text style={[styles.introText]}>{planetsData.mercury.descriptionShort}</Text>
-              <Text style={[styles.introText]}>{planetsData.mercury[horoscope.planets.Mercury.sign]}</Text>
-              <Text style={[styles.introText]}>{planetsData.mercury[houseNames[horoscope.planets.Mercury.house]]}</Text>
-              {/* Venus */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={planetIconsGold.venus} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Venus in {horoscope.planets.Venus.sign} ({horoscope.planets.Venus.degreeFormatted}) in the {houseNames[horoscope.planets.Venus.house]} House</Text>
-              </View>
-              <Text style={[styles.introText]}>{planetsData.venus.descriptionShort}</Text>
-              <Text style={[styles.introText]}>{planetsData.venus[horoscope.planets.Venus.sign]}</Text>
-              <Text style={[styles.introText]}>{planetsData.venus[houseNames[horoscope.planets.Venus.house]]}</Text>
-              {/* Mars */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={planetIconsGold.mars} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Mars in {horoscope.planets.Mars.sign} ({horoscope.planets.Mars.degreeFormatted}) in the {houseNames[horoscope.planets.Mars.house]} House</Text>
-              </View>
-              <Text style={[styles.introText]}>{planetsData.mars.descriptionShort}</Text>
-              <Text style={[styles.introText]}>{planetsData.mars[horoscope.planets.Mars.sign]}</Text>
-              <Text style={[styles.introText]}>{planetsData.mars[houseNames[horoscope.planets.Mars.house]]}</Text>
-              {/* Jupiter */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={planetIconsGold.jupiter} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Jupiter in {horoscope.planets.Jupiter.sign} ({horoscope.planets.Jupiter.degreeFormatted}) in the {houseNames[horoscope.planets.Jupiter.house]} House</Text>
-              </View>
-              <Text style={[styles.introText]}>{planetsData.jupiter.descriptionShort}</Text>
-              <Text style={[styles.introText]}>{planetsData.jupiter[horoscope.planets.Jupiter.sign]}</Text>
-              <Text style={[styles.introText]}>{planetsData.jupiter[houseNames[horoscope.planets.Jupiter.house]]}</Text>
-              {/* Saturn */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={planetIconsGold.saturn} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Saturn in {horoscope.planets.Saturn.sign} ({horoscope.planets.Saturn.degreeFormatted}) in the {houseNames[horoscope.planets.Saturn.house]} House</Text>
-              </View>
-              <Text style={[styles.introText]}>{planetsData.saturn.descriptionShort}</Text>
-              <Text style={[styles.introText]}>{planetsData.saturn[horoscope.planets.Saturn.sign]}</Text>
-              <Text style={[styles.introText]}>{planetsData.saturn[houseNames[horoscope.planets.Saturn.house]]}</Text>
-              {/* Uranus */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={planetIconsGold.uranus} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Uranus in {horoscope.planets.Uranus.sign} ({horoscope.planets.Uranus.degreeFormatted}) in the {houseNames[horoscope.planets.Uranus.house]} House</Text>
-              </View>
-              <Text style={[styles.introText]}>{planetsData.uranus.descriptionShort}</Text>
-              <Text style={[styles.introText]}>{planetsData.uranus[horoscope.planets.Uranus.sign]}</Text>
-              <Text style={[styles.introText]}>{planetsData.uranus[houseNames[horoscope.planets.Uranus.house]]}</Text>
-              {/* Neptune */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={planetIconsGold.neptune} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Neptune in {horoscope.planets.Neptune.sign} ({horoscope.planets.Neptune.degreeFormatted}) in the {houseNames[horoscope.planets.Neptune.house]} House</Text>
-              </View>
-              <Text style={[styles.introText]}>{planetsData.neptune.descriptionShort}</Text>
-              <Text style={[styles.introText]}>{planetsData.neptune[horoscope.planets.Neptune.sign]}</Text>
-              <Text style={[styles.introText]}>{planetsData.neptune[houseNames[horoscope.planets.Neptune.house]]}</Text>
-              {/* Pluto */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image 
-                  src={planetIconsGold.pluto} 
-                  style={[styles.introIcon]} 
-                />
-                <Text style={[styles.introHeader]}>Pluto in {horoscope.planets.Pluto.sign} ({horoscope.planets.Pluto.degreeFormatted}) in the {houseNames[horoscope.planets.Pluto.house]} House</Text>
-              </View>
-              <Text style={[styles.introText]}>{planetsData.pluto.descriptionShort}</Text>
-              <Text style={[styles.introText]}>{planetsData.pluto[horoscope.planets.Pluto.sign]}</Text>
-              <Text style={[styles.introText]}>{planetsData.pluto[houseNames[horoscope.planets.Pluto.house]]}</Text>
           </View>
         </Page>
 
@@ -2141,4 +1943,4 @@ const PDFBirthChart = ({ horoscope, chartData }) => {
   }
 };
 
-export default PDFBirthChart;
+export default PDFBirthChartFree;

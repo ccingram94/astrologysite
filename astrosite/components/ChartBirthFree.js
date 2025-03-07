@@ -15,7 +15,7 @@ import AspectSection from './AspectSection';
 import BirthChartSVG from './BirthChartSVG';
 import { findAspects, generateAspectLines } from '../utils/calculateAspectChart';
 
-const PDFDownloadButton = dynamic(() => import('./PDFDownloadButton'), {
+const PDFDownloadButtonFree = dynamic(() => import('./PDFDownloadButtonFree'), {
   ssr: false,
   loading: () => (
     <button className="btn btn-disabled rounded-xl h-12 px-6 flex items-center gap-2 opacity-80">
@@ -96,7 +96,7 @@ const ChartBirthFree = () => {
             </div>
 
             <div className="mt-6">
-              <PDFDownloadButton horoscope={horoscope} chartData={chartData} />
+              <PDFDownloadButtonFree horoscope={horoscope} chartData={chartData} />
             </div>
             
             {/* Key Placements Summary Cards */}

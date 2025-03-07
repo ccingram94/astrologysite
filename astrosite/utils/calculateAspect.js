@@ -124,6 +124,25 @@ export default function calculateAspect(point1, point2, customOrbs = {}) {
         applying = point2InZodiacOrder < point1InZodiacOrder;
       }
 
+      let power = 'neutral';
+
+      // Calculate how close the aspect is to exact as a percentage
+      // 0% = at max orb, 100% = exact
+      const orbalPrecision = 100 - ((difference / orb) * 100);
+
+      // Assign power level based on orbal precision
+      if (orbalPrecision >= 90) {
+        power = 'very strong'; // Within 10% of max precision
+      } else if (orbalPrecision >= 70) {
+        power = 'strong';      // Within 30% of max precision
+      } else if (orbalPrecision >= 50) {
+        power = 'neutral';     // Within 50% of max precision
+      } else if (orbalPrecision >= 30) {
+        power = 'weak';        // Within 70% of max precision
+      } else {
+        power = 'very weak';   // Beyond 70% of max precision
+      }
+
       return {
         name: aspectName,
         symbol: aspectData.symbol,
@@ -131,6 +150,7 @@ export default function calculateAspect(point1, point2, customOrbs = {}) {
         angle: aspectData.angle,
         orb: difference,
         maxOrb: orb,
+        power: power,
         applying: applying,
         separating: !applying && !exact,
         exact: exact,

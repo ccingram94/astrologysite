@@ -9,6 +9,7 @@ import calculateUTC from '../utils/calculateUTC';
 import calculateJulianDate from '../utils/calculateJulianDate';
 import calculateLocalSiderealTime from '../utils/calculateLocalSiderealTime';
 import calculateAspect from '../utils/calculateAspect';
+import calculateSect from '../utils/calculateSect';
 import calculateAscendant from '../utils/calculateAscendant';
 import calculateMidheaven from '../utils/calculateMidheaven';
 import calculateDescendant from '../utils/calculateDescendant';
@@ -154,6 +155,8 @@ const ChartInputFormBirth = ({ onSubmit }) => {
     }
     setPlanets(planets);
 
+    const chartSect = calculateSect(sun.degree, ascendant.degree, mercury.degree);
+
     const calculateAspects = () => {
       const aspectsArray = [];
       const celestialPoints = {
@@ -213,6 +216,7 @@ const ChartInputFormBirth = ({ onSubmit }) => {
 
     // create full horoscope with all data
     const horoscope = {
+      sect: chartSect,
       angles: angles,
       houseCusps: houseCusps,
       planets: planets,
