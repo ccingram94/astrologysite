@@ -2,13 +2,13 @@
 import lots from '../data/lots';
 import calculateLots from '../utils/calculateLots';
 import Image from 'next/image';
-import LotFortune from '../public/lotfortune.svg';
-import LotSpirit from '../public/lotspirit.svg';
-import LotEros from '../public/loteros.svg';
-import LotNecessity from '../public/lotnecessity.svg';
-import LotCourage from '../public/lotcourage.svg';
-import LotVictory from '../public/lotvictory.svg';
-import LotNemesis from '../public/lotnemesis.svg';
+import LotFortune from '../public/lots/lotfortune.svg';
+import LotSpirit from '../public/lots/lotspirit.svg';
+import LotEros from '../public/lots/loteros.svg';
+import LotNecessity from '../public/lots/lotnecessity.svg';
+import LotCourage from '../public/lots/lotcourage.svg';
+import LotVictory from '../public/lots/lotvictory.svg';
+import LotNemesis from '../public/lots/lotnemesis.svg';
 
 function PlacementsTableSevenLots({ horoscope }) {
   const calculatedLots = calculateLots(horoscope);
