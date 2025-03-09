@@ -521,10 +521,11 @@ const BirthChartSVG = ({ horoscope, newHoroscope }) => {
           // Calculate angle with chart rotation
           const angle = ((houseDegree + chartRotation) % 360) * Math.PI / 180;
           
+          // Inner circle radius is 100, zodiac sign section inner radius is 200
           const x1 = 250 + Math.cos(angle) * 100;
           const y1 = 250 - Math.sin(angle) * 100;
-          const x2 = 250 + Math.cos(angle) * 240;
-          const y2 = 250 - Math.sin(angle) * 240;
+          const x2 = 250 + Math.cos(angle) * 200; // Changed from 240 to 200 to stop at zodiac inner edge
+          const y2 = 250 - Math.sin(angle) * 200; // Changed from 240 to 200
 
           return (
             <line

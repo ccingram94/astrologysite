@@ -15,6 +15,7 @@ import calculateMidheaven from '../utils/calculateMidheaven';
 import calculateDescendant from '../utils/calculateDescendant';
 import calculateImumCoeli from '../utils/calculateImumCoeli';
 import calculateHouseCusps from '../utils/calculateHouseCusps';
+import { addPlanetsToHouseCusps } from '../utils/calculateHouseCusps';
 import calculateSun from '../utils/calculateSun';
 import calculateMoon from '../utils/calculateMoon';
 import calculateMercury from '../utils/calculateMercury';
@@ -109,10 +110,10 @@ const ChartInputFormBirth = ({ onSubmit }) => {
       'ImumCoeli': imumcoeli
     }
     setAngles(angles);
-    
-    // calculate House Cusps based on chosen houseSystem
-    const cusps = calculateHouseCusps(houseSystem, ascendant.degree, midheaven.degree, lat, lst);
-    const houseCusps = {
+
+    // calculate House Cusps based on chosen house system
+    const cusps = calculateHouseCusps(houseSystem, ascendant.degree, midheaven.degree, lat, lst); 
+    let houseCusps = {
       'First': cusps[0],
       'Second': cusps[1],
       'Third': cusps[2],
@@ -126,34 +127,57 @@ const ChartInputFormBirth = ({ onSubmit }) => {
       'Eleventh': cusps[10],
       'Twelfth': cusps[11]
     }
+
+  // calculate Planets (degree of geocentric ecliptic longitude)
+  const sun = calculateSun(julianDate, houseCusps);
+  const moon = calculateMoon(julianDate, houseCusps);
+  const mercury = calculateMercury(julianDate, houseCusps);
+  const venus = calculateVenus(julianDate, houseCusps);
+  const mars = calculateMars(julianDate, houseCusps);
+  const jupiter = calculateJupiter(julianDate, houseCusps);
+  const saturn = calculateSaturn(julianDate, houseCusps);
+  const uranus = calculateUranus(julianDate, houseCusps);
+  const neptune = calculateNeptune(julianDate, houseCusps);
+  const pluto = calculatePluto(julianDate, houseCusps);
+  const planets = {
+    'Sun': sun,
+    'Moon': moon,
+    'Mercury': mercury,
+    'Venus': venus,
+    'Mars': mars,
+    'Jupiter': jupiter,
+    'Saturn': saturn,
+    'Uranus': uranus,
+    'Neptune': neptune,
+    'Pluto': pluto
+  }
+  setPlanets(planets);
+    
+    // add planets in houses info to the house cusps
+    const enhancedCusps = addPlanetsToHouseCusps(cusps, planets);
+    houseCusps = {
+      'First': enhancedCusps[0],
+      'Second': enhancedCusps[1],
+      'Third': enhancedCusps[2],
+      'Fourth': enhancedCusps[3],
+      'Fifth': enhancedCusps[4],
+      'Sixth': enhancedCusps[5],
+      'Seventh': enhancedCusps[6],
+      'Eighth': enhancedCusps[7],
+      'Ninth': enhancedCusps[8],
+      'Tenth': enhancedCusps[9],
+      'Eleventh': enhancedCusps[10],
+      'Twelfth': enhancedCusps[11]
+    };
     setHouseCusps(houseCusps);
 
-
-
-    // calculate Planets
-    const sun = calculateSun(julianDate, houseCusps);
-    const moon = calculateMoon(julianDate, houseCusps);
-    const mercury = calculateMercury(julianDate, houseCusps);
-    const venus = calculateVenus(julianDate, houseCusps);
-    const mars = calculateMars(julianDate, houseCusps);
-    const jupiter = calculateJupiter(julianDate, houseCusps);
-    const saturn = calculateSaturn(julianDate, houseCusps);
-    const uranus = calculateUranus(julianDate, houseCusps);
-    const neptune = calculateNeptune(julianDate, houseCusps);
-    const pluto = calculatePluto(julianDate, houseCusps);
-    const planets = {
-      'Sun': sun,
-      'Moon': moon,
-      'Mercury': mercury,
-      'Venus': venus,
-      'Mars': mars,
-      'Jupiter': jupiter,
-      'Saturn': saturn,
-      'Uranus': uranus,
-      'Neptune': neptune,
-      'Pluto': pluto
+    // fetch display name for house
+    const houseNames = {
+      'whole-sign': 'Whole Sign',
+      'equal-house': 'Equal House',
+      'placidus': 'Placidus'
     }
-    setPlanets(planets);
+    const houseName = houseNames[houseSystem]
 
     const chartSect = calculateSect(sun.degree, ascendant.degree, mercury.degree);
 
@@ -228,6 +252,7 @@ const ChartInputFormBirth = ({ onSubmit }) => {
       birthTime,
       birthLocation,
       houseSystem,
+      houseName,
       horoscope
     });
   }; 

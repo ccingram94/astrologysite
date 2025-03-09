@@ -20,7 +20,17 @@ const PDFDownloadButtonFree = dynamic(() => import('./PDFDownloadButtonFree'), {
   loading: () => (
     <button className="btn btn-disabled rounded-xl h-12 px-6 flex items-center gap-2 opacity-80">
       <div className="h-5 w-5 border-2 border-current border-r-transparent rounded-full animate-spin"></div>
-      Preparing PDF...
+      Loading Free PDF...
+    </button>
+  )
+});
+
+const PDFDownloadButton = dynamic(() => import('./PDFDownloadButton'), {
+  ssr: false,
+  loading: () => (
+    <button className="btn btn-disabled rounded-xl h-12 px-6 flex items-center gap-2 opacity-80">
+      <div className="h-5 w-5 border-2 border-current border-r-transparent rounded-full animate-spin"></div>
+      Preparing Full Chart...
     </button>
   )
 });
@@ -97,6 +107,9 @@ const ChartBirthFree = () => {
 
             <div className="mt-6">
               <PDFDownloadButtonFree horoscope={horoscope} chartData={chartData} />
+            </div>
+            <div className="mt-6">
+              <PDFDownloadButton horoscope={horoscope} chartData={chartData} />
             </div>
             
             {/* Key Placements Summary Cards */}

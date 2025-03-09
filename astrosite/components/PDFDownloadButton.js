@@ -12,7 +12,7 @@ const PDFDownloadButton = ({ horoscope, chartData }) => (
         'Loading document...'
       ) : (
         <button className='btn btn-primary'>
-          Download PDF
+          Download Full Birth Chart
         </button>
       )
     }

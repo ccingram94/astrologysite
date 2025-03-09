@@ -1516,10 +1516,10 @@ const aspects = {
   },
 
 
-  semisquare: {
-    name: "Semisquare",
+  'semi-square': {
+    name: "Semi-Square",
     icon: "/semisquare.svg",
-    description: "A Semisquare occurs when two planets are approximately 45 degrees apart in the birth chart.",
+    description: "A Semi-Square occurs when two planets are approximately 45 degrees apart in the birth chart.",
     traits: [
       "Tension",
       "Irritation",
@@ -1530,8 +1530,8 @@ const aspects = {
     keywords: ["Tension", "Irritation", "Adjustment", "Growth", "Internal conflict"],
     strengths: ["Catalyst for change", "Personal development", "Overcoming obstacles", "Self-awareness", "Motivation"],
     weaknesses: ["Frustration", "Restlessness", "Minor conflicts", "Stress", "Impatience"],
-    descriptionShort: "A Semisquare occurs when two planets are approximately 45 degrees apart in the birth chart.",
-    descriptionLong: "A Semisquare is a minor challenging aspect in astrology that represents a relationship of mild tension and irritation between two planetary energies. It often manifests as areas of life where there are recurring minor conflicts or a need for constant adjustments. While not as intense as a full Square, the Semisquare creates enough friction to prompt growth and change. This aspect can lead to feelings of restlessness or frustration, but it also serves as a catalyst for personal development. The challenges presented by a Semisquare are typically manageable but persistent, requiring ongoing effort to navigate. The key to working with a Semisquare is to recognize the growth potential in these minor irritations and use them as motivation for self-improvement and problem-solving.",
+    descriptionShort: "A Semi-Square occurs when two planets are approximately 45 degrees apart in the birth chart.",
+    descriptionLong: "A Semi-Square is a minor challenging aspect in astrology that represents a relationship of mild tension and irritation between two planetary energies. It often manifests as areas of life where there are recurring minor conflicts or a need for constant adjustments. While not as intense as a full Square, the Semi-Square creates enough friction to prompt growth and change. This aspect can lead to feelings of restlessness or frustration, but it also serves as a catalyst for personal development. The challenges presented by a Semi-Square are typically manageable but persistent, requiring ongoing effort to navigate. The key to working with a Semi-Square is to recognize the growth potential in these minor irritations and use them as motivation for self-improvement and problem-solving.",
     planets: {
       sun: {
         moon: "Sun Semi-Square Moon suggests underlying tension in the balance between self-expression and emotional needs, leading to potential struggles in emotional relationships. This aspect often creates a feeling of internal restlessness, as the individual may feel conflicted between their personal identity and the way they process or express emotions. It highlights a need to develop emotional awareness and patience to resolve inner conflicts that may spill into relationships with others.",
@@ -1721,10 +1721,10 @@ const aspects = {
   },
   },
 
-  semisextile: {
-    name: "Semisextile",
+  'semi-sextile': {
+    name: "Semi-Sextile",
     icon: "/semisextile.svg",
-    description: "A Semisextile occurs when two planets are approximately 30 degrees apart in the birth chart.",
+    description: "A Semi-Sextile occurs when two planets are approximately 30 degrees apart in the birth chart.",
     traits: [
       "Subtle connection",
       "Mild tension",
@@ -1735,8 +1735,8 @@ const aspects = {
     keywords: ["Subtle connection", "Mild tension", "Opportunity", "Growth", "Adjustment"],
     strengths: ["Gentle growth", "Subtle opportunities", "Mild stimulation", "Awareness", "Potential for development"],
     weaknesses: ["Overlooked potential", "Subtle irritation", "Lack of awareness", "Minor misunderstandings", "Underutilized energy"],
-    descriptionShort: "A Semisextile occurs when two planets are approximately 30 degrees apart in the birth chart.",
-    descriptionLong: "A Semisextile is a minor aspect in astrology that represents a subtle connection and mild tension between two planetary energies. It often manifests as areas of life where there are gentle opportunities for growth and development, but these may be easily overlooked. The Semisextile creates a slight sense of friction or adjustment, which can serve as a mild stimulant for change and awareness. While not as obvious or powerful as major aspects, Semisextiles can indicate potential areas for personal development if consciously addressed. The challenge with this aspect is that its subtle nature can lead to its influence being ignored or its opportunities missed. The key to working with a Semisextile is to pay attention to these gentle nudges for growth and actively engage with the subtle connections it presents, turning mild tension into productive development.",
+    descriptionShort: "A Semi-Sextile occurs when two planets are approximately 30 degrees apart in the birth chart.",
+    descriptionLong: "A Semi-Sextile is a minor aspect in astrology that represents a subtle connection and mild tension between two planetary energies. It often manifests as areas of life where there are gentle opportunities for growth and development, but these may be easily overlooked. The Semi-Sextile creates a slight sense of friction or adjustment, which can serve as a mild stimulant for change and awareness. While not as obvious or powerful as major aspects, Semi-Sextiles can indicate potential areas for personal development if consciously addressed. The challenge with this aspect is that its subtle nature can lead to its influence being ignored or its opportunities missed. The key to working with a Semi-Sextile is to pay attention to these gentle nudges for growth and actively engage with the subtle connections it presents, turning mild tension into productive development.",
     planets: {
       sun: {
         moon: "Sun Semi-Sextile Moon suggests a harmonious and balanced emotional relationship, creating an ease between personal identity and emotional needs. This aspect fosters emotional intelligence and adaptability, allowing an individual to respond to changes with grace and self-awareness. The relationship between one's core self and inner feelings works smoothly, supporting confidence, inner peace, and the ability to connect with others emotionally without overwhelming stress or conflict.",

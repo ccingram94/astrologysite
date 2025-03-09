@@ -1,6 +1,6 @@
 'use client'
-import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Font, Image, Svg, Circle, Line, Path, G, Text as SvgText } from '@react-pdf/renderer';
+import React, { useState, useRef, useEffect } from 'react';
+import { Document, Page, Text, View, StyleSheet, Font, Image, Svg, Circle, Line, Path, G, Text as SvgText, Link, PDFViewer } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 import zodiacSigns from '../data/zodiacsigns';
 import planets from '../data/planets';
@@ -133,6 +133,12 @@ Font.register({
   ],
 });
 
+Font.register({
+  family: 'IM Fell English SC',
+  src: `${baseUrl}/fonts/IMFellEnglishSC-Regular.ttf`,
+});
+
+
 // Add this function after your style definitions but before the component
 const SafeImage = ({ src, style }) => {
   if (!src) return null;
@@ -147,9 +153,33 @@ const SafeImage = ({ src, style }) => {
   return <Image src={src} style={safeStyle} />;
 };
 
+// Page numbering component with updated style
+const PageNumber = ({ page }) => (
+  <Text
+    style={{
+      position: 'absolute',
+      bottom: 40,
+      right: 40,
+      textAlign: 'right',
+      fontSize: 10,
+      color: '#D2AE3C',
+      fontFamily: 'Montserrat',
+      fontWeight: 'bold',
+    }}
+    render={({ pageNumber, totalPages }) => (
+      `${pageNumber}`
+    )}
+    fixed
+  />
+);
+
 
 // Define styles
 const styles = StyleSheet.create({
+  svgText: {
+    fontFamily: 'IM Fell English SC',
+    fontSize: 12,
+  },
   chartContainer: {
     width: '100%',
     marginVertical: 20,
@@ -355,6 +385,81 @@ const styles = StyleSheet.create({
 });
 
 const PDFBirthChartFree = ({ horoscope, chartData }) => {
+  // Section ID references for the table of contents
+  const sectionRefs = {
+    birthChart: useRef(),
+    bigThree: useRef(),
+    angles: useRef(),
+    sect: useRef(),
+    planets: useRef(),
+    houses: useRef(),
+    majorAspects: useRef(),
+    minorAspects: useRef(),
+  };
+
+  // State to track actual page numbers for each section
+  const [sectionPages, setSectionPages] = useState({
+    birthChart: 1,
+    bigThree: 3,
+    angles: 4,
+    sect: 5,
+    planets: 6,
+    houses: 7,
+    majorAspects: 8,
+    minorAspects: 9,
+  });
+
+  // Add this to your component, right after your state declarations
+  useEffect(() => {
+    const updatePageNumbers = () => {
+      const newSectionPages = {};
+      
+      // Collect all current page numbers from refs
+      Object.entries(sectionRefs).forEach(([key, ref]) => {
+        if (ref.current) {
+          newSectionPages[key] = ref.current;
+        } else {
+          // Keep existing value if ref not set yet
+          newSectionPages[key] = sectionPages[key];
+        }
+      });
+      
+      // Only update state if values changed
+      if (JSON.stringify(newSectionPages) !== JSON.stringify(sectionPages)) {
+        setSectionPages(newSectionPages);
+      }
+    };
+    
+    // Run the update when component mounts and when refs change
+    updatePageNumbers();
+    
+    // Set up an interval to keep checking (PDF rendering can be asynchronous)
+    const interval = setInterval(updatePageNumbers, 500);
+    
+    return () => clearInterval(interval);
+  }, [sectionRefs, sectionPages]);
+
+
+  // Add this function to update section page numbers
+  const onRenderUpdates = (state) => {
+    if (state.subtype === 'page') {
+      const newSectionPages = { ...sectionPages };
+      let updated = false;
+
+      // Check each section reference
+      Object.entries(sectionRefs).forEach(([key, ref]) => {
+        if (ref.current && state.text && state.text.id === key) {
+          newSectionPages[key] = state.pageIndex + 1;
+          updated = true;
+        }
+      });
+
+      if (updated) {
+        setSectionPages(newSectionPages);
+      }
+    }
+  };
+
   // Early return for empty data to prevent errors
   if (!horoscope || !chartData) {
     return (
@@ -413,11 +518,12 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
 
     // Render the chart
     return (
-      <Document>
+      <Document onRender={onRenderUpdates}>
         {/* Title Page */}
         <Page size="A4" style={styles.firstPage}>
           <View style={styles.titleSection}>
             <Text style={styles.reportTitle}>Birth Chart</Text>
+            <Text style={styles.reportSubtitle}>{chartData.houseName} Cusps</Text>
             <Text style={styles.reportSubtitle}>
               {format(birthDate, 'PPP')} at {chartData.birthTime || "Unknown"}
             </Text>
@@ -426,7 +532,14 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
 
           {/* Chart SVG Section */}
           <View style={styles.chartContainer}>
-            <Svg width={500} height={500} viewBox="0 0 500 500">
+          <Text
+            id="birthChart" 
+            style={{ position: 'absolute', top: 0, left: 0, fontSize: 0, color: 'transparent' }}
+            render={({ pageNumber }) => {
+              return sectionRefs.birthChart.current = pageNumber;
+            }}
+          />
+            <Svg width={500} height={500} viewBox="0 0 500 500" style={{ fontFamily: 'IM Fell English SC' }}>
               {(() => {
                 // Get rotation from Ascendant position using the same logic as BirthChartSVG
                 const ascendantDegree = horoscope.angles?.Ascendant?.degree || 0;
@@ -547,16 +660,21 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
                     {/* House circle */}
                     <Circle cx={250} cy={250} r={100} stroke="#F3EBCD" strokeWidth={1} fill="none" />
 
-                    {/* House lines with proper rotation */}
-                    {Object.entries(horoscope.houseCusps || {})
+                    {/* House lines */}
+                    {horoscope && horoscope.houseCusps && Object.entries(horoscope.houseCusps || {})
                       .filter(([key, house]) => house && house.key && house.degree !== undefined && house.degree !== null)
                       .map(([key, house]) => {
                         const houseDegree = typeof house.degree === 'string' ? parseFloat(house.degree) : house.degree;
                         const angle = ((houseDegree + chartRotation) * Math.PI) / 180;
+                        
+                        // Start from the house circle (inner) at r=100
                         const x1 = 250 + Math.cos(angle) * 100;
                         const y1 = 250 - Math.sin(angle) * 100; 
-                        const x2 = 250 + Math.cos(angle) * 240;
-                        const y2 = 250 - Math.sin(angle) * 240;
+                        
+                        // End at the inner boundary of the zodiac section (r=200) 
+                        // instead of extending to r=240
+                        const x2 = 250 + Math.cos(angle) * 200;
+                        const y2 = 250 - Math.sin(angle) * 200;
 
                         return (
                           <Line
@@ -879,11 +997,11 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
                             key={`house-number-${houseKey}`}
                             x={x}
                             y={y}
+                            style={styles.svgText}
                             fontSize="12"
                             textAnchor="middle"
                             dominantBaseline="middle"
                             fill="#D2AE3C"
-                            fontWeight="semibold"
                           >
                             {houseKey}
                           </SvgText>
@@ -1174,14 +1292,14 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
               marginTop: 20
             }}>
               {[
-                { title: 'Birth Chart', page: '1' },
-                { title: 'Big Three', page: '3' },
-                { title: 'Angles', page: '3' },
-                { title: 'Sect', page: '4' },
-                { title: 'Planets', page: '5' },
-                { title: 'Houses', page: '6' },
-                { title: 'Major Aspects', page: '7' },
-                { title: 'Minor Aspects', page: '' },
+                { title: 'Birth Chart', id: 'birthChart' },
+                { title: 'Big Three', id: 'bigThree' },
+                { title: 'Angles', id: 'angles' },
+                { title: 'Sect', id: 'sect' },
+                { title: 'Planets', id: 'planets' },
+                { title: 'Houses', id: 'houses' },
+                { title: 'Major Aspects', id: 'majorAspects' },
+                { title: 'Minor Aspects', id: 'minorAspects' },
               ].map((item, index) => (
                 <View key={index} style={{
                   flexDirection: 'row',
@@ -1190,12 +1308,14 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
                   marginBottom: 20,
                   width: '100%',
                 }}>
-                  <Text style={{
-                    fontSize: 18,
-                    fontFamily: 'Montserrat',
-                    fontWeight: 700,
-                    color: '#D2AE3C'
-                  }}>{item.title}</Text>
+                  <Link src={`#${item.id}`}>
+                    <Text style={{
+                      fontSize: 18,
+                      fontFamily: 'Montserrat',
+                      fontWeight: 700,
+                      color: '#D2AE3C'
+                    }}>{item.title}</Text>
+                  </Link>
                   
                   {/* Leader dots */}
                   <View style={{
@@ -1213,16 +1333,24 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
                     fontFamily: 'Montserrat',
                     color: '#D2AE3C',
                     fontWeight: 400,
-                  }}>{item.page}</Text>
+                  }}>{sectionPages[item.id]}</Text>
                 </View>
               ))}
             </View>
           </View>
+          <PageNumber />
         </Page>
 
         {/* Big Three Page */}
         <Page size="A4" style={styles.page}>
           <View style={styles.placementsSection}>
+          <Text
+            id="bigThree" 
+            style={{ position: 'absolute', top: 0, left: 0, fontSize: 0, color: 'transparent' }}
+            render={({ pageNumber }) => {
+              return sectionRefs.bigThree.current = pageNumber;
+            }}
+          />
             <Text style={styles.placementsTitle}>Big Three</Text>
             <View style={styles.table}>
               {/* Table header */}
@@ -1278,11 +1406,19 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
               })}
             </View>
           </View>
+          <PageNumber />
         </Page>
 
         {/* Angles Page */}
         <Page size="A4" style={styles.page}>
           <View style={styles.placementsSection}>
+          <Text
+            id="angles" 
+            style={{ position: 'absolute', top: 0, left: 0, fontSize: 0, color: 'transparent' }}
+            render={({ pageNumber }) => {
+              return sectionRefs.angles.current = pageNumber;
+            }}
+          />
             <Text style={styles.placementsTitle}>Angles</Text>
             <View style={styles.table}>
               {/* Table header */}
@@ -1327,6 +1463,7 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
               })}
             </View>
           </View>
+          <PageNumber />
         </Page>
 
 
@@ -1334,6 +1471,13 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
         {/* Sect Page */}
         <Page size="A4" style={styles.page}>
           <View style={styles.placementsSection}>
+          <Text
+            id="sect" 
+            style={{ position: 'absolute', top: 0, left: 0, fontSize: 0, color: 'transparent' }}
+            render={({ pageNumber }) => {
+              return sectionRefs.sect.current = pageNumber;
+            }}
+          />
             <Text style={styles.placementsTitle}>Sect</Text>
             <View style={styles.table}>
               <View style={[styles.tableRow, styles.tableHeader]}>
@@ -1436,11 +1580,19 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
               </View>
             </View>
           </View>
+          <PageNumber />
         </Page>
 
         {/* Planets Page */}
         <Page size="A4" style={styles.page}>
           <View style={styles.placementsSection}>
+          <Text
+            id="planets" 
+            style={{ position: 'absolute', top: 0, left: 0, fontSize: 0, color: 'transparent' }}
+            render={({ pageNumber }) => {
+              return sectionRefs.planets.current = pageNumber;
+            }}
+          />
             <Text style={styles.placementsTitle}>Planets</Text>
             <View style={styles.table}>
               {/* Table header */}
@@ -1510,11 +1662,19 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
               })}
             </View>
           </View>
+          <PageNumber />
         </Page>
 
         {/* Houses Page */}
         <Page size="A4" style={styles.page}>
           <View style={styles.placementsSection}>
+          <Text
+            id="houses" 
+            style={{ position: 'absolute', top: 0, left: 0, fontSize: 0, color: 'transparent' }}
+            render={({ pageNumber }) => {
+              return sectionRefs.houses.current = pageNumber;
+            }}
+          />
             <Text style={styles.placementsTitle}>Houses</Text>
             <View style={styles.table}>
               {/* Table header */}
@@ -1613,11 +1773,19 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
             })}
             </View>
           </View>
+          <PageNumber />
         </Page>
 
         {/* Major Aspects Summary Page */}
         <Page size="A4" style={styles.page}>
           <View style={styles.placementsSection}>
+          <Text
+            id="majorAspects" 
+            style={{ position: 'absolute', top: 0, left: 0, fontSize: 0, color: 'transparent' }}
+            render={({ pageNumber }) => {
+              return sectionRefs.majorAspects.current = pageNumber;
+            }}
+          />
             <Text style={styles.placementsTitle}>Major Aspects</Text>
             {majorAspectTypes.map((aspectType, index) => {
               const aspectCount = aspectsByType?.major?.[aspectType]?.length || 
@@ -1651,6 +1819,7 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
               );
             })}   
           </View>
+          <PageNumber />
         </Page>
 
         {/* Major Aspects Detail Pages */}
@@ -1766,6 +1935,7 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
                   })}
                 </View>
               </View>
+              <PageNumber />
             </Page>
           );
         })}
@@ -1773,6 +1943,13 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
         {/* Minor Aspects Summary Page */}
         <Page size="A4" style={styles.page}>
           <View style={styles.placementsSection}>
+          <Text
+            id="minorAspects" 
+            style={{ position: 'absolute', top: 0, left: 0, fontSize: 0, color: 'transparent' }}
+            render={({ pageNumber }) => {
+              return sectionRefs.minorAspects.current = pageNumber;
+            }}
+          />
             <Text style={styles.placementsTitle}>Minor Aspects</Text>
             {minorAspectTypes.map((aspectType, index) => {
               const aspectCount = aspectsByType?.minor?.[aspectType]?.length || 
@@ -1807,6 +1984,7 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
               );
             })}   
           </View>
+          <PageNumber />
         </Page>
 
         {/* Minor Aspects Detail Pages */}
@@ -1924,6 +2102,7 @@ const PDFBirthChartFree = ({ horoscope, chartData }) => {
                   })}
                 </View>
               </View>
+              <PageNumber />
             </Page>
           );
         })}
